@@ -1,0 +1,27 @@
+.fondoProductoAdm{
+    background: #fc4a1a;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #f7b733, #fc4a1a);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #f7b733, #fc4a1a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    color: azure;
+}
+
+.green{
+    color: green;
+}
+
+.transparencia{
+    opacity: 0.9;
+}
+
+/* .modal{
+    background-image: linear-gradient(
+        to bottom,
+        rgba(55, 56, 58, 0.52),
+        rgba(44, 41, 43, 0.73)
+      ),
+    url("/images/fondo2.jpg");
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+} */

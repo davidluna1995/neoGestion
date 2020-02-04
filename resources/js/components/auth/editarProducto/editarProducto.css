@@ -1,0 +1,11 @@
+.bordeFooter{
+    border-top: 1px inset #dcdcdc;
+    margin-bottom: -1rem;
+    background: #dcdcdc;  /* fallback for old browsers */
+}
+
+  .modal-header {
+    background: #45B649;  /* fallback for old browsers */
+    color: azure;
+  }
+
