@@ -47,3 +47,11 @@ HTML, body {
 .transparencia{
     opacity: 0.9;
 }
+
+b-card{
+    height: 100%;
+}
+
+.green{
+    color: #45B649;
+}

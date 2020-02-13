@@ -1,73 +1,71 @@
 <template>
   <div>
-    <div class="row mt-4 justify-content-center">
-      <div class="col-11 col-md-3">
-        <b-card
-          border-variant="primary"
-          header="Iniciar Sesion"
-          header-bg-variant="primary"
-          header-text-variant="white"
-          align="center"
-        >
-          <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-            <b-form-group id="input-group-1" label="Rut:" label-for="input-1">
-              <b-form-input
-                id="input-1"
-                v-model="form.rut"
-                type="text"
-                required
-                placeholder="Ingrese su rut"
-              ></b-form-input>
-            </b-form-group>
-
-            <b-form-group id="input-group-1" label="Contraseña:" label-for="input-1">
-              <b-form-input
-                id="input-2"
-                v-model="form.password"
-                type="text"
-                required
-                placeholder="******"
-              ></b-form-input>
-            </b-form-group>
-
-            <b-button type="submit" variant="primary">Ingresar</b-button>
-            <b-button type="reset" variant="danger">Registrarse</b-button>
-          </b-form>
-        </b-card>
+    <section id="cover" class="min-vh-100">
+      <div id="cover-caption">
+        <div class="container">
+          <div class="row text-white">
+            <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+              <h1 class="display-6 py-2">Formulario de Ingreso NeoGestion</h1>
+              <div class="px-2">
+                <form class="justify-content-center">
+                  <div class="form-group">
+                    <label class="sr-only">Correo</label>
+                    <input name="correo" type="text" class="form-control" placeholder="Correo" />
+                  </div>
+                  <div class="form-group">
+                    <label class="sr-only">Contraseña</label>
+                    <input
+                      name="pass"
+                      type="password"
+                      class="form-control"
+                      placeholder="Contraseña"
+                    />
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   </div>
 </template>
+
+<style scoped>
+#cover {
+  /* background: #222 url('https://bonuscursos.com/wp-content/uploads/2019/12/Los-mejores-cursos-de-veterinaria.jpg') center center no-repeat; */
+  background-size: cover;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+#cover-caption {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+/* only used for background overlay not needed for centering */
+form:before {
+  content: "";
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: -1;
+  border-radius: 10px;
+}
+</style>
 
 <script>
 export default {
   data() {
-    return {
-      form: {
-        rut: "",
-        password: ""
-      },
-      show: true
-    };
+    return {};
   },
-  methods: {
-    onSubmit(evt) {
-      evt.preventDefault();
-      alert(JSON.stringify(this.form));
-    },
-    onReset(evt) {
-      evt.preventDefault();
-      // Reset our form values
-      this.form.email = "";
-      this.form.name = "";
-      this.form.food = null;
-      this.form.checked = [];
-      // Trick to reset/clear native browser form validation state
-      this.show = false;
-      this.$nextTick(() => {
-        this.show = true;
-      });
-    }
-  }
+  methods: {}
 };
 </script>

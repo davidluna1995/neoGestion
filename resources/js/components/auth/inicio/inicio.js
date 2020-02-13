@@ -4,19 +4,24 @@ export default {
 
     return {
       productosFields: [
-        { key: 'index', label: 'ID' },
+        { key: 'index', label: 'ID',variant: 'dark' },
         { key: 'producto', label: 'Productos' },
         { key: 'cantidad', label: 'Cantidad' },
-        { key: 'totalVendido', label: 'Total Vendido' },
+        { key: 'peso', label: '' },
+        { key: 'totalVendido', label: 'Total' },
 
       ],
       productosItems: [],
 
       ventasFields: [
-        { key: 'index', label: 'ID' },
+        { key: 'index', label: 'ID',variant: 'dark' },
         { key: 'producto', label: 'Productos' },
         { key: 'fecha', label: 'Fecha' },
-        { key: 'totalVendido', label: 'Total Vendido' },
+        { key: 'pesoUnidad', label: '' },
+        { key: 'precio', label: 'Unidad' },
+        { key: 'cantidad', label: 'Venta' },
+        { key: 'peso', label: '' },
+        { key: 'totalVendido', label: 'Total' },
 
       ],
       ventasItems: [],

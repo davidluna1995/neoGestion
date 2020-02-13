@@ -112,70 +112,50 @@
     </div>
 
     <div class="row m-4">
-      <div class="col-12 col-md-12 col-lg-6">
+      <div class="col-12 col-md-12 col-lg-4">
         <b-card class="text-center tituloTabla my-2 col-12 transparencia">
           <b-card-header class="fondoProductos mb-4">PRODUCTOS MAS VENDIDOS</b-card-header>
           <div>
             <b-table
-              striped
               hover
               small
               :fields="productosFields"
               :items="productosItems"
               head-variant="dark"
               responsive="sm"
+              sticky-header="200px"
             >
-              <!-- A virtual column -->
               <template v-slot:cell(index)="data">{{ data.item.producto_id}}</template>
-
-              <!-- A custom formatted column -->
-              <template v-slot:cell(producto)="data">
-                <b>{{ data.item.nombre.toUpperCase() }}</b>
-              </template>
-
-              <!-- A virtual composite column -->
-              <template v-slot:cell(cantidad)="data">
-                {{ formatPrice(data.item.cantidad_total) }}
-                </template>
-
-              <template v-slot:cell(totalVendido)="data">
-                <span class="green">$</span>
-                {{ formatPrice(data.item.venta_total) }}
-                </template>
+              <template v-slot:cell(producto)="data"> <b>{{ data.item.nombre.toUpperCase() }}</b> </template>
+              <template v-slot:cell(cantidad)="data">{{ formatPrice(data.item.cantidad_total) }}</template>
+              <template v-slot:cell(peso)> <span class="green">$</span></template>
+              <template v-slot:cell(totalVendido)="data"> {{ formatPrice(data.item.venta_total) }}</template>
             </b-table>
           </div>
         </b-card>
       </div>
 
-      <div class="col-12 col-md-12 col-lg-6">
+      <div class="col-12 col-md-12 col-lg-8">
         <b-card class="text-center tituloTabla my-2 col-12 transparencia">
           <b-card-header class="fondoProductos mb-4">ULTIMAS VENTAS</b-card-header>
           <div>
             <b-table
-              striped
               hover
               small
               :fields="ventasFields"
               :items="ventasItems"
               head-variant="dark"
               responsive="sm"
+              sticky-header="200px"
             >
               <template v-slot:cell(index)="data">{{ data.item.id }}</template>
-
-              <template v-slot:cell(producto)="data">
-                <b>{{ data.item.nombre.toUpperCase() }}</b>
-              </template>
-
-              <template v-slot:cell(fecha)="data">
-                {{ data.item.fechaVenta }}
-                <br />
-                {{data.item.horaVenta}} hrs.
-              </template>
-
-              <template v-slot:cell(totalVendido)="data">
-                <span class="green">$</span>
-                {{ formatPrice(data.item.precio_venta) }}
-              </template>
+              <template v-slot:cell(producto)="data"> <b>{{ data.item.nombre.toUpperCase() }}</b></template>
+              <template v-slot:cell(fecha)="data">{{data.item.creado}} hrs.</template>
+              <template v-slot:cell(pesoUnidad)><span class="green">$</span></template>
+              <template v-slot:cell(precio)="data">{{ formatPrice(data.item.precio_venta) }}</template>
+              <template v-slot:cell(cantidad)="data">{{data.item.cantidad}}</template>
+              <template v-slot:cell(peso)> <span class="green">$</span> </template>
+              <template v-slot:cell(totalVendido)="data">{{ formatPrice(data.item.venta) }}</template>
             </b-table>
           </div>
         </b-card>

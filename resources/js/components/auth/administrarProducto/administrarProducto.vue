@@ -98,7 +98,6 @@
 
           <div>
             <b-table
-              table
               hover
               bordered
               responsive
@@ -108,10 +107,7 @@
               :fields="productosFieldsAdm"
               :items="listarProductos"
               sticky-header="400px"
-              head-variant="dark"
-                   primary-key="a"
-      :tbody-transition-props="transProps"
-        id="table-transition-example">
+              head-variant="dark">
 
               <template v-slot:cell(index)="data">
                 <div class="col-12">{{ data.item.id }}</div>
