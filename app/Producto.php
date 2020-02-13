@@ -80,7 +80,7 @@ class Producto extends Model
                                     'producto.created_at as creado',
                                 ])
                                     ->join('categoria', 'categoria.id', 'producto.categoria_id')
-                                    // ->orderby('producto.id', 'asc')
+                                    ->orderby('producto.id', 'asc')
                                     ->get();
         if (count($listar) > 0) {
             foreach ($listar as $key) {

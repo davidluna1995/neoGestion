@@ -9,6 +9,7 @@
             <div class="col-12 col-sm-8 col-md-8 col-lg-8 col-xl-8">
               <b-input-group>
                 <b-form-input
+                  id="inputBuscar"
                   v-on:keyup="escribiendoProducto"
                   placeholder="Buscar producto"
                   v-model="buscadorProducto"
@@ -17,6 +18,7 @@
             </div>
             <div class="col-12 col-sm-2 col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
               <b-button
+              id="btnBuscar"
                 :disabled="btn_buscar_producto"
                 block
                 variant="success"
@@ -107,9 +109,10 @@
               :items="listarProductos"
               sticky-header="400px"
               head-variant="dark"
-              :sort-by.sync="sortBy"
-              :sort-desc.sync="sortDesc"
-            >
+                   primary-key="a"
+      :tbody-transition-props="transProps"
+        id="table-transition-example">
+
               <template v-slot:cell(index)="data">
                 <div class="col-12">{{ data.item.id }}</div>
               </template>

@@ -10,18 +10,20 @@ export default {
 
         return {
 
-            sortBy: 'index',
-            sortDesc: false,
+            transProps: {
+                // Transition name
+                name: 'flip-list'
+              },
             // CABEZERA DE LA TABLA
             productosFieldsAdm: [
-                { key: 'index', label: 'ID', sortable: true, variant: 'dark'},
-                { key: 'prod', label: 'Producto', sortable: true },
-                { key: 'cat', label: 'Categoria', sortable: true },
-                { key: 'desc', label: 'Descripcion', sortable: true },
-                { key: 'stock', label: 'Stock', sortable: true },
-                { key: 'compra', label: 'Compra', sortable: true },
-                { key: 'venta', label: 'Venta',  sortable: true},
-                { key: 'fecha', label: 'Creado', sortable: true },
+                { key: 'index', label: 'ID', variant: 'dark'},
+                { key: 'prod', label: 'Producto' },
+                { key: 'cat', label: 'Categoria' },
+                { key: 'desc', label: 'Descripcion' },
+                { key: 'stock', label: 'Stock' },
+                { key: 'compra', label: 'Compra' },
+                { key: 'venta', label: 'Venta',},
+                { key: 'fecha', label: 'Creado' },
                 { key: 'editar', label: '' },
                 { key: 'ventaModal', label: '' },
                 { key: 'eliminarProd', label: '' },
