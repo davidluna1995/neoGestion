@@ -6,10 +6,13 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Categoria;
 
 class Producto extends Model
 {
+    use softDeletes;
+    protected $dates = ['deleted_at'];
     protected $table = 'producto';
 
     public function validar_producto($datos)
@@ -23,8 +26,6 @@ class Producto extends Model
                 'cantidad' => 'required',
                 'precio_compra' => 'required',
                 'precio_venta' => 'required',
-                'fecha' => 'required',
-                'hora' => 'required',
             ],
             [
                 'categoria_id.required' => 'La categoria a ingresar es necesaria',
@@ -33,8 +34,6 @@ class Producto extends Model
                 'cantidad.required' => 'La cantidad a ingresar es necesaria',
                 'precio_compra.required' => 'El precio de compra a ingresar es necesario',
                 'precio_venta.required' => 'el precio de venta a ingresar es necesario',
-                'fecha.required' => 'La fecha a ingresar es necesaria',
-                'hora.required' => 'La hora a ingresar es necesaria',
             ]
         );
 
@@ -57,9 +56,6 @@ class Producto extends Model
             $r->cantidad = $datos->cantidad;
             $r->precio_compra = $datos->precio_compra;
             $r->precio_venta = $datos->precio_venta;
-            $r->fecha = $datos->fecha;
-            $r->hora = $datos->hora;
-            $r->activo='S';
 
             if ($r->save()) {
                 return ['estado'=>'success', 'mensaje'=>'Producto guardado con exito.'];
@@ -79,18 +75,17 @@ class Producto extends Model
                                     'producto.cantidad',
                                     'producto.precio_compra',
                                     'producto.precio_venta',
-                                    'producto.fecha',
-                                    'producto.hora',
                                     'categoria.descripcion as catDesc',
                                     'categoria.id as catId',
+                                    'producto.created_at as creado',
                                 ])
                                     ->join('categoria', 'categoria.id', 'producto.categoria_id')
-                                    ->where('producto.activo', 'S')
-                                    ->orderby('producto.id', 'asc')
+                                    // ->orderby('producto.id', 'asc')
                                     ->get();
         if (count($listar) > 0) {
             foreach ($listar as $key) {
-                $key->fecha = Carbon::parse($key->fecha)->format('d/m/Y');
+                setlocale(LC_TIME, 'es');
+                $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
             }
         }
         if (!$listar->isEmpty()) {
@@ -307,21 +302,24 @@ class Producto extends Model
                                     'producto.cantidad',
                                     'producto.precio_compra',
                                     'producto.precio_venta',
-                                    'producto.fecha',
-                                    'producto.hora',
+                                    'producto.created_at as creado',
                                     'categoria.descripcion as catDesc',
                                     'categoria.id as catId',
                                 ])
                                     ->join('categoria', 'categoria.id', 'producto.categoria_id')
-                                    ->where([
-                                        'producto.activo'=>'S',
-                                    ])
                                     ->whereRaw(
-                                      "producto.nombre like lower('%$producto%') or 
+                                        "producto.nombre like lower('%$producto%') or 
                                       categoria.descripcion like lower('%$producto%') or
                                       producto.descripcion like lower('%$producto%')"
-                                  )
+                                    )
                                     ->get();
+
+        if (count($listar) > 0) {
+            foreach ($listar as $key) {
+                setlocale(LC_TIME, 'es');
+                $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
+            }
+        }
         
         if (!$listar->isEmpty()) {
             return ['estado'=>'success' , 'producto' => $listar];

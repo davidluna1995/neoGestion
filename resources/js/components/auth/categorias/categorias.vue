@@ -113,47 +113,29 @@
               responsive="sm"
             >
               <template v-slot:cell(index)="data">
-                <div class="col-12 my-4">
-                {{ data.item.id }}
-              </div></template>
+                <div class="col-12">{{ data.item.id }}</div>
+              </template>
 
               <template v-slot:cell(cat)="data">
-                <div class="col-12 my-4">
-                  {{ data.item.descripcion.toUpperCase() }}
-                </div>
-                </template>
+                <div class="col-12">{{ data.item.descripcion.toUpperCase() }}</div>
+              </template>
 
               <template v-slot:cell(fecha)="data">
-                <div class="col-12 my-4">
-                  {{ data.item.creado }} hrs.
+                <div class="col-12">{{ data.item.creado }} hrs.</div>
+              </template>
+
+              <template v-slot:cell(editar)="data">
+                <div class="col-12">
+                  <b-button
+                    size="sm"
+                    id="show-btn-editar"
+                    @click="showModal(data.item.id);"
+                    pill
+                    block
+                    class="my-2"
+                    variant="success"
+                  >Editar</b-button>
                 </div>
-                </template>
-
-              <template v-slot:cell(opc)="data">
-                <!-- <div class="row"> -->
-                  <div class="col-12 col-xl-12">
-                    <b-button
-                      size="sm"
-                      id="show-btn-editar"
-                      @click="showModal(data.item.id);"
-                      pill
-                      block
-                      class="my-2"
-                      variant="success"
-                    >Editar</b-button>
-                  </div>
-
-                  <div class="col-12 col-xl-12">
-                    <b-button
-                      size="sm"
-                      id="show-btn-eliminar"
-                      pill
-                      block
-                      class="my-2"
-                      variant="danger"
-                    >Eliminar</b-button>
-                  </div>
-                <!-- </div> -->
 
                 <!-- modal categorias -->
                 <div>
@@ -220,6 +202,19 @@
                       </div>
                     </div>
                   </b-modal>
+                </div>
+              </template>
+
+              <template v-slot:cell(eliminar)>
+                <div class="col-12">
+                  <b-button
+                    size="sm"
+                    id="show-btn-eliminar"
+                    pill
+                    block
+                    class="my-2"
+                    variant="danger"
+                  >Eliminar</b-button>
                 </div>
               </template>
             </b-table>

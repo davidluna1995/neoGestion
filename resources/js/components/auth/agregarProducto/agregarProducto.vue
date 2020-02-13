@@ -32,7 +32,7 @@
               </b-form-group>
             </div>
 
-            <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
+            <!-- <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
               <b-form-group id="fechaIngreso" label="Fecha de ingreso:">
                 <div class="row">
                   <div class="col-1">
@@ -56,7 +56,7 @@
                   </div>
                 </div>
               </b-form-group>
-            </div>
+            </div> -->
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
               <b-form-group id="categoria" label="Selecione Categoria:">

@@ -14,8 +14,6 @@ export default {
       cantidad: '',
       precio_compra: '',
       precio_venta: '',
-      fecha: '',
-      hora: '',
       listarCategorias: [],
 
       // ALERTS INGRESO PRODUCTO
@@ -63,8 +61,6 @@ export default {
         'cantidad': this.cantidad,
         'precio_compra': this.precio_compra,
         'precio_venta': this.precio_venta,
-        'fecha': this.fecha,
-        'hora': this.hora,
 
       }
       this.axios.post('api/registro_producto', data).then((response) => {
@@ -77,8 +73,6 @@ export default {
           this.cantidad = '';
           this.precio_compra = '';
           this.precio_venta = '';
-          this.fecha = '';
-          this.hora = '';
           this.errores = [];
         }
 

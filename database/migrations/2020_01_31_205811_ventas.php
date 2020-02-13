@@ -16,11 +16,12 @@ class Ventas extends Migration
         Schema::create('ventas', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('producto_id');
-            $table->date('fecha');
-            $table->time('hora');
+            // $table->date('fecha');
+            // $table->time('hora');
             $table->bigInteger('cantidad');
             $table->bigInteger('venta');
-            $table->char('activo',1);
+            // $table->char('activo',1);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

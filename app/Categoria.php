@@ -6,9 +6,12 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Categoria extends Model
 {
+    use softDeletes;
+    protected $dates = ['deleted_at'];
     protected $table = 'categoria';
 
     public function validar_categoria($datos)
@@ -38,7 +41,6 @@ class Categoria extends Model
         if ($validarDatos['estado'] == 'success') {
             $r = $this;
             $r->descripcion =  strtolower($datos->descripcion);
-            $r->activo='S';
 
             if ($r->save()) {
                 return ['estado'=>'success', 'mensaje'=>'Categoria guardada con exito.'];
@@ -56,11 +58,10 @@ class Categoria extends Model
                                     'descripcion',
                                     'created_at as creado',
                                 ])
-                                    ->where('activo', 'S')
                                     ->orderby('id', 'desc')
                                     ->get();
 
-                                    // dd($listar);
+        // dd($listar);
 
         if (count($listar) > 0) {
             foreach ($listar as $key) {
@@ -148,12 +149,17 @@ class Categoria extends Model
         $listar = Categoria::select([
                                     'id',
                                     'descripcion',
+                                    'created_at as creado',
                                 ])
-                                    ->where([
-                                        'activo'=>'S',
-                                    ])
                                     ->whereRaw("descripcion like lower('%$categoria%')")
                                     ->get();
+
+        if (count($listar) > 0) {
+            foreach ($listar as $key) {
+                setlocale(LC_TIME, 'es');
+                $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
+            }
+        }
         
         if (!$listar->isEmpty()) {
             return ['estado'=>'success' , 'categoria' => $listar];

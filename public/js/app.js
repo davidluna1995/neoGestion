@@ -3288,34 +3288,51 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      sortBy: 'index',
+      sortDesc: false,
       // CABEZERA DE LA TABLA
       productosFieldsAdm: [{
         key: 'index',
-        label: 'ID'
+        label: 'ID',
+        sortable: true,
+        variant: 'dark'
       }, {
         key: 'prod',
-        label: 'Producto'
+        label: 'Producto',
+        sortable: true
       }, {
         key: 'cat',
-        label: 'Categoria'
+        label: 'Categoria',
+        sortable: true
       }, {
         key: 'desc',
-        label: 'Descripcion'
+        label: 'Descripcion',
+        sortable: true
       }, {
         key: 'stock',
-        label: 'Stock'
+        label: 'Stock',
+        sortable: true
       }, {
         key: 'compra',
-        label: 'Compra'
+        label: 'Compra',
+        sortable: true
       }, {
         key: 'venta',
-        label: 'Venta'
+        label: 'Venta',
+        sortable: true
       }, {
         key: 'fecha',
-        label: 'Creado'
+        label: 'Creado',
+        sortable: true
       }, {
-        key: 'opc',
-        label: 'Opciones'
+        key: 'editar',
+        label: ''
+      }, {
+        key: 'ventaModal',
+        label: ''
+      }, {
+        key: 'eliminarProd',
+        label: ''
       }],
       // LLENAR TABLA
       listarProductos: [],
@@ -3334,8 +3351,6 @@ __webpack_require__.r(__webpack_exports__);
       precioVentaUpd: '',
       // REGISTRO DE VENTA
       producto_id: '',
-      fecha: '',
-      hora: '',
       cantidad: '',
       ventas: '',
       // ALERTS INGRESO VENTA
@@ -3475,8 +3490,6 @@ __webpack_require__.r(__webpack_exports__);
 
       var data = {
         'producto_id': this.producto_id,
-        'fecha': this.fecha,
-        'hora': this.hora,
         'cantidad': this.cantidad,
         'venta': this.ventas
       };
@@ -3491,8 +3504,6 @@ __webpack_require__.r(__webpack_exports__);
           _this4.traer_productos();
 
           _this4.producto_id = '';
-          _this4.fecha = '';
-          _this4.hora = '';
           _this4.cantidad = '';
           _this4.ventas = '';
           _this4.showAlertStock = false;
@@ -3583,8 +3594,6 @@ __webpack_require__.r(__webpack_exports__);
       cantidad: '',
       precio_compra: '',
       precio_venta: '',
-      fecha: '',
-      hora: '',
       listarCategorias: [],
       // ALERTS INGRESO PRODUCTO
       errores: [],
@@ -3629,9 +3638,7 @@ __webpack_require__.r(__webpack_exports__);
         'descripcion': this.descripcion,
         'cantidad': this.cantidad,
         'precio_compra': this.precio_compra,
-        'precio_venta': this.precio_venta,
-        'fecha': this.fecha,
-        'hora': this.hora
+        'precio_venta': this.precio_venta
       };
       this.axios.post('api/registro_producto', data).then(function (response) {
         if (response.data.estado == 'success') {
@@ -3645,8 +3652,6 @@ __webpack_require__.r(__webpack_exports__);
           _this2.cantidad = '';
           _this2.precio_compra = '';
           _this2.precio_venta = '';
-          _this2.fecha = '';
-          _this2.hora = '';
           _this2.errores = [];
         }
 
@@ -3707,8 +3712,11 @@ __webpack_require__.r(__webpack_exports__);
         key: 'fecha',
         label: 'Creado'
       }, {
-        key: 'opc',
-        label: 'Opciones'
+        key: 'editar',
+        label: 'Editar Categoria'
+      }, {
+        key: 'eliminar',
+        label: 'Eliminar Categoria'
       }],
       listarCategorias: [],
       //ACTUALIZAR
@@ -37556,7 +37564,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, ".fondoProductoAdm[data-v-ecbc92b6]{\r\n    background: #fc4a1a;  /* fallback for old browsers */  /* Chrome 10-25, Safari 5.1-6 */\r\n    background: -webkit-gradient(linear, left top, right top, from(#f7b733), to(#fc4a1a));\r\n    background: linear-gradient(to right, #f7b733, #fc4a1a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */\r\n    color: azure;\n}\n.green[data-v-ecbc92b6]{\r\n    color: green;\n}\n.transparencia[data-v-ecbc92b6]{\r\n    opacity: 0.9;\n}\r\n\r\n/* .modal{\r\n    background-image: linear-gradient(\r\n        to bottom,\r\n        rgba(55, 56, 58, 0.52),\r\n        rgba(44, 41, 43, 0.73)\r\n      ),\r\n    url(\"/images/fondo2.jpg\");\r\n    background-attachment: fixed;\r\n    background-position: center;\r\n    background-repeat: no-repeat;\r\n    background-size: cover;\r\n} */\r\n", ""]);
+exports.push([module.i, ".fondoProductoAdm[data-v-ecbc92b6]{\r\n    background: #fc4a1a;  /* fallback for old browsers */  /* Chrome 10-25, Safari 5.1-6 */\r\n    background: -webkit-gradient(linear, left top, right top, from(#f7b733), to(#fc4a1a));\r\n    background: linear-gradient(to right, #f7b733, #fc4a1a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */\r\n    color: azure;\n}\n.green[data-v-ecbc92b6]{\r\n    color: green;\n}\n.transparencia[data-v-ecbc92b6]{\r\n    opacity: 0.9;\n}\r\n\r\n/* .modal{\r\n    background-image: linear-gradient(\r\n        to bottom,\r\n        rgba(55, 56, 58, 0.52),\r\n        rgba(44, 41, 43, 0.73)\r\n      ),\r\n    url(\"/images/fondo2.jpg\");\r\n    background-attachment: fixed;\r\n    background-position: center;\r\n    background-repeat: no-repeat;\r\n    background-size: cover;\r\n} */\r\n\r\n", ""]);
 
 // exports
 
@@ -50014,22 +50022,39 @@ var render = function() {
                   _c("b-table", {
                     attrs: {
                       table: "",
-                      hove12: "",
-                      "hovexl-r": "",
+                      hover: "",
                       bordered: "",
+                      responsive: "",
                       small: "",
+                      striped: "",
+                      "no-border-collapse": "",
                       fields: _vm.productosFieldsAdm,
                       items: _vm.listarProductos,
                       "sticky-header": "400px",
                       "head-variant": "dark",
-                      responsive: "sm"
+                      "sort-by": _vm.sortBy,
+                      "sort-desc": _vm.sortDesc
+                    },
+                    on: {
+                      "update:sortBy": function($event) {
+                        _vm.sortBy = $event
+                      },
+                      "update:sort-by": function($event) {
+                        _vm.sortBy = $event
+                      },
+                      "update:sortDesc": function($event) {
+                        _vm.sortDesc = $event
+                      },
+                      "update:sort-desc": function($event) {
+                        _vm.sortDesc = $event
+                      }
                     },
                     scopedSlots: _vm._u([
                       {
                         key: "cell(index)",
                         fn: function(data) {
                           return [
-                            _c("div", { staticClass: "col-12 my-4" }, [
+                            _c("div", { staticClass: "col-12" }, [
                               _vm._v(_vm._s(data.item.id))
                             ])
                           ]
@@ -50039,7 +50064,7 @@ var render = function() {
                         key: "cell(prod)",
                         fn: function(data) {
                           return [
-                            _c("div", { staticClass: "col-12 my-4" }, [
+                            _c("div", { staticClass: "col-12" }, [
                               _vm._v(_vm._s(data.item.nombre))
                             ])
                           ]
@@ -50049,7 +50074,7 @@ var render = function() {
                         key: "cell(cat)",
                         fn: function(data) {
                           return [
-                            _c("div", { staticClass: "col-12 my-4" }, [
+                            _c("div", { staticClass: "col-12" }, [
                               _vm._v(_vm._s(data.item.catDesc))
                             ])
                           ]
@@ -50059,7 +50084,7 @@ var render = function() {
                         key: "cell(desc)",
                         fn: function(data) {
                           return [
-                            _c("div", { staticClass: "col-12 my-4" }, [
+                            _c("div", { staticClass: "col-12" }, [
                               _vm._v(_vm._s(data.item.proDesc))
                             ])
                           ]
@@ -50069,7 +50094,7 @@ var render = function() {
                         key: "cell(stock)",
                         fn: function(data) {
                           return [
-                            _c("div", { staticClass: "col-12 my-4" }, [
+                            _c("div", { staticClass: "col-12" }, [
                               _vm._v(
                                 _vm._s(_vm.formatPrice(data.item.cantidad))
                               )
@@ -50081,7 +50106,7 @@ var render = function() {
                         key: "cell(compra)",
                         fn: function(data) {
                           return [
-                            _c("div", { staticClass: "col-12 my-4" }, [
+                            _c("div", { staticClass: "col-12" }, [
                               _c("span", { staticClass: "green" }, [
                                 _vm._v("$")
                               ]),
@@ -50100,7 +50125,7 @@ var render = function() {
                         key: "cell(venta)",
                         fn: function(data) {
                           return [
-                            _c("div", { staticClass: "col-12 my-4" }, [
+                            _c("div", { staticClass: "col-12" }, [
                               _c("span", { staticClass: "green" }, [
                                 _vm._v("$")
                               ]),
@@ -50119,24 +50144,14 @@ var render = function() {
                         key: "cell(fecha)",
                         fn: function(data) {
                           return [
-                            _c("div", { staticClass: "col-12 my-4" }, [
-                              _vm._v(
-                                "\n                " +
-                                  _vm._s(data.item.fecha) +
-                                  "\n                "
-                              ),
-                              _c("br"),
-                              _vm._v(
-                                "\n                " +
-                                  _vm._s(data.item.hora) +
-                                  " hrs.\n              "
-                              )
+                            _c("div", { staticClass: "col-12" }, [
+                              _vm._v(_vm._s(data.item.creado) + " hrs.")
                             ])
                           ]
                         }
                       },
                       {
-                        key: "cell(opc)",
+                        key: "cell(editar)",
                         fn: function(data) {
                           return [
                             _c(
@@ -50913,424 +50928,449 @@ var render = function() {
                                 ]
                               ],
                               2
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              [
-                                [
-                                  _c(
-                                    "div",
+                            )
+                          ]
+                        }
+                      },
+                      {
+                        key: "cell(ventaModal)",
+                        fn: function(data) {
+                          return [
+                            _c("div", { staticClass: "col-12" }, [
+                              _c("div", { staticClass: "col-12 col-xl-12" }, [
+                                _c(
+                                  "div",
+                                  [
+                                    _c(
+                                      "div",
+                                      [
+                                        _c(
+                                          "b-button",
+                                          {
+                                            staticClass: "my-2",
+                                            attrs: {
+                                              pill: "",
+                                              block: "",
+                                              size: "sm",
+                                              id: "show-btn",
+                                              variant: "info"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.showModal(
+                                                  data.item.id
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [_vm._v("Venta")]
+                                        )
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
                                     [
                                       _c(
-                                        "b-modal",
-                                        {
-                                          ref: "ventasModal" + data.item.id,
-                                          staticClass: "modal-header-ventas",
-                                          attrs: {
-                                            id: "modal-sm",
-                                            size: "sm",
-                                            "hide-footer": "",
-                                            centered: ""
-                                          },
-                                          scopedSlots: _vm._u(
-                                            [
-                                              {
-                                                key: "modal-title",
-                                                fn: function() {
-                                                  return [
-                                                    _c(
-                                                      "h5",
-                                                      {
-                                                        staticClass:
-                                                          "text-center"
-                                                      },
-                                                      [_vm._v("VENTAS DEL DIA")]
-                                                    )
-                                                  ]
-                                                },
-                                                proxy: true
-                                              }
-                                            ],
-                                            null,
-                                            true
-                                          )
-                                        },
+                                        "div",
                                         [
-                                          _vm._v(" "),
                                           _c(
-                                            "div",
+                                            "b-modal",
                                             {
-                                              staticClass: "d-block text-center"
+                                              ref: "ventasModal" + data.item.id,
+                                              staticClass:
+                                                "modal-header-ventas",
+                                              attrs: {
+                                                id: "modal-sm",
+                                                size: "sm",
+                                                "hide-footer": "",
+                                                centered: ""
+                                              },
+                                              scopedSlots: _vm._u(
+                                                [
+                                                  {
+                                                    key: "modal-title",
+                                                    fn: function() {
+                                                      return [
+                                                        _c(
+                                                          "h5",
+                                                          {
+                                                            staticClass:
+                                                              "text-center"
+                                                          },
+                                                          [
+                                                            _vm._v(
+                                                              "VENTAS DEL DIA"
+                                                            )
+                                                          ]
+                                                        )
+                                                      ]
+                                                    },
+                                                    proxy: true
+                                                  }
+                                                ],
+                                                null,
+                                                true
+                                              )
                                             },
                                             [
+                                              _vm._v(" "),
                                               _c(
                                                 "div",
-                                                { staticClass: "row" },
+                                                {
+                                                  staticClass:
+                                                    "d-block text-center"
+                                                },
                                                 [
                                                   _c(
                                                     "div",
-                                                    {
-                                                      staticClass: "col-12 mb-4"
-                                                    },
+                                                    { staticClass: "row" },
                                                     [
                                                       _c(
                                                         "div",
-                                                        { staticClass: "row" },
-                                                        [
-                                                          _c(
-                                                            "div",
-                                                            {
-                                                              staticClass:
-                                                                "col-2"
-                                                            },
-                                                            [
-                                                              _c("i", {
-                                                                staticClass:
-                                                                  "fas fa-clipboard-list mr-1 mt-1 fa-2x text-secondary"
-                                                              })
-                                                            ]
-                                                          ),
-                                                          _vm._v(" "),
-                                                          _c(
-                                                            "div",
-                                                            {
-                                                              staticClass:
-                                                                "col-10"
-                                                            },
-                                                            [
-                                                              _c(
-                                                                "b-form-input",
-                                                                {
-                                                                  attrs: {
-                                                                    "v-model":
-                                                                      _vm.producto_id,
-                                                                    value:
-                                                                      data.item
-                                                                        .nombre,
-                                                                    disabled: ""
-                                                                  }
-                                                                }
-                                                              )
-                                                            ],
-                                                            1
-                                                          )
-                                                        ]
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass: "col-12 mb-4"
-                                                    },
-                                                    [
-                                                      _c(
-                                                        "div",
-                                                        { staticClass: "row" },
-                                                        [
-                                                          _c(
-                                                            "div",
-                                                            {
-                                                              staticClass:
-                                                                "col-2"
-                                                            },
-                                                            [
-                                                              _c("i", {
-                                                                staticClass:
-                                                                  "fas fa-clipboard-list mr-1 mt-1 fa-2x text-secondary"
-                                                              })
-                                                            ]
-                                                          ),
-                                                          _vm._v(" "),
-                                                          _c(
-                                                            "div",
-                                                            {
-                                                              staticClass:
-                                                                "col-10"
-                                                            },
-                                                            [
-                                                              _c(
-                                                                "b-form-input",
-                                                                {
-                                                                  attrs: {
-                                                                    value:
-                                                                      data.item
-                                                                        .precio_venta +
-                                                                      " c/u",
-                                                                    disabled: ""
-                                                                  }
-                                                                }
-                                                              )
-                                                            ],
-                                                            1
-                                                          )
-                                                        ]
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass: "col-12 mb-4"
-                                                    },
-                                                    [
-                                                      _c(
-                                                        "div",
-                                                        { staticClass: "row" },
-                                                        [
-                                                          _c(
-                                                            "div",
-                                                            {
-                                                              staticClass:
-                                                                "col-2"
-                                                            },
-                                                            [
-                                                              _c("i", {
-                                                                staticClass:
-                                                                  "fas fa-calendar-alt mr-1 mt-1 fa-2x colorFecha"
-                                                              })
-                                                            ]
-                                                          ),
-                                                          _vm._v(" "),
-                                                          _c(
-                                                            "div",
-                                                            {
-                                                              staticClass:
-                                                                "col-10"
-                                                            },
-                                                            [
-                                                              _c(
-                                                                "b-form-input",
-                                                                {
-                                                                  attrs: {
-                                                                    type: "date"
-                                                                  },
-                                                                  model: {
-                                                                    value:
-                                                                      _vm.fecha,
-                                                                    callback: function(
-                                                                      $$v
-                                                                    ) {
-                                                                      _vm.fecha = $$v
-                                                                    },
-                                                                    expression:
-                                                                      "fecha"
-                                                                  }
-                                                                }
-                                                              )
-                                                            ],
-                                                            1
-                                                          )
-                                                        ]
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass: "col-12 mb-4"
-                                                    },
-                                                    [
-                                                      _c(
-                                                        "div",
-                                                        { staticClass: "row" },
-                                                        [
-                                                          _c(
-                                                            "div",
-                                                            {
-                                                              staticClass:
-                                                                "col-2"
-                                                            },
-                                                            [
-                                                              _c("i", {
-                                                                staticClass:
-                                                                  "fas fa-clock mr-1 mt-1 fa-2x colorHora"
-                                                              })
-                                                            ]
-                                                          ),
-                                                          _vm._v(" "),
-                                                          _c(
-                                                            "div",
-                                                            {
-                                                              staticClass:
-                                                                "col-10"
-                                                            },
-                                                            [
-                                                              _c(
-                                                                "b-form-input",
-                                                                {
-                                                                  attrs: {
-                                                                    type: "time"
-                                                                  },
-                                                                  model: {
-                                                                    value:
-                                                                      _vm.hora,
-                                                                    callback: function(
-                                                                      $$v
-                                                                    ) {
-                                                                      _vm.hora = $$v
-                                                                    },
-                                                                    expression:
-                                                                      "hora"
-                                                                  }
-                                                                }
-                                                              )
-                                                            ],
-                                                            1
-                                                          )
-                                                        ]
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass: "col-12 mb-4"
-                                                    },
-                                                    [
-                                                      _c(
-                                                        "div",
-                                                        { staticClass: "row" },
-                                                        [
-                                                          _c(
-                                                            "div",
-                                                            {
-                                                              staticClass:
-                                                                "col-2"
-                                                            },
-                                                            [
-                                                              _c("i", {
-                                                                staticClass:
-                                                                  "fas fa-sort-numeric-up-alt mr-1 mt-1 fa-2x"
-                                                              })
-                                                            ]
-                                                          ),
-                                                          _vm._v(" "),
-                                                          _c(
-                                                            "div",
-                                                            {
-                                                              staticClass:
-                                                                "col-10"
-                                                            },
-                                                            [
-                                                              _c(
-                                                                "b-form-input",
-                                                                {
-                                                                  attrs: {
-                                                                    placeholder:
-                                                                      "Cantidad vendida"
-                                                                  },
-                                                                  model: {
-                                                                    value:
-                                                                      _vm.cantidad,
-                                                                    callback: function(
-                                                                      $$v
-                                                                    ) {
-                                                                      _vm.cantidad = $$v
-                                                                    },
-                                                                    expression:
-                                                                      "cantidad"
-                                                                  }
-                                                                }
-                                                              )
-                                                            ],
-                                                            1
-                                                          )
-                                                        ]
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    {
-                                                      staticClass: "col-12 mb-4"
-                                                    },
-                                                    [
-                                                      _c(
-                                                        "div",
-                                                        { staticClass: "row" },
-                                                        [
-                                                          _c(
-                                                            "div",
-                                                            {
-                                                              staticClass:
-                                                                "col-2"
-                                                            },
-                                                            [
-                                                              _c("i", {
-                                                                staticClass:
-                                                                  "fas fa-dollar-sign mr-1 mt-1 fa-2x text-success"
-                                                              })
-                                                            ]
-                                                          ),
-                                                          _vm._v(" "),
-                                                          _c(
-                                                            "div",
-                                                            {
-                                                              staticClass:
-                                                                "col-10"
-                                                            },
-                                                            [
-                                                              _c(
-                                                                "b-form-input",
-                                                                {
-                                                                  attrs: {
-                                                                    "v-model": (_vm.ventas =
-                                                                      _vm.cantidad *
-                                                                      data.item
-                                                                        .precio_venta),
-                                                                    value: (_vm.ventas =
-                                                                      _vm.cantidad *
-                                                                      data.item
-                                                                        .precio_venta),
-                                                                    disabled: ""
-                                                                  }
-                                                                }
-                                                              )
-                                                            ],
-                                                            1
-                                                          )
-                                                        ]
-                                                      )
-                                                    ]
-                                                  ),
-                                                  _vm._v(" "),
-                                                  _c(
-                                                    "div",
-                                                    { staticClass: "col-12" },
-                                                    [
-                                                      _c(
-                                                        "b-alert",
                                                         {
-                                                          attrs: {
-                                                            variant: "danger",
-                                                            dismissible: ""
-                                                          },
-                                                          model: {
-                                                            value:
-                                                              _vm.showAlertStock,
-                                                            callback: function(
-                                                              $$v
-                                                            ) {
-                                                              _vm.showAlertStock = $$v
-                                                            },
-                                                            expression:
-                                                              "showAlertStock"
-                                                          }
+                                                          staticClass:
+                                                            "col-12 mb-4"
                                                         },
                                                         [
-                                                          _vm._v(
-                                                            _vm._s(
-                                                              _vm.errorStock
-                                                            )
+                                                          _c(
+                                                            "div",
+                                                            {
+                                                              staticClass: "row"
+                                                            },
+                                                            [
+                                                              _c(
+                                                                "div",
+                                                                {
+                                                                  staticClass:
+                                                                    "col-2"
+                                                                },
+                                                                [
+                                                                  _c("i", {
+                                                                    staticClass:
+                                                                      "fas fa-clipboard-list mr-1 mt-1 fa-2x text-secondary"
+                                                                  })
+                                                                ]
+                                                              ),
+                                                              _vm._v(" "),
+                                                              _c(
+                                                                "div",
+                                                                {
+                                                                  staticClass:
+                                                                    "col-10"
+                                                                },
+                                                                [
+                                                                  _c(
+                                                                    "b-form-input",
+                                                                    {
+                                                                      attrs: {
+                                                                        "v-model":
+                                                                          _vm.producto_id,
+                                                                        value:
+                                                                          data
+                                                                            .item
+                                                                            .nombre,
+                                                                        disabled:
+                                                                          ""
+                                                                      }
+                                                                    }
+                                                                  )
+                                                                ],
+                                                                1
+                                                              )
+                                                            ]
                                                           )
                                                         ]
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "div",
+                                                        {
+                                                          staticClass:
+                                                            "col-12 mb-4"
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "div",
+                                                            {
+                                                              staticClass: "row"
+                                                            },
+                                                            [
+                                                              _c(
+                                                                "div",
+                                                                {
+                                                                  staticClass:
+                                                                    "col-2"
+                                                                },
+                                                                [
+                                                                  _c("i", {
+                                                                    staticClass:
+                                                                      "fas fa-clipboard-list mr-1 mt-1 fa-2x text-secondary"
+                                                                  })
+                                                                ]
+                                                              ),
+                                                              _vm._v(" "),
+                                                              _c(
+                                                                "div",
+                                                                {
+                                                                  staticClass:
+                                                                    "col-10"
+                                                                },
+                                                                [
+                                                                  _c(
+                                                                    "b-form-input",
+                                                                    {
+                                                                      attrs: {
+                                                                        value:
+                                                                          data
+                                                                            .item
+                                                                            .precio_venta +
+                                                                          " c/u",
+                                                                        disabled:
+                                                                          ""
+                                                                      }
+                                                                    }
+                                                                  )
+                                                                ],
+                                                                1
+                                                              )
+                                                            ]
+                                                          )
+                                                        ]
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "div",
+                                                        {
+                                                          staticClass:
+                                                            "col-12 mb-4"
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "div",
+                                                            {
+                                                              staticClass: "row"
+                                                            },
+                                                            [
+                                                              _c(
+                                                                "div",
+                                                                {
+                                                                  staticClass:
+                                                                    "col-2"
+                                                                },
+                                                                [
+                                                                  _c("i", {
+                                                                    staticClass:
+                                                                      "fas fa-sort-numeric-up-alt mr-1 mt-1 fa-2x"
+                                                                  })
+                                                                ]
+                                                              ),
+                                                              _vm._v(" "),
+                                                              _c(
+                                                                "div",
+                                                                {
+                                                                  staticClass:
+                                                                    "col-10"
+                                                                },
+                                                                [
+                                                                  _c(
+                                                                    "b-form-input",
+                                                                    {
+                                                                      attrs: {
+                                                                        placeholder:
+                                                                          "Cantidad vendida"
+                                                                      },
+                                                                      model: {
+                                                                        value:
+                                                                          _vm.cantidad,
+                                                                        callback: function(
+                                                                          $$v
+                                                                        ) {
+                                                                          _vm.cantidad = $$v
+                                                                        },
+                                                                        expression:
+                                                                          "cantidad"
+                                                                      }
+                                                                    }
+                                                                  )
+                                                                ],
+                                                                1
+                                                              )
+                                                            ]
+                                                          )
+                                                        ]
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "div",
+                                                        {
+                                                          staticClass:
+                                                            "col-12 mb-4"
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "div",
+                                                            {
+                                                              staticClass: "row"
+                                                            },
+                                                            [
+                                                              _c(
+                                                                "div",
+                                                                {
+                                                                  staticClass:
+                                                                    "col-2"
+                                                                },
+                                                                [
+                                                                  _c("i", {
+                                                                    staticClass:
+                                                                      "fas fa-dollar-sign mr-1 mt-1 fa-2x text-success"
+                                                                  })
+                                                                ]
+                                                              ),
+                                                              _vm._v(" "),
+                                                              _c(
+                                                                "div",
+                                                                {
+                                                                  staticClass:
+                                                                    "col-10"
+                                                                },
+                                                                [
+                                                                  _c(
+                                                                    "b-form-input",
+                                                                    {
+                                                                      attrs: {
+                                                                        "v-model": (_vm.ventas =
+                                                                          _vm.cantidad *
+                                                                          data
+                                                                            .item
+                                                                            .precio_venta),
+                                                                        value: (_vm.ventas =
+                                                                          _vm.cantidad *
+                                                                          data
+                                                                            .item
+                                                                            .precio_venta),
+                                                                        disabled:
+                                                                          ""
+                                                                      }
+                                                                    }
+                                                                  )
+                                                                ],
+                                                                1
+                                                              )
+                                                            ]
+                                                          )
+                                                        ]
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "div",
+                                                        {
+                                                          staticClass: "col-12"
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "b-alert",
+                                                            {
+                                                              attrs: {
+                                                                variant:
+                                                                  "danger",
+                                                                dismissible: ""
+                                                              },
+                                                              model: {
+                                                                value:
+                                                                  _vm.showAlertStock,
+                                                                callback: function(
+                                                                  $$v
+                                                                ) {
+                                                                  _vm.showAlertStock = $$v
+                                                                },
+                                                                expression:
+                                                                  "showAlertStock"
+                                                              }
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                _vm._s(
+                                                                  _vm.errorStock
+                                                                )
+                                                              )
+                                                            ]
+                                                          )
+                                                        ],
+                                                        1
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "div",
+                                                        {
+                                                          staticClass: "col-12"
+                                                        },
+                                                        _vm._l(
+                                                          _vm.errores3,
+                                                          function(e3) {
+                                                            return _c(
+                                                              "ul",
+                                                              { key: e3[0] },
+                                                              [
+                                                                _c(
+                                                                  "b-alert",
+                                                                  {
+                                                                    attrs: {
+                                                                      variant:
+                                                                        "danger",
+                                                                      show: ""
+                                                                    }
+                                                                  },
+                                                                  [
+                                                                    _c("li", [
+                                                                      _vm._v(
+                                                                        _vm._s(
+                                                                          e3[0]
+                                                                        )
+                                                                      )
+                                                                    ])
+                                                                  ]
+                                                                )
+                                                              ],
+                                                              1
+                                                            )
+                                                          }
+                                                        ),
+                                                        0
+                                                      )
+                                                    ]
+                                                  )
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "div",
+                                                {
+                                                  staticClass:
+                                                    "row justify-content-center bordeFooter"
+                                                },
+                                                [
+                                                  _c(
+                                                    "div",
+                                                    { staticClass: "col-6" },
+                                                    [
+                                                      _c(
+                                                        "b-button",
+                                                        {
+                                                          staticClass: "my-2",
+                                                          attrs: {
+                                                            block: "",
+                                                            pill: "",
+                                                            variant: "success"
+                                                          },
+                                                          on: {
+                                                            click: function(
+                                                              $event
+                                                            ) {
+                                                              return _vm.registrar_venta()
+                                                            }
+                                                          }
+                                                        },
+                                                        [_vm._v("Ingresar")]
                                                       )
                                                     ],
                                                     1
@@ -51338,123 +51378,56 @@ var render = function() {
                                                   _vm._v(" "),
                                                   _c(
                                                     "div",
-                                                    { staticClass: "col-12" },
-                                                    _vm._l(
-                                                      _vm.errores3,
-                                                      function(e3) {
-                                                        return _c(
-                                                          "ul",
-                                                          { key: e3[0] },
-                                                          [
-                                                            _c(
-                                                              "b-alert",
-                                                              {
-                                                                attrs: {
-                                                                  variant:
-                                                                    "danger",
-                                                                  show: ""
-                                                                }
-                                                              },
-                                                              [
-                                                                _c("li", [
-                                                                  _vm._v(
-                                                                    _vm._s(
-                                                                      e3[0]
-                                                                    )
-                                                                  )
-                                                                ])
-                                                              ]
-                                                            )
-                                                          ],
-                                                          1
-                                                        )
-                                                      }
-                                                    ),
-                                                    0
+                                                    { staticClass: "col-6" },
+                                                    [
+                                                      _c(
+                                                        "b-button",
+                                                        {
+                                                          staticClass: "my-2",
+                                                          attrs: {
+                                                            id: "volverVenta",
+                                                            block: "",
+                                                            pill: "",
+                                                            variant: "info"
+                                                          },
+                                                          on: {
+                                                            click: function(
+                                                              $event
+                                                            ) {
+                                                              return _vm.hideModal(
+                                                                data.item.id
+                                                              )
+                                                            }
+                                                          }
+                                                        },
+                                                        [_vm._v("Volver")]
+                                                      )
+                                                    ],
+                                                    1
                                                   )
                                                 ]
                                               )
                                             ]
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "div",
-                                            {
-                                              staticClass:
-                                                "row justify-content-center bordeFooter"
-                                            },
-                                            [
-                                              _c(
-                                                "div",
-                                                { staticClass: "col-6" },
-                                                [
-                                                  _c(
-                                                    "b-button",
-                                                    {
-                                                      staticClass: "my-2",
-                                                      attrs: {
-                                                        block: "",
-                                                        pill: "",
-                                                        variant: "success"
-                                                      },
-                                                      on: {
-                                                        click: function(
-                                                          $event
-                                                        ) {
-                                                          return _vm.registrar_venta()
-                                                        }
-                                                      }
-                                                    },
-                                                    [_vm._v("Ingresar")]
-                                                  )
-                                                ],
-                                                1
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "div",
-                                                { staticClass: "col-6" },
-                                                [
-                                                  _c(
-                                                    "b-button",
-                                                    {
-                                                      staticClass: "my-2",
-                                                      attrs: {
-                                                        id: "volverVenta",
-                                                        block: "",
-                                                        pill: "",
-                                                        variant: "info"
-                                                      },
-                                                      on: {
-                                                        click: function(
-                                                          $event
-                                                        ) {
-                                                          return _vm.hideModal(
-                                                            data.item.id
-                                                          )
-                                                        }
-                                                      }
-                                                    },
-                                                    [_vm._v("Volver")]
-                                                  )
-                                                ],
-                                                1
-                                              )
-                                            ]
                                           )
-                                        ]
+                                        ],
+                                        1
                                       )
-                                    ],
-                                    1
-                                  )
-                                ]
-                              ],
-                              2
-                            ),
-                            _vm._v(" "),
+                                    ]
+                                  ],
+                                  2
+                                )
+                              ])
+                            ])
+                          ]
+                        }
+                      },
+                      {
+                        key: "cell(eliminarProd)",
+                        fn: function() {
+                          return [
                             _c(
                               "div",
-                              { staticClass: "col-12 col-xl-12" },
+                              { staticClass: "col-12" },
                               [
                                 _c(
                                   "b-button",
@@ -51473,7 +51446,8 @@ var render = function() {
                               1
                             )
                           ]
-                        }
+                        },
+                        proxy: true
                       }
                     ])
                   })
@@ -51596,96 +51570,6 @@ var render = function() {
                                     _vm.descripcion = $$v
                                   },
                                   expression: "descripcion"
-                                }
-                              })
-                            ],
-                            1
-                          )
-                        ])
-                      ]
-                    )
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col-12 col-md-12 col-lg-6 col-xl-6 mb-4" },
-                  [
-                    _c(
-                      "b-form-group",
-                      {
-                        attrs: {
-                          id: "fechaIngreso",
-                          label: "Fecha de ingreso:"
-                        }
-                      },
-                      [
-                        _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col-1" }, [
-                            _c("i", {
-                              staticClass:
-                                "fas fa-calendar-alt mr-1 mt-1 fa-2x colorFecha"
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            { staticClass: "col-11" },
-                            [
-                              _c("b-form-input", {
-                                attrs: {
-                                  type: "date",
-                                  placeholder: "fecha ingreso"
-                                },
-                                model: {
-                                  value: _vm.fecha,
-                                  callback: function($$v) {
-                                    _vm.fecha = $$v
-                                  },
-                                  expression: "fecha"
-                                }
-                              })
-                            ],
-                            1
-                          )
-                        ])
-                      ]
-                    )
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "col-12 col-md-12 col-lg-6 col-xl-6 mb-4" },
-                  [
-                    _c(
-                      "b-form-group",
-                      {
-                        attrs: { id: "horaIngreso", label: "Hora de ingreso:" }
-                      },
-                      [
-                        _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col-1" }, [
-                            _c("i", {
-                              staticClass:
-                                "fas fa-clock mr-1 mt-1 fa-2x colorHora"
-                            })
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            { staticClass: "col-11" },
-                            [
-                              _c("b-form-input", {
-                                attrs: { type: "time", placeholder: "hora" },
-                                model: {
-                                  value: _vm.hora,
-                                  callback: function($$v) {
-                                    _vm.hora = $$v
-                                  },
-                                  expression: "hora"
                                 }
                               })
                             ],
@@ -52513,12 +52397,8 @@ var render = function() {
                         key: "cell(index)",
                         fn: function(data) {
                           return [
-                            _c("div", { staticClass: "col-12 my-4" }, [
-                              _vm._v(
-                                "\n              " +
-                                  _vm._s(data.item.id) +
-                                  "\n            "
-                              )
+                            _c("div", { staticClass: "col-12" }, [
+                              _vm._v(_vm._s(data.item.id))
                             ])
                           ]
                         }
@@ -52527,11 +52407,9 @@ var render = function() {
                         key: "cell(cat)",
                         fn: function(data) {
                           return [
-                            _c("div", { staticClass: "col-12 my-4" }, [
+                            _c("div", { staticClass: "col-12" }, [
                               _vm._v(
-                                "\n                " +
-                                  _vm._s(data.item.descripcion.toUpperCase()) +
-                                  "\n              "
+                                _vm._s(data.item.descripcion.toUpperCase())
                               )
                             ])
                           ]
@@ -52541,23 +52419,19 @@ var render = function() {
                         key: "cell(fecha)",
                         fn: function(data) {
                           return [
-                            _c("div", { staticClass: "col-12 my-4" }, [
-                              _vm._v(
-                                "\n                " +
-                                  _vm._s(data.item.creado) +
-                                  " hrs.\n              "
-                              )
+                            _c("div", { staticClass: "col-12" }, [
+                              _vm._v(_vm._s(data.item.creado) + " hrs.")
                             ])
                           ]
                         }
                       },
                       {
-                        key: "cell(opc)",
+                        key: "cell(editar)",
                         fn: function(data) {
                           return [
                             _c(
                               "div",
-                              { staticClass: "col-12 col-xl-12" },
+                              { staticClass: "col-12" },
                               [
                                 _c(
                                   "b-button",
@@ -52577,28 +52451,6 @@ var render = function() {
                                     }
                                   },
                                   [_vm._v("Editar")]
-                                )
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              { staticClass: "col-12 col-xl-12" },
-                              [
-                                _c(
-                                  "b-button",
-                                  {
-                                    staticClass: "my-2",
-                                    attrs: {
-                                      size: "sm",
-                                      id: "show-btn-eliminar",
-                                      pill: "",
-                                      block: "",
-                                      variant: "danger"
-                                    }
-                                  },
-                                  [_vm._v("Eliminar")]
                                 )
                               ],
                               1
@@ -52819,6 +52671,35 @@ var render = function() {
                             )
                           ]
                         }
+                      },
+                      {
+                        key: "cell(eliminar)",
+                        fn: function() {
+                          return [
+                            _c(
+                              "div",
+                              { staticClass: "col-12" },
+                              [
+                                _c(
+                                  "b-button",
+                                  {
+                                    staticClass: "my-2",
+                                    attrs: {
+                                      size: "sm",
+                                      id: "show-btn-eliminar",
+                                      pill: "",
+                                      block: "",
+                                      variant: "danger"
+                                    }
+                                  },
+                                  [_vm._v("Eliminar")]
+                                )
+                              ],
+                              1
+                            )
+                          ]
+                        },
+                        proxy: true
                       }
                     ])
                   })
@@ -54621,13 +54502,7 @@ var render = function() {
                           return [
                             _vm._v(
                               "\n              " +
-                                _vm._s(data.item.fechaVenta) +
-                                "\n              "
-                            ),
-                            _c("br"),
-                            _vm._v(
-                              "\n              " +
-                                _vm._s(data.item.horaVenta) +
+                                _vm._s(data.item.creado) +
                                 " hrs.\n            "
                             )
                           ]

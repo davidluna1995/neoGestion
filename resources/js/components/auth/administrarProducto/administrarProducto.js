@@ -9,17 +9,22 @@ export default {
     data() {
 
         return {
+
+            sortBy: 'index',
+            sortDesc: false,
             // CABEZERA DE LA TABLA
             productosFieldsAdm: [
-                { key: 'index', label: 'ID' },
-                { key: 'prod', label: 'Producto' },
-                { key: 'cat', label: 'Categoria' },
-                { key: 'desc', label: 'Descripcion' },
-                { key: 'stock', label: 'Stock' },
-                { key: 'compra', label: 'Compra' },
-                { key: 'venta', label: 'Venta' },
-                { key: 'fecha', label: 'Creado' },
-                { key: 'opc', label: 'Opciones' },
+                { key: 'index', label: 'ID', sortable: true, variant: 'dark'},
+                { key: 'prod', label: 'Producto', sortable: true },
+                { key: 'cat', label: 'Categoria', sortable: true },
+                { key: 'desc', label: 'Descripcion', sortable: true },
+                { key: 'stock', label: 'Stock', sortable: true },
+                { key: 'compra', label: 'Compra', sortable: true },
+                { key: 'venta', label: 'Venta',  sortable: true},
+                { key: 'fecha', label: 'Creado', sortable: true },
+                { key: 'editar', label: '' },
+                { key: 'ventaModal', label: '' },
+                { key: 'eliminarProd', label: '' },
 
             ],
 
@@ -43,8 +48,6 @@ export default {
 
             // REGISTRO DE VENTA
             producto_id: '',
-            fecha: '',
-            hora: '',
             cantidad: '',
             ventas: '',
 
@@ -181,8 +184,6 @@ export default {
         registrar_venta() {
             const data = {
                 'producto_id': this.producto_id,
-                'fecha': this.fecha,
-                'hora': this.hora,
                 'cantidad': this.cantidad,
                 'venta': this.ventas,
             }
@@ -193,8 +194,6 @@ export default {
                     this.hideModal(this.producto_id);
                     this.traer_productos();
                     this.producto_id = '';
-                    this.fecha = '';
-                    this.hora = '';
                     this.cantidad = '';
                     this.ventas = '';
                     this.showAlertStock = false;

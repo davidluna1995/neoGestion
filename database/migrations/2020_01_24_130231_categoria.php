@@ -16,7 +16,7 @@ class Categoria extends Migration
         Schema::create('categoria', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('descripcion');
-            $table->char('activo',1);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

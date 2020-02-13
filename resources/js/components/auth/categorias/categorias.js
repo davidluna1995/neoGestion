@@ -31,7 +31,8 @@ export default {
                 { key: 'index', label: 'ID' },
                 { key: 'cat', label: 'Categorias' },
                 { key: 'fecha', label: 'Creado' },
-                { key: 'opc', label: 'Opciones' },
+                { key: 'editar', label: 'Editar Categoria' },
+                { key: 'eliminar', label: 'Eliminar Categoria' },
             ],
             listarCategorias: [],
 

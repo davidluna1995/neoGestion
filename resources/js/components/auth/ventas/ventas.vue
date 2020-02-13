@@ -88,9 +88,7 @@
               </template>
 
               <template v-slot:cell(fecha)="data">
-                {{ data.item.fechaVenta }}
-                <br />
-                {{data.item.horaVenta}} hrs.
+                {{data.item.creado}} hrs.
               </template>
             </b-table>
           </div>

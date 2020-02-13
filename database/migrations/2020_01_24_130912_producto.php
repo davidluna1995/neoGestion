@@ -21,9 +21,10 @@ class Producto extends Migration
             $table->bigInteger('cantidad');
             $table->bigInteger('precio_compra');
             $table->bigInteger('precio_venta');
-            $table->date('fecha');
-            $table->time('hora');
-            $table->char('activo',1);
+            // $table->date('fecha');
+            // $table->time('hora');
+            // $table->char('activo',1);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

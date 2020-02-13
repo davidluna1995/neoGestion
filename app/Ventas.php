@@ -6,10 +6,13 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Producto;
 
 class Ventas extends Model
 {
+    use softDeletes;
+    protected $dates = ['deleted_at'];
     protected $table = 'ventas';
 
 
@@ -19,15 +22,11 @@ class Ventas extends Model
             $datos->all(),
             [
                 'producto_id' => 'required',
-                'fecha' => 'required',
-                'hora' => 'required',
                 'cantidad' => 'required',
                 'venta' => 'required',
             ],
             [
                 'producto_id.required' => 'El producto a ingresar es necesario',
-                'fecha.required' => 'La fecha a ingresar es necesaria',
-                'hora.required' => 'La hora a ingresar es necesaria',
                 'cantidad.required' => 'La cantidad a ingresar es necesaria',
                 'venta.required' => 'El monto de ventas a ingresar es necesario',
             ]
@@ -48,7 +47,6 @@ class Ventas extends Model
             'producto.id',
 
         ])
-            ->where('producto.activo', 'S')
             ->where('producto.id', $datos->producto_id)
             ->first();
 
@@ -63,11 +61,8 @@ class Ventas extends Model
         if ($validarDatos['estado'] == 'success') {
             $r = $this;
             $r->producto_id = $datos->producto_id;
-            $r->fecha = $datos->fecha;
-            $r->hora = $datos->hora;
             $r->cantidad = $datos->cantidad;
             $r->venta = $datos->venta;
-            $r->activo='S';
 
             if ($r->save()) {
                 $actualizarCantidad = Producto::find($datos->producto_id);
@@ -90,21 +85,19 @@ class Ventas extends Model
                                     'categoria.descripcion as catDesc',
                                     'producto.descripcion as proDesc',
                                     'ventas.cantidad',
-                                    'ventas.fecha as fechaVenta',
-                                    'ventas.hora as horaVenta',
+                                    'ventas.created_at as creado',
                                     'ventas.venta',
                                     'producto.precio_venta',
                                     'categoria.id as catId',
                                 ])
                                     ->join('producto', 'producto.id', 'ventas.producto_id')
                                     ->join('categoria', 'categoria.id', 'producto.categoria_id')
-                                    ->where('ventas.activo', 'S')
                                     ->orderby('ventas.id', 'desc')
                                     ->get();
         if (count($listar) > 0) {
             foreach ($listar as $key) {
                 setlocale(LC_TIME, 'es');
-                $key->fechaVenta = Carbon::parse($key->fechaVenta)->formatLocalized('%d de %B del %Y');
+                $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
             }
         }
         if (!$listar->isEmpty()) {
@@ -122,8 +115,7 @@ class Ventas extends Model
                                     'categoria.descripcion as catDesc',
                                     'producto.descripcion as proDesc',
                                     'ventas.cantidad',
-                                    'ventas.fecha as fechaVenta',
-                                    'ventas.hora as horaVenta',
+                                    'ventas.created_at as creado',
                                     'ventas.venta',
                                     'producto.precio_venta',
                                     'categoria.id as catId',
@@ -166,8 +158,7 @@ class Ventas extends Model
                                     'categoria.descripcion as catDesc',
                                     'producto.descripcion as proDesc',
                                     'ventas.cantidad',
-                                    'ventas.fecha as fechaVenta',
-                                    'ventas.hora as horaVenta',
+                                    'ventas.created_at as creado',
                                     'ventas.venta',
                                     'producto.precio_venta',
                                     'categoria.id as catId',
@@ -181,7 +172,7 @@ class Ventas extends Model
         if (count($listar) > 0) {
             foreach ($listar as $key) {
                 setlocale(LC_TIME, 'es');
-                $key->fechaVenta = Carbon::parse($key->fechaVenta)->formatLocalized('%d de %B del %Y');
+                $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
             }
         }
         if (!$listar->isEmpty()) {
