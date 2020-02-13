@@ -2,7 +2,7 @@
   <div>
     <div class="row m-4">
       <!-- formulario de categorias -->
-      <div class="col-12 col-md-12 col-lg-5">
+      <div class="col-12 col-md-12 col-lg-4">
         <b-card class="text-center tituloTabla my-2 transparencia">
           <b-card-header class="fondoCategoria mb-4">AGREGAR CATEGORIA</b-card-header>
 
@@ -20,6 +20,7 @@
             </div>
           </div>
         </b-card>
+        <!-- formulario de categorias -->
 
         <!-- alertas -->
         <div class="col-12 my-4">
@@ -62,17 +63,28 @@
             >{{errores3}} {{ dismissCountDown3 }} segundos...</b-alert>
           </ul>
         </div>
+        <!-- alertas -->
+
+        <!--GRAFICO  -->
+        <b-card class="text-center tituloTabla my-2 transparencia">
+          <b-card-header class="fondoCategoria mb-4">GRAFICO</b-card-header>
+        </b-card>
+        <!--GRAFICO  -->
       </div>
 
       <!-- tabla de categorias -->
-      <div class="col-12 col-md-12 col-lg-7">
+      <div class="col-12 col-md-12 col-lg-8">
         <b-card class="text-center tituloTabla my-2 transparencia">
           <b-card-header class="fondoCategoria mb-4">LISTA DE CATEGORIAS</b-card-header>
 
           <div class="row">
             <div class="col-12 col-sm-8 col-md-8 col-lg-8 col-xl-8">
               <b-input-group>
-                <b-form-input v-on:keyup="escribiendo" placeholder="Buscar categoria" v-model="buscadorCategoria"></b-form-input>
+                <b-form-input
+                  v-on:keyup="escribiendo"
+                  placeholder="Buscar categoria"
+                  v-model="buscadorCategoria"
+                ></b-form-input>
               </b-input-group>
             </div>
             <div class="col-12 col-sm-2 col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
@@ -93,21 +105,33 @@
               hove12
               hovexl-r
               bordered
+              small
               :fields="productosFields"
               :items="listarCategorias"
-              sticky-header
+              sticky-header="300px"
               head-variant="dark"
               responsive="sm"
             >
-              <template v-slot:cell(index)="data">{{ data.item.id }}</template>
+              <template v-slot:cell(index)="data">
+                <div class="col-12 my-4">
+                {{ data.item.id }}
+              </div></template>
 
               <template v-slot:cell(cat)="data">
-                <b class="text-success">{{ data.item.descripcion.toUpperCase() }}</b>
-              </template>
+                <div class="col-12 my-4">
+                  {{ data.item.descripcion.toUpperCase() }}
+                </div>
+                </template>
+
+              <template v-slot:cell(fecha)="data">
+                <div class="col-12 my-4">
+                  {{ data.item.creado }} hrs.
+                </div>
+                </template>
 
               <template v-slot:cell(opc)="data">
-                <div class="row">
-                  <div class="col-12 col-xl-6">
+                <!-- <div class="row"> -->
+                  <div class="col-12 col-xl-12">
                     <b-button
                       size="sm"
                       id="show-btn-editar"
@@ -119,7 +143,7 @@
                     >Editar</b-button>
                   </div>
 
-                  <div class="col-12 col-xl-6">
+                  <div class="col-12 col-xl-12">
                     <b-button
                       size="sm"
                       id="show-btn-eliminar"
@@ -129,7 +153,7 @@
                       variant="danger"
                     >Eliminar</b-button>
                   </div>
-                </div>
+                <!-- </div> -->
 
                 <!-- modal categorias -->
                 <div>
@@ -183,8 +207,13 @@
                     </div>
                     <div class="row justify-content-center bordeFooter">
                       <div class="col-4">
-                        <b-button class="my-2" block pill variant="info"
-                         @click="hideModal(data.item.id)" >
+                        <b-button
+                          class="my-2"
+                          block
+                          pill
+                          variant="info"
+                          @click="hideModal(data.item.id)"
+                        >
                           <!--   @click="hideModal(data.item.id)" -->
                           Volver
                         </b-button>
@@ -197,7 +226,6 @@
           </div>
         </b-card>
       </div>
-
     </div>
   </div>
 </template>

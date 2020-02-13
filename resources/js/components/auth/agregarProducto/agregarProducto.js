@@ -50,7 +50,7 @@ export default {
 
     traer_categorias() {
       this.axios.get('api/traer_categorias').then((response) => {
-        this.listarCategorias = response.data;
+        this.listarCategorias = response.data.cat;
       })
 
     },

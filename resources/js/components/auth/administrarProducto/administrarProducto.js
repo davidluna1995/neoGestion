@@ -128,7 +128,7 @@ export default {
         showAlert4() {
             this.dismissCountDown4 = this.dismissSecs4;
         },
-
+        
         traer_productos() {
             this.axios.get('api/traer_productos').then((response) => {
                 this.listarProductos = response.data.productos;
@@ -138,7 +138,7 @@ export default {
 
         traer_categorias() {
             this.axios.get('api/traer_categorias').then((response) => {
-                this.listarCategorias = response.data;
+                this.listarCategorias = response.data.cat;
             })
 
         },

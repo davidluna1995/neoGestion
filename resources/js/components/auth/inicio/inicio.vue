@@ -25,7 +25,13 @@
 
       <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-3">
         <div class="transparencia">
-          <b-card no-body align="center" class="my-2">
+          <b-card
+            no-body
+            align="center"
+            class="my-2"
+            @click="url('categorias')"
+            style="cursor: pointer"
+          >
             <b-row no-gutters>
               <div class="col-md-6 fondoProductos">
                 <img src="images/list.png" class="my-4" width="50px" height="50px" />
@@ -47,7 +53,13 @@
 
       <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-3">
         <div class="transparencia">
-          <b-card no-body align="center" class="my-2">
+          <b-card
+            no-body
+            align="center"
+            class="my-2"
+            @click="url('administrarProducto')"
+            style="cursor: pointer"
+          >
             <b-row no-gutters>
               <div class="col-md-6 fondoProductos">
                 <img src="images/shopping-cart.png" class="my-4" width="50px" height="50px" />
@@ -69,7 +81,13 @@
 
       <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-3">
         <div class="transparencia">
-          <b-card no-body align="center" class="my-2" @click="url('ventas')" style="cursor: pointer">
+          <b-card
+            no-body
+            align="center"
+            class="my-2"
+            @click="url('ventas')"
+            style="cursor: pointer"
+          >
             <b-row no-gutters>
               <div class="col-md-6 fondoProductos">
                 <img src="images/dollar-symbol.png" class="my-4" width="50px" height="50px" />
@@ -82,7 +100,7 @@
                       <b>
                         <span class="green">$</span>
                         {{ formatPrice(totalVentas) }}
-                    </b>
+                      </b>
                     </p>
                   </h4>
                 </b-card-text>
@@ -108,15 +126,22 @@
               responsive="sm"
             >
               <!-- A virtual column -->
-              <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
+              <template v-slot:cell(index)="data">{{ data.item.producto_id}}</template>
 
               <!-- A custom formatted column -->
               <template v-slot:cell(producto)="data">
-                <b>{{ data.item.producto.toUpperCase() }}</b>
+                <b>{{ data.item.nombre.toUpperCase() }}</b>
               </template>
 
               <!-- A virtual composite column -->
-              <template v-slot:cell(totalVendido)="data">{{ '$ ' + data.item.totalVendido}}</template>
+              <template v-slot:cell(cantidad)="data">
+                {{ formatPrice(data.item.cantidad_total) }}
+                </template>
+
+              <template v-slot:cell(totalVendido)="data">
+                <span class="green">$</span>
+                {{ formatPrice(data.item.venta_total) }}
+                </template>
             </b-table>
           </div>
         </b-card>
@@ -135,21 +160,27 @@
               head-variant="dark"
               responsive="sm"
             >
-              <template v-slot:cell(index)="data">{{ data.index + 1 }}</template>
+              <template v-slot:cell(index)="data">{{ data.item.id }}</template>
 
               <template v-slot:cell(producto)="data">
-                <b>{{ data.item.producto.toUpperCase() }}</b>
+                <b>{{ data.item.nombre.toUpperCase() }}</b>
               </template>
 
-              <template v-slot:cell(fecha)="data">{{ data.item.fecha}}</template>
+              <template v-slot:cell(fecha)="data">
+                {{ data.item.fechaVenta }}
+                <br />
+                {{data.item.horaVenta}} hrs.
+              </template>
 
-              <template v-slot:cell(totalVendido)="data">{{ '$ ' + data.item.totalVendido}}</template>
+              <template v-slot:cell(totalVendido)="data">
+                <span class="green">$</span>
+                {{ formatPrice(data.item.precio_venta) }}
+              </template>
             </b-table>
           </div>
         </b-card>
       </div>
     </div>
-   
   </div>
 </template>
 

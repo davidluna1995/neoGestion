@@ -7,6 +7,7 @@ import CategoriasComponent from './components/auth/categorias/categorias.vue';
 import AgregarProductoComponent from './components/auth/agregarProducto/agregarProducto.vue';
 import AdministrarProductoComponent from './components/auth/administrarProducto/administrarProducto.vue';
 import VentasComponent from './components/auth/ventas/ventas.vue';
+import generarVentaComponent from './components/auth/generarVenta/generarVenta.vue';
 
 const routes = [
   {
@@ -60,6 +61,11 @@ const routes = [
         name: 'ventas',
         path: '/ventas',
         component: VentasComponent
+      },
+      {
+        name: 'generarVenta',
+        path: '/generarVenta',
+        component: generarVentaComponent
       },
     ]
   },

@@ -6,15 +6,11 @@ export default {
       productosFields: [
         { key: 'index', label: 'ID' },
         { key: 'producto', label: 'Productos' },
+        { key: 'cantidad', label: 'Cantidad' },
         { key: 'totalVendido', label: 'Total Vendido' },
 
       ],
-      productosItems: [
-        { producto: 'producto 1', totalVendido: '5000' },
-        { producto: 'producto 2', totalVendido: '10000' },
-        { producto: 'producto 3', totalVendido: '15000' },
-        { producto: 'producto 4', totalVendido: '20000' }
-      ],
+      productosItems: [],
 
       ventasFields: [
         { key: 'index', label: 'ID' },
@@ -23,12 +19,7 @@ export default {
         { key: 'totalVendido', label: 'Total Vendido' },
 
       ],
-      ventasItems: [
-        { producto: 'producto 1', totalVendido: '5000', fecha: '02/01/2020' },
-        { producto: 'producto 2', totalVendido: '10000', fecha: '06/01/2020' },
-        { producto: 'producto 3', totalVendido: '15000', fecha: '15/01/2020' },
-        { producto: 'producto 4', totalVendido: '20000', fecha: '22/01/2020' }
-      ],
+      ventasItems: [],
 
       cantidadCategorias:'0',
       cantidadProductos:'0',
@@ -75,6 +66,25 @@ export default {
 
       })
 
+      
+    },
+
+    ultimas_ventas() {
+      this.axios.get('api/ultimas_ventas').then((response) => {
+        console.log(response);
+        this.ventasItems = response.data.ventas;
+
+      })
+
+    },
+
+    mas_vendidos() {
+      this.axios.get('api/mas_vendidos').then((response) => {
+        console.log(response);
+        this.productosItems = response.data.vendidos;
+
+      })
+
     },
   },
 
@@ -82,6 +92,8 @@ mounted() {
     this.cantidad_categorias();
     this.cantidad_productos();
     this.total_ventas();
+    this.ultimas_ventas();
+    this.mas_vendidos();
   },
 
 }

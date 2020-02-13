@@ -54,15 +54,24 @@ class Categoria extends Model
         $listar = Categoria::select([
                                     'id',
                                     'descripcion',
+                                    'created_at as creado',
                                 ])
                                     ->where('activo', 'S')
-                                    ->orderby('id', 'asc')
+                                    ->orderby('id', 'desc')
                                     ->get();
 
+                                    // dd($listar);
+
         if (count($listar) > 0) {
-            return $listar;
+            foreach ($listar as $key) {
+                setlocale(LC_TIME, 'es');
+                $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
+            }
+        }
+        if (!$listar->isEmpty()) {
+            return ['estado'=>'success' , 'cat' => $listar];
         } else {
-            return "no hay categorias para mostrar";
+            return ['estado'=>'failed', 'mensaje'=>'No existen ventas.'];
         }
     }
 

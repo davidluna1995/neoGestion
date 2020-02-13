@@ -21,6 +21,8 @@
             <b-dropdown-item @click="url('ventas')">Visualizar Ventas</b-dropdown-item>
             <b-dropdown-item @click="url('#')">Reporte de Ventas</b-dropdown-item>
           </b-nav-item-dropdown>
+          <b-nav-item @click="url('generarVenta')">Generar Venta</b-nav-item>
+
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->

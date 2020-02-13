@@ -58,13 +58,15 @@
 
           <div>
             <b-table
+              id="app"
               table
               hove12
               hovexl-r
               bordered
+              small
               :fields="ventasFieldsAdm"
               :items="listarVentas"
-              sticky-header
+              sticky-header="300px"
               head-variant="dark"
               responsive="sm"
             >
@@ -80,7 +82,7 @@
 
               <template v-slot:cell(cant)="data">{{formatPrice(data.item.cantidad)}}</template>
 
-               <template v-slot:cell(venta)="data">
+              <template v-slot:cell(venta)="data">
                 <span class="green">$</span>
                 {{ formatPrice(data.item.venta) }}
               </template>
@@ -95,8 +97,10 @@
         </b-card>
       </div>
     </div>
+
+      <!-- <button @click="download">Download</button> -->
   </div>
 </template>
 
 <script src="../ventas/ventas.js"></script>
-<style src="../ventas/ventas.css"></style>
+<style scoped src="../ventas/ventas.css"></style>

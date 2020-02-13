@@ -1,3 +1,6 @@
+import html2canvas from 'html2canvas'
+import * as JsPDF from 'jspdf'
+
 export default {
 
   data() {
@@ -40,6 +43,37 @@ export default {
   },
 
   methods: {
+
+    // REPORTE EN PDF
+    download () {
+      html2canvas(document.querySelector('#app'), 
+      {
+        // Opciones
+        allowTaint: true,
+        useCORS: false,
+        // Calidad del PDF
+        scale: 2
+        }).then(canvas => {
+          var imgData = canvas.toDataURL('image/png');
+          var imgWidth = 200;
+          var pageHeight = 295;
+          var imgHeight = canvas.height * imgWidth / canvas.width;
+          var heightLeft = imgHeight;
+          var doc = new JsPDF('p', 'mm');
+          var position = 0; // give some top padding to first page
+    
+          doc.addImage(imgData, 'PNG', 5, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+    
+          while (heightLeft >= 0) {
+            position += heightLeft - imgHeight; // top padding for other pages
+            doc.addPage();
+            doc.addImage(imgData, 'PNG', 5, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+          }
+          doc.save('file.pdf');
+      });
+    },
 
     formatPrice(value) {
       let val = (value / 1).toFixed(0).replace('.', ',')

@@ -157,4 +157,67 @@ class Ventas extends Model
             return 0;
         }
     }
+
+    protected function ultimas_ventas()
+    {
+        $listar = Ventas::select([
+                                    'ventas.id',
+                                    'producto.nombre',
+                                    'categoria.descripcion as catDesc',
+                                    'producto.descripcion as proDesc',
+                                    'ventas.cantidad',
+                                    'ventas.fecha as fechaVenta',
+                                    'ventas.hora as horaVenta',
+                                    'ventas.venta',
+                                    'producto.precio_venta',
+                                    'categoria.id as catId',
+                                ])
+                                    ->join('producto', 'producto.id', 'ventas.producto_id')
+                                    ->join('categoria', 'categoria.id', 'producto.categoria_id')
+                                    ->where('ventas.activo', 'S')
+                                    ->orderby('ventas.id', 'desc')
+                                    ->take(5)
+                                    ->get();
+        if (count($listar) > 0) {
+            foreach ($listar as $key) {
+                setlocale(LC_TIME, 'es');
+                $key->fechaVenta = Carbon::parse($key->fechaVenta)->formatLocalized('%d de %B del %Y');
+            }
+        }
+        if (!$listar->isEmpty()) {
+            return ['estado'=>'success' , 'ventas' => $listar];
+        } else {
+            return ['estado'=>'failed', 'mensaje'=>'No existen ventas.'];
+        }
+    }
+
+    protected function mas_vendidos()
+    {
+        $listar = DB::select(
+            " SELECT * from 
+           (select 
+            producto_id,
+            p.nombre
+            from ventas
+            inner join producto p on p.id = ventas.producto_id
+            group by producto_id, p.nombre) producto
+            
+            inner join 
+            (select producto_id, 
+            sum(cantidad) as cantidad_total, 
+            sum(venta) as venta_total 
+            from ventas 
+            group by producto_id) venta
+            
+            on producto.producto_id = venta.producto_id
+            order by venta.venta_total desc
+            limit 5"
+        );
+
+        if (count($listar) > 0) {
+            return ['estado'=>'success' , 'vendidos' => $listar];
+        } else {
+            return ['estado'=>'failed', 'mensaje'=>'No existen ventas.'];
+        }
+    }
 }

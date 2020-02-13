@@ -30,6 +30,7 @@ export default {
             productosFields: [
                 { key: 'index', label: 'ID' },
                 { key: 'cat', label: 'Categorias' },
+                { key: 'fecha', label: 'Creado' },
                 { key: 'opc', label: 'Opciones' },
             ],
             listarCategorias: [],
@@ -114,8 +115,9 @@ export default {
 
         traer_categorias() {
             this.axios.get('api/traer_categorias').then((response) => {
-                console.log(response);
-                this.listarCategorias = response.data;
+                if(response.data.estado == 'success'){
+                    this.listarCategorias = response.data.cat;
+                }
             })
 
         },

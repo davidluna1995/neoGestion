@@ -23,4 +23,11 @@ class VentasController extends Controller
         return Ventas::total_ventas();
     }
 
+    public function ultimas_ventas(){
+        return Ventas::ultimas_ventas();
+    }
+    public function mas_vendidos(){
+        return Ventas::mas_vendidos();
+    }
+
 }
