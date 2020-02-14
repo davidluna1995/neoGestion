@@ -121,7 +121,10 @@
               </template>
 
               <template v-slot:cell(fecha)="data">
-                <div class="col-12">{{ data.item.creado }} hrs.</div>
+                <div class="col-12">{{ data.item.creado }}</div>
+              </template>
+              <template v-slot:cell(usuario)="data">
+                <div class="col-12">{{ data.item.nombreUsuario }}</div>
               </template>
 
               <template v-slot:cell(editar)="data">
@@ -129,7 +132,7 @@
                   <b-button
                     size="sm"
                     id="show-btn-editar"
-                    @click="showModal(data.item.id);"
+                    @click="showModalCategoria(data.item.id);"
                     pill
                     block
                     class="my-2"

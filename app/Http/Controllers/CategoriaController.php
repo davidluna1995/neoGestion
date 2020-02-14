@@ -36,10 +36,11 @@ class CategoriaController extends Controller
         $validarDatos = $this->validar_categoria($datos);
 
         if ($validarDatos['estado'] == 'success') {
-            $r = new Categoria();
-            $r->descripcion =  strtolower($datos->descripcion);
+            $categoria = new Categoria();
+            $categoria->user_id = '1';
+            $categoria->descripcion =  strtolower($datos->descripcion);
 
-            if ($r->save()) {
+            if ($categoria->save()) {
                 return ['estado'=>'success', 'mensaje'=>'Categoria guardada con exito.'];
             } else {
                 return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error, verifique este correcto el campo.'];
@@ -51,10 +52,12 @@ class CategoriaController extends Controller
     protected function traer_categorias()
     {
         $listar = Categoria::select([
-                                    'id',
-                                    'descripcion',
-                                    'created_at as creado',
+                                    'categoria.id',
+                                    'categoria.descripcion',
+                                    'categoria.created_at as creado',
+                                    'u.name as nombreUsuario'
                                 ])
+                                    ->join('users as u','u.id','categoria.user_id')
                                     ->orderby('id', 'desc')
                                     ->get();
 
@@ -144,11 +147,13 @@ class CategoriaController extends Controller
     protected function buscar_categoria($categoria)
     {
         $listar = Categoria::select([
-                                    'id',
-                                    'descripcion',
-                                    'created_at as creado',
-                                ])
-                                    ->whereRaw("descripcion like lower('%$categoria%')")
+                                    'categoria.id',
+                                    'categoria.descripcion',
+                                    'categoria.created_at as creado',
+                                    'u.name as nombreUsuario'
+                                    ])
+                                    ->join('users as u','u.id','categoria.user_id')
+                                    ->whereRaw("categoria.descripcion like lower('%$categoria%')")
                                     ->get();
 
         if (count($listar) > 0) {

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class Ventas extends Migration
 {
@@ -15,12 +15,12 @@ class Ventas extends Migration
     {
         Schema::create('ventas', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('user_id');
             $table->integer('producto_id');
-            // $table->date('fecha');
-            // $table->time('hora');
             $table->bigInteger('cantidad');
             $table->bigInteger('venta');
-            // $table->char('activo',1);
+            $table->string('forma_pago_id');
+            $table->integer('tipo_entrega_id');
             $table->softDeletes();
             $table->timestamps();
         });

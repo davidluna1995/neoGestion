@@ -54,12 +54,15 @@ class VentasController extends Controller
         $validarDatos = $this->validar_venta($datos);
 
         if ($validarDatos['estado'] == 'success') {
-            $r = new Ventas();
-            $r->producto_id = $datos->producto_id;
-            $r->cantidad = $datos->cantidad;
-            $r->venta = $datos->venta;
+            $venta = new Ventas();
+            $venta->user_id = '1';
+            $venta->producto_id = $datos->producto_id;
+            $venta->cantidad = $datos->cantidad;
+            $venta->venta = $datos->venta;
+            $venta->forma_pago_id = '1';
+            $venta->tipo_entrega_id = '1';
 
-            if ($r->save()) {
+            if ($venta->save()) {
                 $actualizarCantidad = Producto::find($datos->producto_id);
                 $actualizarCantidad->cantidad = $actualizarCantidad->cantidad - $datos->cantidad;
                 if ($actualizarCantidad->save()) {

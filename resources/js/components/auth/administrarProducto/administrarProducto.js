@@ -9,25 +9,17 @@ export default {
     data() {
 
         return {
-
-            transProps: {
-                // Transition name
-                name: 'flip-list'
-              },
             // CABEZERA DE LA TABLA
             productosFieldsAdm: [
-                { key: 'index', label: 'ID', variant: 'dark'},
-                { key: 'prod', label: 'Producto' },
-                { key: 'cat', label: 'Categoria' },
-                { key: 'desc', label: 'Descripcion' },
-                { key: 'stock', label: 'Stock' },
-                { key: 'compra', label: 'Compra' },
-                { key: 'venta', label: 'Venta',},
-                { key: 'fecha', label: 'Creado' },
+                { key: 'index', label: 'ID', variant: 'dark', class: 'text-center' },
+                { key: 'prod', label: 'Producto', class: 'text-center' },
+                { key: 'cat', label: 'Categoria', class: 'text-center' },
+                { key: 'desc', label: 'Descripcion', class: 'text-center' },
+                { key: 'stock', label: 'Stock', class: 'text-center' },
+                { key: 'detalle', label: '' },
                 { key: 'editar', label: '' },
                 { key: 'ventaModal', label: '' },
                 { key: 'eliminarProd', label: '' },
-
             ],
 
             // LLENAR TABLA
@@ -98,19 +90,19 @@ export default {
             });
         },
         // MODAL VENTAS
-        showModal(id) {
+        showModalVentas(id) {
             this.producto_id = id;
             this.$refs['ventasModal' + id].show();
         },
-        hideModal(id) {
+        hideModalVentas(id) {
             this.$refs['ventasModal' + id].hide();
         },
         // MODAL EDITAR
-        showModal2(id) {
-            this.$refs['editarModal' + id].show();
+        showModalEditarProducto(id) {
+            this.$refs['editarModalProducto' + id].show();
         },
-        hideModal2(id) {
-            this.$refs['editarModal' + id].hide();
+        hideModalEditarProducto(id) {
+            this.$refs['editarModalProducto' + id].hide();
         },
         // SUCCESS EDITAR CONTADOR
         countDownChanged2(dismissCountDown2) {
@@ -133,7 +125,7 @@ export default {
         showAlert4() {
             this.dismissCountDown4 = this.dismissSecs4;
         },
-        
+
         traer_productos() {
             this.axios.get('api/traer_productos').then((response) => {
                 this.listarProductos = response.data.productos;
@@ -263,4 +255,5 @@ export default {
         this.traer_productos();
         this.traer_categorias();
     },
+
 }

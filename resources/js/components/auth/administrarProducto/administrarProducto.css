@@ -30,3 +30,12 @@
 table#table-transition-example .flip-list-move {
     transition: transform 1s;
   }
+
+
+  /* ALINEAR TABLAS EN EL CENTRO */
+.table > tbody > tr > td {
+    vertical-align: middle;
+  }
+  .table > thead > tr > th {
+    vertical-align: middle;
+  }

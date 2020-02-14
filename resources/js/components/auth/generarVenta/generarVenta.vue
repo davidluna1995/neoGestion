@@ -369,5 +369,6 @@
   </div>
 </template>
 
+
 <script src="../generarVenta/generarVenta.js"></script>
 <style scoped src="../generarVenta/generarVenta.css"></style>

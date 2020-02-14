@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Producto;
 use Carbon\Carbon;
-use Illuminate\Http\Request; 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Categoria;
 
 class ProductoController extends Controller
 {
-
     public function validar_producto($datos)
     {
         $validator = Validator::make(
@@ -46,15 +45,16 @@ class ProductoController extends Controller
         $validarDatos = $this->validar_producto($datos);
 
         if ($validarDatos['estado'] == 'success') {
-            $r = new Producto();
-            $r->categoria_id = $datos->categoria_id;
-            $r->nombre =  strtolower($datos->nombre);
-            $r->descripcion = strtolower($datos->descripcion);
-            $r->cantidad = $datos->cantidad;
-            $r->precio_compra = $datos->precio_compra;
-            $r->precio_venta = $datos->precio_venta;
+            $producto = new Producto();
+            $producto->user_id = '1';
+            $producto->categoria_id = $datos->categoria_id;
+            $producto->nombre =  strtolower($datos->nombre);
+            $producto->descripcion = strtolower($datos->descripcion);
+            $producto->cantidad = $datos->cantidad;
+            $producto->precio_compra = $datos->precio_compra;
+            $producto->precio_venta = $datos->precio_venta;
 
-            if ($r->save()) {
+            if ($producto->save()) {
                 return ['estado'=>'success', 'mensaje'=>'Producto guardado con exito.'];
             } else {
                 return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error, verifique esten correctos los campo.'];
@@ -75,8 +75,10 @@ class ProductoController extends Controller
                                     'categoria.descripcion as catDesc',
                                     'categoria.id as catId',
                                     'producto.created_at as creado',
+                                    'u.name as nombreUsuario',
                                 ])
                                     ->join('categoria', 'categoria.id', 'producto.categoria_id')
+                                    ->join('users as u', 'u.id', 'producto.user_id')
                                     ->orderby('producto.id', 'asc')
                                     ->get();
         if (count($listar) > 0) {
@@ -299,10 +301,12 @@ class ProductoController extends Controller
                                     'producto.created_at as creado',
                                     'categoria.descripcion as catDesc',
                                     'categoria.id as catId',
-                                ])
+                                    'u.name as nombreUsuario',
+                                    ])
                                     ->join('categoria', 'categoria.id', 'producto.categoria_id')
+                                    ->join('users as u', 'u.id', 'producto.user_id')
                                     ->whereRaw(
-                                        "producto.nombre like lower('%$producto%') or 
+                                      "producto.nombre like lower('%$producto%') or 
                                       categoria.descripcion like lower('%$producto%') or
                                       producto.descripcion like lower('%$producto%')"
                                     )
@@ -321,5 +325,4 @@ class ProductoController extends Controller
             return ['estado'=>'failed', 'mensaje'=>'El producto no existe en nuestros registros,refrescando la tabla.'];
         }
     }
-
 }

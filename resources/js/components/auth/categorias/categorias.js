@@ -30,7 +30,8 @@ export default {
             productosFields: [
                 { key: 'index', label: 'ID' },
                 { key: 'cat', label: 'Categorias' },
-                { key: 'fecha', label: 'Creado' },
+                { key: 'fecha', label: 'Fecha' },
+                { key: 'usuario', label: 'Creado Por' },
                 { key: 'editar', label: 'Editar Categoria' },
                 { key: 'eliminar', label: 'Eliminar Categoria' },
             ],
@@ -79,8 +80,8 @@ export default {
             this.dismissCountDown3 = this.dismissSecs3
         },
 
-        showModal(id) {
-            console.log(this.$refs);
+        showModalCategoria(id) {
+            // console.log(this.$refs);
             this.$refs['editarModalCategoria' + id].show();
         },
         hideModal(id) {
