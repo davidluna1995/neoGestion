@@ -46,7 +46,7 @@ class ProductoController extends Controller
 
         if ($validarDatos['estado'] == 'success') {
             $producto = new Producto();
-            $producto->user_id = '1';
+            $producto->user_id = Auth::user()->id;
             $producto->categoria_id = $datos->categoria_id;
             $producto->nombre =  strtolower($datos->nombre);
             $producto->descripcion = strtolower($datos->descripcion);

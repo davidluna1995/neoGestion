@@ -13,16 +13,12 @@
             <b-dropdown-item @click="url('administrarProducto')">Administrar Productos</b-dropdown-item>
             <b-dropdown-item @click="url('agregarProducto')">Agregar Productos</b-dropdown-item>
           </b-nav-item-dropdown>
-          <!-- <b-nav-item-dropdown text="Ventas">
-            <b-dropdown-item @click="url('#')">Administrar Ventas</b-dropdown-item>
-            <b-dropdown-item @click="url('#')">Agregar Ventas</b-dropdown-item>
-          </b-nav-item-dropdown> -->
+          
           <b-nav-item-dropdown text="Ventas">
             <b-dropdown-item @click="url('ventas')">Visualizar Ventas</b-dropdown-item>
             <b-dropdown-item @click="url('#')">Reporte de Ventas</b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item @click="url('generarVenta')">Generar Venta</b-nav-item>
-
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -33,7 +29,7 @@
               <em>NOMBRE DE USUARIO</em>
             </template>
             <b-dropdown-item href="#">Perfil</b-dropdown-item>
-            <b-dropdown-item href="#">Cerrar Sesion</b-dropdown-item>
+            <b-dropdown-item @click="logout()">Cerrar Sesion</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -42,27 +38,28 @@
     <transition name>
       <router-view></router-view>
     </transition>
-
-
-
-
   </div>
 </template>
 
 <script>
 export default {
   data() {
-      return{
-
-      }
+    return {};
   },
 
   methods: {
     url(ruta) {
-      this.$router.push({ path:ruta }).catch(error => {
+      this.$router.push({ path: ruta }).catch(error => {
         if (error.name != "NavigationDuplicated") {
           throw error;
         }
+      });
+    },
+
+    logout: function() {
+      this.$auth.logout({
+        makeRequest: true,
+        redirect: "/"
       });
     }
   }

@@ -5,12 +5,16 @@
 
 use Illuminate\Http\Request;
 
-Route::post('login', 'ApiController@login');
+Route::post('auth/login', 'ApiController@login');
 Route::post('register', 'ApiController@register');
 
-// Route::group(['middleware' => 'auth.jwt'], function () {
+Route::group(['middleware' => 'auth.jwt'], function () {
 
-// rutas categoria
+    //login
+    Route::get('auth/user', 'ApiController@user');
+    Route::post('auth/logout', 'ApiController@logout');
+
+    // rutas categoria
     Route::post('registro_categoria', 'CategoriaController@registro_categoria');
     Route::get('traer_categorias', 'CategoriaController@traer_categorias');
     Route::post('modificar_campo_categoria', 'CategoriaController@modificar_campo_categoria');
@@ -31,5 +35,4 @@ Route::post('register', 'ApiController@register');
     Route::get('total_ventas', 'VentasController@total_ventas');
     Route::get('ultimas_ventas', 'VentasController@ultimas_ventas');
     Route::get('mas_vendidos', 'VentasController@mas_vendidos');
-// });
-
+});

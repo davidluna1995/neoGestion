@@ -55,7 +55,7 @@ class VentasController extends Controller
 
         if ($validarDatos['estado'] == 'success') {
             $venta = new Ventas();
-            $venta->user_id = '1';
+            $venta->user_id = Auth::user()->id;;
             $venta->producto_id = $datos->producto_id;
             $venta->cantidad = $datos->cantidad;
             $venta->venta = $datos->venta;

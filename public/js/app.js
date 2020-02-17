@@ -3178,11 +3178,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {};
+    return {
+      email: '',
+      password: ''
+    };
   },
-  methods: {}
+  methods: {
+    login: function login() {
+      var app = this;
+      this.$auth.login({
+        params: {
+          email: app.email,
+          password: app.password
+        },
+        success: function success() {},
+        error: function error() {},
+        rememberMe: true,
+        redirect: "/index",
+        fetchUser: true
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -3239,14 +3258,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {};
@@ -3259,6 +3270,12 @@ __webpack_require__.r(__webpack_exports__);
         if (error.name != "NavigationDuplicated") {
           throw error;
         }
+      });
+    },
+    logout: function logout() {
+      this.$auth.logout({
+        makeRequest: true,
+        redirect: "/"
       });
     }
   }
@@ -49725,80 +49742,112 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("section", { staticClass: "min-vh-100", attrs: { id: "cover" } }, [
-        _c("div", { attrs: { id: "cover-caption" } }, [
-          _c("div", { staticClass: "container" }, [
-            _c("div", { staticClass: "row text-white" }, [
-              _c(
-                "div",
-                {
-                  staticClass:
-                    "col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4"
-                },
-                [
-                  _c("h1", { staticClass: "display-6 py-2" }, [
-                    _vm._v("Formulario de Ingreso NeoGestion")
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "px-2" }, [
-                    _c("form", { staticClass: "justify-content-center" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", { staticClass: "sr-only" }, [
-                          _vm._v("Correo")
-                        ]),
-                        _vm._v(" "),
-                        _c("input", {
-                          staticClass: "form-control",
-                          attrs: {
-                            name: "correo",
-                            type: "text",
-                            placeholder: "Correo"
-                          }
-                        })
+  return _c("div", [
+    _c("section", { staticClass: "min-vh-100", attrs: { id: "cover" } }, [
+      _c("div", { attrs: { id: "cover-caption" } }, [
+        _c("div", { staticClass: "container" }, [
+          _c("div", { staticClass: "row text-white" }, [
+            _c(
+              "div",
+              {
+                staticClass:
+                  "col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4"
+              },
+              [
+                _c("h1", { staticClass: "display-6 py-2" }, [
+                  _vm._v("Formulario de Ingreso NeoGestion")
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "px-2" }, [
+                  _c("div", { staticClass: "justify-content-center" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", { staticClass: "sr-only" }, [
+                        _vm._v("Correo")
                       ]),
                       _vm._v(" "),
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", { staticClass: "sr-only" }, [
-                          _vm._v("Contraseña")
-                        ]),
-                        _vm._v(" "),
-                        _c("input", {
-                          staticClass: "form-control",
-                          attrs: {
-                            name: "pass",
-                            type: "password",
-                            placeholder: "Contraseña"
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.email,
+                            expression: "email"
                           }
-                        })
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-primary btn-lg",
-                          attrs: { type: "submit" }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          name: "correo",
+                          type: "text",
+                          placeholder: "Correo"
                         },
-                        [_vm._v("Ingresar")]
-                      )
-                    ])
+                        domProps: { value: _vm.email },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.email = $event.target.value
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", { staticClass: "sr-only" }, [
+                        _vm._v("Contraseña")
+                      ]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.password,
+                            expression: "password"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: {
+                          name: "pass",
+                          type: "password",
+                          placeholder: "Contraseña"
+                        },
+                        domProps: { value: _vm.password },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.password = $event.target.value
+                          }
+                        }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary btn-lg",
+                        attrs: { type: "submit" },
+                        on: {
+                          click: function($event) {
+                            return _vm.login()
+                          }
+                        }
+                      },
+                      [_vm._v("Ingresar")]
+                    )
                   ])
-                ]
-              )
-            ])
+                ])
+              ]
+            )
           ])
         ])
       ])
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -52151,9 +52200,17 @@ var render = function() {
                         _vm._v("Perfil")
                       ]),
                       _vm._v(" "),
-                      _c("b-dropdown-item", { attrs: { href: "#" } }, [
-                        _vm._v("Cerrar Sesion")
-                      ])
+                      _c(
+                        "b-dropdown-item",
+                        {
+                          on: {
+                            click: function($event) {
+                              return _vm.logout()
+                            }
+                          }
+                        },
+                        [_vm._v("Cerrar Sesion")]
+                      )
                     ],
                     1
                   )
@@ -70735,7 +70792,7 @@ var routes = [{
   redirect: 'index',
   iconCls: 'el-icon-message',
   meta: {
-    auth: false
+    auth: true
   },
   children: [{
     name: 'index',
@@ -70767,6 +70824,12 @@ var routes = [{
   component: _components_404_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
   name: '',
   hidden: true
+}, {
+  path: '*',
+  hidden: true,
+  redirect: {
+    path: '/'
+  }
 }];
 /* harmony default export */ __webpack_exports__["default"] = (routes);
 

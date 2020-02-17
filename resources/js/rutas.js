@@ -34,7 +34,7 @@ const routes = [
     name: 'Auth',
     redirect: 'index',
     iconCls: 'el-icon-message',
-    meta: { auth: false },
+    meta: { auth: true },
 
     children: [
       {
@@ -76,6 +76,12 @@ const routes = [
     name: '',
     hidden: true
   },
+
+  {
+    path: '*',
+    hidden: true,
+    redirect: { path: '/' }
+} 
 
 ];
 

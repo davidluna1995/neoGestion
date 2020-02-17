@@ -7,22 +7,23 @@
             <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
               <h1 class="display-6 py-2">Formulario de Ingreso NeoGestion</h1>
               <div class="px-2">
-                <form class="justify-content-center">
+                <div class="justify-content-center">
                   <div class="form-group">
                     <label class="sr-only">Correo</label>
-                    <input name="correo" type="text" class="form-control" placeholder="Correo" />
+                    <input v-model="email" name="correo" type="text" class="form-control" placeholder="Correo" />
                   </div>
                   <div class="form-group">
                     <label class="sr-only">Contraseña</label>
                     <input
+                    v-model="password"
                       name="pass"
                       type="password"
                       class="form-control"
                       placeholder="Contraseña"
                     />
                   </div>
-                  <button type="submit" class="btn btn-primary btn-lg">Ingresar</button>
-                </form>
+                  <button type="submit" class="btn btn-primary btn-lg" @click="login()">Ingresar</button>
+                </div>
               </div>
             </div>
           </div>
@@ -64,8 +65,29 @@ form:before {
 <script>
 export default {
   data() {
-    return {};
+    return {
+      email:'',
+      password:'',
+
+    };
   },
-  methods: {}
+  methods: {
+
+    login() {
+      var app = this;
+      this.$auth.login({
+        params: {
+          email: app.email,
+          password: app.password
+        },
+        success: function() {},
+        error: function() {},
+        rememberMe: true,
+        redirect: "/index",
+        fetchUser: true
+      });
+    },
+
+  }
 };
 </script>
