@@ -16,9 +16,7 @@ class Ventas extends Migration
         Schema::create('ventas', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id');
-            $table->integer('producto_id');
-            $table->bigInteger('cantidad');
-            $table->bigInteger('venta');
+            $table->bigInteger('venta_total');
             $table->string('forma_pago_id');
             $table->integer('tipo_entrega_id');
             $table->softDeletes();

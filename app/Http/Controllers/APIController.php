@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RegisterFormRequest;
 use App\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\RegisterFormRequest;
 
 class APIController extends Controller
 {
@@ -34,7 +35,7 @@ class APIController extends Controller
 	            ], 400);
 	    }
 	    return response([
-	            'status' => 'success'
+				'status' => 'success',
 	        ])
 	        ->header('Authorization', $token);
 	}
@@ -44,7 +45,7 @@ class APIController extends Controller
 	    $user = User::find(Auth::user()->id);
 	    return response([
 	            'status' => 'success',
-	            'data' => $user
+				'data' => $user
 	        ]);
 	}
 	public function refresh()
@@ -61,5 +62,15 @@ class APIController extends Controller
 	            'status' => 'success',
 	            'msg' => 'Logged out Successfully.'
 	        ], 200);
+	}
+
+	public function allUser()
+	{
+		$listar = DB::table('users')->count();
+        if ($listar > 0) {
+            return $listar;
+        } else {
+            return 0;
+        }
 	}
 }

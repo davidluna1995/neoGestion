@@ -9,6 +9,7 @@ export default {
     return {
       // REGISTRO PRODUCTO
       categoria_id: null,
+      sku:'',
       nombre: '',
       descripcion: '',
       cantidad: '',
@@ -56,6 +57,7 @@ export default {
     registrar_producto() {
       const data = {
         'categoria_id': this.categoria_id.id,
+        'sku': this.sku,
         'nombre': this.nombre,
         'descripcion': this.descripcion,
         'cantidad': this.cantidad,
@@ -68,6 +70,7 @@ export default {
           this.correcto = response.data.mensaje;
           this.showAlert();
           this.categoria_id = null;
+          this.sku = '';
           this.nombre = '';
           this.descripcion = '';
           this.cantidad = '';

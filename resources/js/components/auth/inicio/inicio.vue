@@ -13,7 +13,7 @@
                   <h4>
                     Usuarios
                     <p class="mt-2">
-                      <b>4</b>
+                      <b>{{totalUsuarios}}</b>
                     </p>
                   </h4>
                 </b-card-text>
@@ -112,53 +112,78 @@
     </div>
 
     <div class="row m-4">
-      <div class="col-12 col-md-12 col-lg-4">
-        <b-card class="text-center tituloTabla my-2 col-12 transparencia">
+      <div class="col-12 col-md-12 col-lg-6">
+        <b-card class="text-center tituloTabla mt-2 mb-4 col-12 transparencia">
           <b-card-header class="fondoProductos mb-4">PRODUCTOS MAS VENDIDOS</b-card-header>
           <div>
             <b-table
-              hover
+              show-empty
+              emptyText="No existen productos aun."
               small
+              striped
+              hover
+              bordered
+              stacked="lg"
+              head-variant="dark"
               :fields="productosFields"
               :items="productosItems"
-              head-variant="dark"
-              responsive="sm"
-              sticky-header="200px"
             >
               <template v-slot:cell(index)="data">{{ data.item.producto_id}}</template>
-              <template v-slot:cell(producto)="data"> <b>{{ data.item.nombre.toUpperCase() }}</b> </template>
+              <template v-slot:cell(producto)="data">
+                <b>{{ data.item.nombre.toUpperCase() }}</b>
+              </template>
               <template v-slot:cell(cantidad)="data">{{ formatPrice(data.item.cantidad_total) }}</template>
-              <template v-slot:cell(peso)> <span class="green">$</span></template>
-              <template v-slot:cell(totalVendido)="data"> {{ formatPrice(data.item.venta_total) }}</template>
+              <template v-slot:cell(totalVendido)="data"><span class="green">$ </span>{{ formatPrice(data.item.venta_total) }}</template>
             </b-table>
           </div>
         </b-card>
+
+        <!--GRAFICO  -->
+        <b-card class="text-center tituloTabla transparencia">
+          <b-card-header class="fondoCategoria mb-4">TOP 5 PRODUCTOS MAS VENDIDOS</b-card-header>
+          <template>
+            <div class="small">
+              <ChartProductos :chart-data="datacollection"></ChartProductos>
+            </div>
+          </template>
+        </b-card>
+        <!--GRAFICO  -->
       </div>
 
-      <div class="col-12 col-md-12 col-lg-8">
-        <b-card class="text-center tituloTabla my-2 col-12 transparencia">
+      <div class="col-12 col-md-12 col-lg-6">
+        <b-card class="text-center tituloTabla mt-2 mb-4 col-12 transparencia">
           <b-card-header class="fondoProductos mb-4">ULTIMAS VENTAS</b-card-header>
           <div>
             <b-table
-              hover
+              show-empty
+              emptyText="No existen ventas aun."
               small
+              striped
+              hover
+              bordered
+              stacked="lg"
+              head-variant="dark"
               :fields="ventasFields"
               :items="ventasItems"
-              head-variant="dark"
-              responsive="sm"
-              sticky-header="200px"
             >
-              <template v-slot:cell(index)="data">{{ data.item.id }}</template>
-              <template v-slot:cell(producto)="data"> <b>{{ data.item.nombre.toUpperCase() }}</b></template>
-              <template v-slot:cell(fecha)="data">{{data.item.creado}} hrs.</template>
-              <template v-slot:cell(pesoUnidad)><span class="green">$</span></template>
-              <template v-slot:cell(precio)="data">{{ formatPrice(data.item.precio_venta) }}</template>
-              <template v-slot:cell(cantidad)="data">{{data.item.cantidad}}</template>
-              <template v-slot:cell(peso)> <span class="green">$</span> </template>
-              <template v-slot:cell(totalVendido)="data">{{ formatPrice(data.item.venta) }}</template>
+              <template v-slot:cell(index)="data">{{ data.item.idVenta }}</template>
+              <template v-slot:cell(venta)="data"><span class="green">$ </span>{{ formatPrice(data.item.venta_total) }}</template>
+              <template v-slot:cell(fecha)="data">{{data.item.creado}}</template>
+              <template v-slot:cell(creado)="data">{{data.item.nombreUsuarioVenta}}</template>
             </b-table>
           </div>
         </b-card>
+
+        <!--GRAFICO  -->
+        <b-card class="text-center tituloTabla transparencia">
+          <b-card-header class="fondoCategoria mb-4">TOP 5 ULTIMAS VENTAS</b-card-header>
+          <template>
+            <div class="smallVentas">
+              <ChartVentas :chart-data="datacollection2"></ChartVentas>
+            </div>
+          </template>
+        </b-card>
+        <!--GRAFICO  -->
       </div>
     </div>
   </div>

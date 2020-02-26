@@ -3,95 +3,119 @@
 namespace App\Http\Controllers;
 
 use App\Ventas;
-use Carbon\Carbon;
-use Illuminate\Http\Request; 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use App\Producto;
+use Carbon\Carbon;
+use App\DetalleVenta;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class VentasController extends Controller
 {
-    public function validar_venta($datos)
-    {
-        $validator = Validator::make(
-            $datos->all(),
-            [
-                'producto_id' => 'required',
-                'cantidad' => 'required',
-                'venta' => 'required',
-            ],
-            [
-                'producto_id.required' => 'El producto a ingresar es necesario',
-                'cantidad.required' => 'La cantidad a ingresar es necesaria',
-                'venta.required' => 'El monto de ventas a ingresar es necesario',
-            ]
-        );
-
- 
-        if ($validator->fails()) {
-            return ['estado' => 'failed_v', 'mensaje' => $validator->errors()];
-        }
-        return ['estado' => 'success', 'mensaje' => 'success'];
-    }
-
     protected function registro_venta(Request $datos)
     {
-        $productoCantidad = Producto::select([
+        DB::beginTransaction();
+        $venta = new Ventas();
+        $venta->user_id = Auth::user()->id;
 
-            'producto.cantidad',
-            'producto.id',
-
-        ])
-            ->where('producto.id', $datos->producto_id)
-            ->first();
-
-        // dd($datos->cantidad > $productoCantidad);
-
-        if ($datos->cantidad > $productoCantidad->cantidad) {
-            return ['estado'=>'failed', 'mensaje'=>'Error, la cantidad de venta es mayor al stock.'];
+        if ($datos->venta_total == '0') {
+            return ['estado'=>'failed', 'mensaje'=>'ingrese minimo un producto al carro.'];
+        } else {
+            $venta->venta_total = $datos->venta_total;
         }
 
-        $validarDatos = $this->validar_venta($datos);
-
-        if ($validarDatos['estado'] == 'success') {
-            $venta = new Ventas();
-            $venta->user_id = Auth::user()->id;;
-            $venta->producto_id = $datos->producto_id;
-            $venta->cantidad = $datos->cantidad;
-            $venta->venta = $datos->venta;
+        if ($datos->forma_pago_id == '1,undefined') {
             $venta->forma_pago_id = '1';
-            $venta->tipo_entrega_id = '1';
+        } elseif ($datos->forma_pago_id == '2,undefined') {
+            $venta->forma_pago_id = '2';
+        } elseif ($datos->forma_pago_id == '3,undefined') {
+            $venta->forma_pago_id = '3';
+        } elseif ($datos->forma_pago_id == 'undefined,undefined') {
+            return ['estado'=>'failed', 'mensaje'=>'seleccione una forma de pago.'];
+        } else {
+            $venta->forma_pago_id = $datos->forma_pago_id;
+        }
 
-            if ($venta->save()) {
-                $actualizarCantidad = Producto::find($datos->producto_id);
-                $actualizarCantidad->cantidad = $actualizarCantidad->cantidad - $datos->cantidad;
-                if ($actualizarCantidad->save()) {
-                    return ['estado'=>'success', 'mensaje'=>'Venta guardada con exito, Actualizando nuevo stock'];
-                }
+        if ($datos->tipo_entrega_id == []) {
+            return ['estado'=>'failed', 'mensaje'=>'seleccione un tipo de entrega.'];
+        } else {
+            $venta->tipo_entrega_id = $datos->tipo_entrega_id;
+        }
+
+        if ($venta->save()) {
+            $ingresarDetalle = $this->registro_detalle_venta($datos->carro, $venta->id);
+            if ($ingresarDetalle == true) {
+                DB::commit();
+                return ['estado'=>'success', 'mensaje'=>'Venta realizada con exito, actualizando nuevo stock.'];
             } else {
+                if ($ingresarDetalle == false) {
+                    return ['estado'=>'failed', 'mensaje'=>'Error, la cantidad de venta es mayor al stock.'];
+                }
+                DB::rollBack();
                 return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error, verifique esten correctos los campo.'];
             }
+        } else {
+            DB::rollBack();
+            return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error, verifique esten correctos los campo.'];
         }
-        return $validarDatos;
+    }
+
+    protected function registro_detalle_venta($carro, $venta_id)
+    {
+        for ($i = 0; $i < count($carro); $i++) {
+            $productoCantidad = Producto::select([
+            'producto.cantidad',
+            'producto.id',
+            'producto.nombre',
+        ])
+            ->where('producto.id', $carro[$i]['id'])
+            ->first();
+
+            if ($carro[$i]['cantidad_ls'] > $productoCantidad->cantidad) {
+                return false;
+            }
+        }
+        $count = 0;
+        
+        DB::beginTransaction();
+        for ($i = 0; $i < count($carro); $i++) {
+            $venta = new DetalleVenta;
+            $venta->user_id = Auth::user()->id;
+            $venta->venta_id = $venta_id;
+            $venta->producto_id = $carro[$i]['id'];
+            $venta->cantidad = $carro[$i]['cantidad_ls'];
+            $venta->precio = $carro[$i]['precio_venta'];
+
+            if ($venta->save()) {
+                $actualizarCantidad = Producto::find($carro[$i]['id']);
+                $actualizarCantidad->cantidad = $actualizarCantidad->cantidad - $carro[$i]['cantidad_ls'];
+                if ($actualizarCantidad->save()) {
+                    $count++;
+                }
+            }
+        }
+            
+        if (count($carro) == $count) {
+            DB::commit();
+            return true;
+        } else {
+            DB::rollBack();
+            return false;
+        }
     }
 
     protected function traer_ventas()
     {
         $listar = Ventas::select([
-                                    'ventas.id',
-                                    'producto.nombre',
-                                    'categoria.descripcion as catDesc',
-                                    'producto.descripcion as proDesc',
-                                    'ventas.cantidad',
-                                    'ventas.created_at as creado',
-                                    'ventas.venta',
-                                    'producto.precio_venta',
-                                    'categoria.id as catId',
-                                ])
-                                    ->join('producto', 'producto.id', 'ventas.producto_id')
-                                    ->join('categoria', 'categoria.id', 'producto.categoria_id')
-                                    ->orderby('ventas.id', 'desc')
-                                    ->get();
+                                            'ventas.id as idVenta',
+                                            'ventas.created_at as creado',
+                                            'ventas.venta_total',
+                                            'users.name as nombreUsuarioVenta',
+                                        ])
+                                            ->join('users', 'users.id', 'ventas.user_id')
+                                            ->orderby('ventas.id', 'desc')
+                                            ->get();
         if (count($listar) > 0) {
             foreach ($listar as $key) {
                 setlocale(LC_TIME, 'es');
@@ -108,39 +132,35 @@ class VentasController extends Controller
     protected function buscar_venta_producto($producto)
     {
         $listar = Ventas::select([
-                                    'ventas.id',
-                                    'producto.nombre',
-                                    'categoria.descripcion as catDesc',
-                                    'producto.descripcion as proDesc',
-                                    'ventas.cantidad',
+                                    'ventas.id as idVenta',
                                     'ventas.created_at as creado',
-                                    'ventas.venta',
-                                    'producto.precio_venta',
-                                    'categoria.id as catId',
+                                    'ventas.venta_total',
+                                    'users.name as nombreUsuarioVenta',
                                 ])
-                                    ->join('producto', 'producto.id', 'ventas.producto_id')
-                                    ->join('categoria', 'categoria.id', 'producto.categoria_id')
-                                    ->where([
-                                        'ventas.activo'=>'S',
-                                    ])
-                                    ->whereRaw(
-                                        "producto.nombre like lower('%$producto%') or 
-                                        categoria.descripcion like lower('%$producto%') or
-                                        producto.descripcion like lower('%$producto%')"
-                                    )
-
+                                    ->join('users', 'users.id', 'ventas.user_id')
+                                    ->where('ventas.id', 'LIKE', '%' . $producto . '%')
+                                    ->orWhere('ventas.created_at', 'LIKE', '%' . $producto . '%')
+                                    ->orWhere('users.name', 'LIKE', '%' . $producto . '%')
+                                        ->orderby('ventas.id', 'desc')
                                     ->get();
+
+        if (count($listar) > 0) {
+            foreach ($listar as $key) {
+                setlocale(LC_TIME, 'es');
+                $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
+            }
+        }
         
         if (!$listar->isEmpty()) {
             return ['estado'=>'success' , 'producto' => $listar];
         } else {
-            return ['estado'=>'failed', 'mensaje'=>'El producto no existe en nuestros registros, refrescando la tabla.'];
+            return ['estado'=>'failed', 'mensaje'=>'El producto no existe en nuestros registros.'];
         }
     }
 
     protected function total_ventas()
     {
-        $listar = DB::table('ventas')->sum('venta');
+        $listar = DB::table('ventas')->sum('venta_total');
         if ($listar > 0) {
             return $listar;
         } else {
@@ -151,18 +171,12 @@ class VentasController extends Controller
     protected function ultimas_ventas()
     {
         $listar = Ventas::select([
-                                    'ventas.id',
-                                    'producto.nombre',
-                                    'categoria.descripcion as catDesc',
-                                    'producto.descripcion as proDesc',
-                                    'ventas.cantidad',
+                                    'ventas.id as idVenta',
                                     'ventas.created_at as creado',
-                                    'ventas.venta',
-                                    'producto.precio_venta',
-                                    'categoria.id as catId',
+                                    'ventas.venta_total',
+                                    'users.name as nombreUsuarioVenta',
                                 ])
-                                    ->join('producto', 'producto.id', 'ventas.producto_id')
-                                    ->join('categoria', 'categoria.id', 'producto.categoria_id')
+                                    ->join('users', 'users.id', 'ventas.user_id')
                                     ->orderby('ventas.id', 'desc')
                                     ->take(5)
                                     ->get();
@@ -183,23 +197,24 @@ class VentasController extends Controller
     {
         $listar = DB::select(
             " SELECT * from 
-           (select 
-            producto_id,
-            p.nombre
-            from ventas
-            inner join producto p on p.id = ventas.producto_id
-            group by producto_id, p.nombre) producto
-            
-            inner join 
-            (select producto_id, 
-            sum(cantidad) as cantidad_total, 
-            sum(venta) as venta_total 
-            from ventas 
-            group by producto_id) venta
-            
-            on producto.producto_id = venta.producto_id
-            order by venta.venta_total desc
-            limit 5"
+            (select 
+             producto_id,
+             producto.nombre
+             from detalle_venta
+             inner join ventas on ventas.id = detalle_venta.venta_id
+             inner join  producto on producto.id = detalle_venta.producto_id
+             group by producto_id, producto.nombre) producto
+             inner join 
+             (select producto_id, 
+             sum(cantidad) as cantidad_total, 
+             sum(venta_total) as venta_total 
+             from detalle_venta
+             inner join ventas on ventas.id = detalle_venta.venta_id
+             group by producto_id) venta
+             
+             on producto.producto_id = venta.producto_id
+             order by venta.venta_total desc
+             limit 5"
         );
 
         if (count($listar) > 0) {
@@ -207,5 +222,161 @@ class VentasController extends Controller
         } else {
             return ['estado'=>'failed', 'mensaje'=>'No existen ventas.'];
         }
+    }
+
+    protected function buscar_producto_carro($producto)
+    {
+        $listar = Producto::select([
+                                    'producto.id',
+                                    'producto.sku',
+                                    'producto.nombre',
+                                    'producto.cantidad',
+                                    'producto.precio_venta',
+                                    ])
+      
+                                    ->whereRaw(
+                                        "producto.nombre like lower('%$producto%') or
+                                      producto.sku like lower('%$producto%')"
+                                    )
+                                    ->get();
+
+        if (count($listar) > 0) {
+            foreach ($listar as $key) {
+                $key->cantidad_ls = 1;
+            }
+            return ['estado'=>'success' , 'producto' => $listar];
+        } else {
+            return ['estado'=>'failed', 'mensaje'=>'El producto no existe en nuestros registros'];
+        }
+    }
+
+    protected function traer_detalle_venta($idVenta)
+    {
+        $listar = DetalleVenta::select([
+                                        'detalle_venta.cantidad as cantidadDetalle',
+                                        'detalle_venta.precio',
+                                        'producto.nombre',
+                                        'producto.descripcion as proDesc',
+                                        'categoria.descripcion as catDesc',
+                                        'categoria.id as catId',
+                                        ])
+                                        ->join('ventas', 'ventas.id', 'detalle_venta.venta_id')
+                                        ->join('producto', 'producto.id', 'detalle_venta.producto_id')
+                                        ->join('categoria', 'categoria.id', 'producto.categoria_id')
+                                        ->join('users', 'users.id', 'ventas.user_id')
+                                        ->orderby('ventas.id', 'desc')
+                                        ->where('venta_id', $idVenta)
+                                        ->get();
+
+        if (!$listar->isEmpty()) {
+            return ['estado'=>'success' , 'detalleVenta' => $listar];
+        } else {
+            return ['estado'=>'failed', 'mensaje'=>'No existen ventas.'];
+        }
+    }
+
+    protected function mas_vendidos_grafico()
+    {
+        $listar = DB::select(
+            " SELECT * from 
+            (select 
+             producto_id,
+             producto.nombre
+             from detalle_venta
+             inner join ventas on ventas.id = detalle_venta.venta_id
+             inner join  producto on producto.id = detalle_venta.producto_id
+             group by producto_id, producto.nombre) producto
+             inner join 
+             (select producto_id, 
+             sum(cantidad) as cantidad_total, 
+             sum(venta_total) as venta_total 
+             from detalle_venta
+             inner join ventas on ventas.id = detalle_venta.venta_id
+             group by producto_id) venta
+             
+             on producto.producto_id = venta.producto_id
+             order by venta.venta_total desc
+             limit 5"
+        );
+
+        $json_producto = [];
+        $json_cantidad = [];
+        $json_total = [];
+
+        foreach ($listar as $key) {
+            $json_producto[] = $key->nombre;
+            $json_cantidad[] = $key->cantidad_total;
+            $json_total[] = $key->venta_total;
+        }
+
+        return [
+            'labels' => $json_producto,
+            'datasets' =>[
+                [
+                    'label' => 'CANTIDAD',
+                    'data' => $json_cantidad,
+                    'backgroundColor' => [
+                        '#D35400',
+                        '#F1C40F',
+                        '#28B463',
+                        '#2980B9',
+                        '#7D3C98'
+                    ],
+                    'hoverBackgroundColor' => [
+                        '#E59866',
+                        '#F9E79F',
+                        '#A9DFBF',
+                        '#7FB3D5',
+                        '#C39BD3'
+                    ],
+                ],
+            ]
+        ];
+    }
+
+    protected function ultimas_ventas_grafico()
+    {
+        $listar = Ventas::select([
+                                    'ventas.id as idVenta',
+                                    'ventas.created_at as creado',
+                                    'ventas.venta_total',
+                                    'users.name as nombreUsuarioVenta',
+                                ])
+                                    ->join('users', 'users.id', 'ventas.user_id')
+                                    ->orderby('ventas.id', 'desc')
+                                    ->take(5)
+                                    ->get();
+
+        $json_idVenta = [];
+        $json_total = [];
+                            
+        foreach ($listar as $key) {
+            $json_idVenta[] = $key->idVenta;
+            $json_total[] = $key->venta_total;
+        }
+                            
+        return [
+            'labels' => $json_idVenta,
+            'datasets' =>[
+                [
+                    'label' => 'VENTAS',
+                    'data' => $json_total,
+                    'backgroundColor' => [
+                        '#D35400',
+                        '#F1C40F',
+                        '#28B463',
+                        '#2980B9',
+                        '#7D3C98'
+                    ],
+                    'hoverBackgroundColor' => [
+                        '#E59866',
+                        '#F9E79F',
+                        '#A9DFBF',
+                        '#7FB3D5',
+                        '#C39BD3'
+                    ],
+                ],
+            ]
+        ];
     }
 }

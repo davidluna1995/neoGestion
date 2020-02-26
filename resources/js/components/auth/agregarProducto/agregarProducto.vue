@@ -6,7 +6,21 @@
           <b-card-header class="fondo mb-4 text-center">AGREGAR PRODUCTO</b-card-header>
 
           <div class="row">
-            <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
+
+            <div class="col-12 col-md-12 col-lg-2 col-xl-2 mb-4">
+              <b-form-group id="sku" label="Sku:">
+                <div class="row">
+                  <div class="col-1">
+                    <i class="fas fa-clipboard-list mr-1 mt-1 fa-2x text-secondary"></i>
+                  </div>
+                  <div class="col-10">
+                    <b-form-input v-model="sku" placeholder="SKU"></b-form-input>
+                  </div>
+                </div>
+              </b-form-group>
+            </div>
+
+            <div class="col-12 col-md-12 col-lg-4 col-xl-4 mb-4">
               <b-form-group id="nombre" label="Nombre:">
                 <div class="row">
                   <div class="col-1">
@@ -56,7 +70,7 @@
                   </div>
                 </div>
               </b-form-group>
-            </div> -->
+            </div>-->
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
               <b-form-group id="categoria" label="Selecione Categoria:">
@@ -73,7 +87,8 @@
                       placeholder="Seleccione"
                       select-label
                       selectedLabel="Selecionado"
-                      deselectLabel="Quitar">
+                      deselectLabel="Quitar"
+                    >
                       <span slot="noResult">No se encontraron resultados.</span>
                     </multiselect>
                   </div>
@@ -91,54 +106,47 @@
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
               <b-form-group id="cantidad" label="Cantidad del producto:">
-                
-                  <div class="row">
-                    <div class="col-1">
-                      <i class="fas fa-sort-numeric-up-alt mr-1 mt-1 fa-2x"></i>
-                    </div>
-                    <div class="col-11">
-                      <b-form-input v-model="cantidad" type="number" placeholder="Cantidad"></b-form-input>
-                    </div>
+                <div class="row">
+                  <div class="col-1">
+                    <i class="fas fa-sort-numeric-up-alt mr-1 mt-1 fa-2x"></i>
                   </div>
-              
+                  <div class="col-11">
+                    <b-form-input v-model="cantidad" type="number" placeholder="Cantidad"></b-form-input>
+                  </div>
+                </div>
               </b-form-group>
             </div>
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
               <b-form-group id="compra" label="Ingrese precio de compra:">
-                
-                  <div class="row">
-                    <div class="col-1">
-                      <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-primary"></i>
-                    </div>
-                    <div class="col-11">
-                      <b-form-input v-model="precio_compra" type="number" placeholder="Precio compra"></b-form-input>
-                    </div>
+                <div class="row">
+                  <div class="col-1">
+                    <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-primary"></i>
                   </div>
-              
+                  <div class="col-11">
+                    <b-form-input v-model="precio_compra" type="number" placeholder="Precio compra"></b-form-input>
+                  </div>
+                </div>
               </b-form-group>
             </div>
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
               <b-form-group id="venta" label="Ingrese precio de venta:">
-                
-                  <div class="row">
-                    <div class="col-1">
-                      <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-success"></i>
-                    </div>
-                    <div class="col-11">
-                      <b-form-input v-model="precio_venta" type="number" placeholder="Precio venta"></b-form-input>
-                    </div>
+                <div class="row">
+                  <div class="col-1">
+                    <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-success"></i>
                   </div>
-                
+                  <div class="col-11">
+                    <b-form-input v-model="precio_venta" type="number" placeholder="Precio venta"></b-form-input>
+                  </div>
+                </div>
               </b-form-group>
             </div>
           </div>
 
           <div class="row justify-content-center">
             <div class="col-12 col-md-12 col-lg-3 my-2">
-              <b-button block pill variant="success"
-               @click="registrar_producto();">
+              <b-button block pill variant="success" @click="registrar_producto();">
                 <b>Guardar</b>
               </b-button>
             </div>

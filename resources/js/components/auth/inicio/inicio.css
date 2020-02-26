@@ -55,3 +55,13 @@ b-card{
 .green{
     color: #45B649;
 }
+
+.small {
+    max-width: 300px;
+    margin:  50px auto;
+  }
+
+.smallVentas {
+    max-width: 300px;
+    margin:  50px auto;
+  }

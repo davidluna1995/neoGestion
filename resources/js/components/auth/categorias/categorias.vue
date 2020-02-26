@@ -1,14 +1,82 @@
 <template>
   <div>
     <div class="row m-4">
-      <!-- formulario de categorias -->
       <div class="col-12 col-md-12 col-lg-4">
-        <b-card class="text-center tituloTabla my-2 transparencia">
+        <!--GRAFICO  -->
+        <b-card class="text-center tituloTabla transparencia">
+          <b-card-header class="fondoCategoria mb-4">TOP 5 CATEGORIAS CON MAS PRODUCTOS</b-card-header>
+
+          <template>
+            <div class="small">
+              <chart :chart-data="datacollection"></chart>
+            </div>
+          </template>
+        </b-card>
+        <!--GRAFICO  -->
+
+        <!-- alertas -->
+        <div class="col-12 my-4">
+          <ul v-for="e in errores" :key="e[0]">
+            <b-alert variant="danger" show>
+              <li>
+                <b>{{e[0]}}</b>
+              </li>
+            </b-alert>
+          </ul>
+        </div>
+
+        <div class="col-12 my-4">
+          <ul>
+            <b-alert
+              :show="dismissCountDown"
+              variant="success"
+              @dismissed="dismissCountDown=0"
+              @dismiss-count-down="countDownChanged"
+            >
+              <b>{{correcto}} {{ dismissCountDown }} segundos...</b>
+            </b-alert>
+          </ul>
+        </div>
+
+        <div class="col-12 my-4">
+          <ul>
+            <b-alert
+              :show="dismissCountDown2"
+              variant="success"
+              @dismissed="dismissCountDown2=0"
+              @dismiss-count-down="countDownChanged2"
+            >
+              <b>{{correcto2}} {{ dismissCountDown2 }} segundos...</b>
+            </b-alert>
+          </ul>
+        </div>
+
+        <div class="col-12 my-4">
+          <ul>
+            <b-alert
+              :show="dismissCountDown3"
+              variant="warning"
+              @dismissed="dismissCountDown3=0"
+              @dismiss-count-down="countDownChanged3"
+            >
+              <b>{{errores3}} {{ dismissCountDown3 }} segundos...</b>
+            </b-alert>
+          </ul>
+        </div>
+        <!-- alertas -->
+      </div>
+
+      <div class="col-12 col-md-12 col-lg-8">
+        <!-- formulario de categorias -->
+        <b-card class="text-center tituloTabla transparencia">
           <b-card-header class="fondoCategoria mb-4">AGREGAR CATEGORIA</b-card-header>
 
           <div class="row">
             <div class="col-12">
-              <b-form-input type="text" v-model="categoria" placeholder="Nombre de la categoria"></b-form-input>
+              <b-form-input type="text" 
+              v-on:keyup.enter="registrar_categorias()"
+              v-model="categoria" 
+              placeholder="Nombre de la categoria"></b-form-input>
             </div>
           </div>
 
@@ -22,58 +90,7 @@
         </b-card>
         <!-- formulario de categorias -->
 
-        <!-- alertas -->
-        <div class="col-12 my-4">
-          <ul v-for="e in errores" :key="e[0]">
-            <b-alert variant="danger" show>
-              <li>{{e[0]}}</li>
-            </b-alert>
-          </ul>
-        </div>
-
-        <div class="col-12 my-4">
-          <ul>
-            <b-alert
-              :show="dismissCountDown"
-              variant="success"
-              @dismissed="dismissCountDown=0"
-              @dismiss-count-down="countDownChanged"
-            >{{correcto}} {{ dismissCountDown }} segundos...</b-alert>
-          </ul>
-        </div>
-
-        <div class="col-12 my-4">
-          <ul>
-            <b-alert
-              :show="dismissCountDown2"
-              variant="success"
-              @dismissed="dismissCountDown2=0"
-              @dismiss-count-down="countDownChanged2"
-            >{{correcto2}} {{ dismissCountDown2 }} segundos...</b-alert>
-          </ul>
-        </div>
-
-        <div class="col-12 my-4">
-          <ul>
-            <b-alert
-              :show="dismissCountDown3"
-              variant="warning"
-              @dismissed="dismissCountDown3=0"
-              @dismiss-count-down="countDownChanged3"
-            >{{errores3}} {{ dismissCountDown3 }} segundos...</b-alert>
-          </ul>
-        </div>
-        <!-- alertas -->
-
-        <!--GRAFICO  -->
-        <b-card class="text-center tituloTabla my-2 transparencia">
-          <b-card-header class="fondoCategoria mb-4">GRAFICO</b-card-header>
-        </b-card>
-        <!--GRAFICO  -->
-      </div>
-
-      <!-- tabla de categorias -->
-      <div class="col-12 col-md-12 col-lg-8">
+        <!-- tabla de categorias -->
         <b-card class="text-center tituloTabla my-2 transparencia">
           <b-card-header class="fondoCategoria mb-4">LISTA DE CATEGORIAS</b-card-header>
 
@@ -84,6 +101,7 @@
                   v-on:keyup="escribiendo"
                   placeholder="Buscar categoria"
                   v-model="buscadorCategoria"
+                  v-on:keyup.enter="traer_categoria()"
                 ></b-form-input>
               </b-input-group>
             </div>
@@ -101,16 +119,16 @@
 
           <div>
             <b-table
-              table
-              hove12
-              hovexl-r
-              bordered
+              show-empty
+              emptyText="No existen productos aun."
               small
+              striped
+              hover
+              bordered
+              stacked="lg"
+              head-variant="dark"
               :fields="productosFields"
               :items="listarCategorias"
-              sticky-header="300px"
-              head-variant="dark"
-              responsive="sm"
             >
               <template v-slot:cell(index)="data">
                 <div class="col-12">{{ data.item.id }}</div>
@@ -228,6 +246,5 @@
   </div>
 </template>
 
-
 <script src="../categorias/categorias.js"></script>
-<style src="../categorias/categorias.css"></style>
+<style scoped src="../categorias/categorias.css"></style>

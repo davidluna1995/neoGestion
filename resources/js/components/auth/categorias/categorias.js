@@ -1,5 +1,9 @@
-
+import Chart from './Chart.js'
 export default {
+
+    components: {
+        Chart
+      },
 
     data() {
 
@@ -28,7 +32,7 @@ export default {
             // TABLA
             loading: false,
             productosFields: [
-                { key: 'index', label: 'ID' },
+                { key: 'index', label: 'ID', variant: 'dark' },
                 { key: 'cat', label: 'Categorias' },
                 { key: 'fecha', label: 'Fecha' },
                 { key: 'usuario', label: 'Creado Por' },
@@ -45,6 +49,9 @@ export default {
             categoriaSearch: '',
             idCategoria: '0',
             btn_buscar: true,
+
+            //GRAFICO
+            datacollection: null,
 
         }
 
@@ -117,7 +124,7 @@ export default {
 
         traer_categorias() {
             this.axios.get('api/traer_categorias').then((response) => {
-                if(response.data.estado == 'success'){
+                if (response.data.estado == 'success') {
                     this.listarCategorias = response.data.cat;
                 }
             })
@@ -193,11 +200,21 @@ export default {
 
                 this.btn_buscar = false;
             }
-        }
+        },
+
+        cantidad_productos_categoria() {
+            this.axios.get('api/cantidad_productos_categoria').then((response) => {
+                this.datacollection = response.data;
+            })
+        },
 
     },
 
+
+
     mounted() {
         this.traer_categorias();
+        this.cantidad_productos_categoria();
+
     },
 }

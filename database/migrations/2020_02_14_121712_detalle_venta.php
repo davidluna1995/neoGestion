@@ -16,9 +16,10 @@ class DetalleVenta extends Migration
         Schema::create('detalle_venta', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('user_id');
+            $table->integer('venta_id');
             $table->integer('producto_id');
             $table->bigInteger('cantidad');
-            $table->bigInteger('venta');
+            $table->bigInteger('precio');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -11,7 +11,7 @@ export default {
         return {
             // CABEZERA DE LA TABLA
             productosFieldsAdm: [
-                { key: 'index', label: 'ID', variant: 'dark', class: 'text-center' },
+                { key: 'index', label: 'SKU', variant: 'dark', class: 'text-center' },
                 { key: 'prod', label: 'Producto', class: 'text-center' },
                 { key: 'cat', label: 'Categoria', class: 'text-center' },
                 { key: 'desc', label: 'Descripcion', class: 'text-center' },
@@ -26,6 +26,10 @@ export default {
             listarProductos: [],
             listarCategorias: [],
 
+            //local storage
+            itemArreglo1:[],
+            itemArreglo2:[],
+
             // ALERTS MODIFICAR
             errores2: [],
             correcto2: '',
@@ -33,6 +37,7 @@ export default {
             dismissCountDown2: 0,
 
             //ACTUALIZAR
+            skuUpd:'',
             nombreUpd: '',
             descripcionUpd: '',
             categoria_id: null,
@@ -127,6 +132,7 @@ export default {
         },
 
         traer_productos() {
+            this.listarProductos = [];
             this.axios.get('api/traer_productos').then((response) => {
                 this.listarProductos = response.data.productos;
             })
@@ -139,19 +145,21 @@ export default {
             })
 
         },
-
+        
         actualizar_dato(id, campo, input) {
             const data = {
                 'id': id,
                 'campo': campo,
                 'input': input,
             }
+            console.log(data);
             this.axios.post('api/modificar_campo_producto', data).then((response) => {
                 if (response.data.estado == 'success') {
                     this.correcto2 = response.data.mensaje;
                     this.showAlert2();
                     this.traer_productos();
-                    this.hideModal2(id);
+                    this.hideModalEditarProducto(id);
+                    this.skuUpd = '';
                     this.nombreUpd = '';
                     this.descripcionUpd = '';
                     this.categoria_id = null;
@@ -185,7 +193,7 @@ export default {
                 if (response.data.estado == 'success') {
                     this.correcto3 = response.data.mensaje;
                     this.showAlert3();
-                    this.hideModal(this.producto_id);
+                    this.hideModalVentas(this.producto_id);
                     this.traer_productos();
                     this.producto_id = '';
                     this.cantidad = '';

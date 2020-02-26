@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Producto;
+use App\Categoria;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Categoria;
 
 class ProductoController extends Controller
 {
@@ -18,6 +19,7 @@ class ProductoController extends Controller
             [
                 'categoria_id' => 'required',
                 'nombre' => 'required',
+                'sku' => 'required',
                 'descripcion' => 'required',
                 'cantidad' => 'required',
                 'precio_compra' => 'required',
@@ -26,6 +28,7 @@ class ProductoController extends Controller
             [
                 'categoria_id.required' => 'La categoria a ingresar es necesaria',
                 'nombre.required' => 'El nombre a ingresar es necesario',
+                'sku.required' => 'El sku a ingresar es necesario',
                 'descripcion.required' => 'La descripcion a ingresar es necesaria',
                 'cantidad.required' => 'La cantidad a ingresar es necesaria',
                 'precio_compra.required' => 'El precio de compra a ingresar es necesario',
@@ -48,6 +51,7 @@ class ProductoController extends Controller
             $producto = new Producto();
             $producto->user_id = Auth::user()->id;
             $producto->categoria_id = $datos->categoria_id;
+            $producto->sku =  strtolower($datos->sku);
             $producto->nombre =  strtolower($datos->nombre);
             $producto->descripcion = strtolower($datos->descripcion);
             $producto->cantidad = $datos->cantidad;
@@ -67,6 +71,7 @@ class ProductoController extends Controller
     {
         $listar = Producto::select([
                                     'producto.id',
+                                    'producto.sku',
                                     'producto.nombre',
                                     'producto.descripcion as proDesc',
                                     'producto.cantidad',
@@ -117,6 +122,18 @@ class ProductoController extends Controller
             ],
               [
               'input.required' => 'Debe ingresar un nombre.',
+            ]
+          );
+          break;
+
+        case 'sku':
+          $validator = Validator::make(
+              $request->all(),
+              [
+              'input' => 'required',
+            ],
+              [
+              'input.required' => 'Debe ingresar un sku.',
             ]
           );
           break;
@@ -220,6 +237,29 @@ class ProductoController extends Controller
                             return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
                         }
                     
+
+                  break;
+
+                case 'sku':
+
+                  $validarSku = strtolower($request->input);
+                  $verificarSku = Producto::select([
+                    'sku',
+                ])
+                                        ->where('sku', $validarSku)
+                                        ->get();
+                    if (count($verificarSku) > 0) {
+                        return ['estado'=>'failed', 'mensaje'=>'El sku ya existe en nuestros registros.'];
+                    }
+
+                        $modificar->sku = $validarSku;
+
+                        if ($modificar->save()) {
+                            return ['estado'=>'success', 'mensaje'=>'Sku actualizado.'];
+                        } else {
+                            return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
+                        }
+                    
                   break;
 
                   
@@ -293,6 +333,7 @@ class ProductoController extends Controller
     {
         $listar = Producto::select([
                                     'producto.id',
+                                    'producto.sku',
                                     'producto.nombre',
                                     'producto.descripcion as proDesc',
                                     'producto.cantidad',

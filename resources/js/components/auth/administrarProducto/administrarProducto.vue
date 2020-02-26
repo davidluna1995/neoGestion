@@ -15,6 +15,7 @@
                     v-on:keyup="escribiendoProducto"
                     placeholder="Buscar producto"
                     v-model="buscadorProducto"
+                    v-on:keyup.enter="traer_producto()"
                     class="my-2"
                   ></b-form-input>
                 </b-input-group>
@@ -116,7 +117,7 @@
               :items="listarProductos"
             >
               <template v-slot:cell(index)="data">
-                <div class="col-12">{{ data.item.id }}</div>
+                <div class="col-12">{{ data.item.sku }}</div>
               </template>
               <template v-slot:cell(prod)="data">
                 <div class="col-12">{{ data.item.nombre }}</div>
@@ -161,6 +162,26 @@
                         </template>
                         <div class="d-block text-center">
                           <div class="row">
+                            <div class="col-8 mb-4">
+                              <div class="row">
+                                <div class="col-2">
+                                  <i class="fas fa-clipboard-list mr-1 mt-1 fa-2x text-secondary"></i>
+                                </div>
+                                <div class="col-10">
+                                  <b-form-input v-model="skuUpd" :placeholder="data.item.sku"></b-form-input>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-3">
+                              <b-button
+                                block
+                                variant="light"
+                                @click="actualizar_dato(data.item.id,'sku',skuUpd)"
+                              >
+                                <i class="fas fa-edit text-success"></i>
+                              </b-button>
+                            </div>
+
                             <div class="col-8 mb-4">
                               <div class="row">
                                 <div class="col-2">
@@ -333,133 +354,6 @@
                   </template>
                 </div>
               </template>
-              <template v-slot:cell(ventaModal)="data">
-                <div class="row">
-                  <div class="col-12">
-                    <!-- BOTON VENTAS -->
-                    <b-button
-                      block
-                      id="show-btn"
-                      class="my-2"
-                      variant="info"
-                      @click="showModalVentas(data.item.id);"
-                    >Venta</b-button>
-                  </div>
-                </div>
-                <!-- VENTAS -->
-                <div class="col-12 col-xl-12">
-                  <!-- MODAL VENTAS  -->
-                  <template>
-                    <div>
-                      <b-modal
-                        class="modal-header-ventas"
-                        id="modal-sm"
-                        size="sm"
-                        :ref="'ventasModal'+data.item.id"
-                        hide-footer
-                        centered
-                      >
-                        <template v-slot:modal-title>
-                          <h5 class="text-center">VENTAS DEL DIA</h5>
-                        </template>
-                        <div class="d-block text-center">
-                          <div class="row">
-                            <div class="col-12 mb-4">
-                              <div class="row">
-                                <div class="col-2">
-                                  <i class="fas fa-clipboard-list mr-1 mt-1 fa-2x text-secondary"></i>
-                                </div>
-                                <div class="col-10">
-                                  <b-form-input
-                                    :v-model="producto_id"
-                                    :value="data.item.nombre"
-                                    disabled
-                                  ></b-form-input>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="col-12 mb-4">
-                              <div class="row">
-                                <div class="col-2">
-                                  <i class="fas fa-clipboard-list mr-1 mt-1 fa-2x text-secondary"></i>
-                                </div>
-                                <div class="col-10">
-                                  <b-form-input :value="data.item.precio_venta + ' c/u'" disabled></b-form-input>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="col-12 mb-4">
-                              <div class="row">
-                                <div class="col-2">
-                                  <i class="fas fa-sort-numeric-up-alt mr-1 mt-1 fa-2x"></i>
-                                </div>
-                                <div class="col-10">
-                                  <b-form-input v-model="cantidad" placeholder="Cantidad vendida"></b-form-input>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="col-12 mb-4">
-                              <div class="row">
-                                <div class="col-2">
-                                  <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-success"></i>
-                                </div>
-                                <div class="col-10">
-                                  <b-form-input
-                                    :v-model="ventas=(cantidad * data.item.precio_venta)"
-                                    :value="ventas=(cantidad * data.item.precio_venta)"
-                                    disabled
-                                  ></b-form-input>
-                                </div>
-                              </div>
-                            </div>
-
-                            <!-- alert modal -->
-                            <div class="col-12">
-                              <b-alert
-                                v-model="showAlertStock"
-                                variant="danger"
-                                dismissible
-                              >{{errorStock}}</b-alert>
-                            </div>
-
-                            <div class="col-12">
-                              <ul v-for="e3 in errores3" :key="e3[0]">
-                                <b-alert variant="danger" show>
-                                  <li>{{e3[0]}}</li>
-                                </b-alert>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row justify-content-center bordeFooter">
-                          <div class="col-6">
-                            <b-button
-                              class="my-2"
-                              block
-                              pill
-                              variant="success"
-                              @click="registrar_venta();"
-                            >Ingresar</b-button>
-                          </div>
-                          <div class="col-6">
-                            <b-button
-                              id="volverVenta"
-                              class="my-2"
-                              block
-                              pill
-                              variant="info"
-                              @click="hideModalVentas(data.item.id)"
-                            >Volver</b-button>
-                          </div>
-                        </div>
-                      </b-modal>
-                    </div>
-                  </template>
-                </div>
-              </template>
               <template v-slot:cell(eliminarProd)>
                 <div class="row">
                   <div class="col-12">
@@ -502,6 +396,7 @@
                   </b-row>
                 </b-card>
               </template>
+
             </b-table>
           </b-container>
         </b-card>

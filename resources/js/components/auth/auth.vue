@@ -26,7 +26,7 @@
           <b-nav-item-dropdown right>
             <!-- Using 'button-content' slot -->
             <template v-slot:button-content>
-              <em>NOMBRE DE USUARIO</em>
+              <em>{{usuario.name}}</em>
             </template>
             <b-dropdown-item href="#">Perfil</b-dropdown-item>
             <b-dropdown-item @click="logout()">Cerrar Sesion</b-dropdown-item>
@@ -44,7 +44,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      usuario:this.$auth.user(),
+    };
   },
 
   methods: {

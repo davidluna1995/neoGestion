@@ -6,21 +6,31 @@ export default {
   data() {
 
     return {
-      // CABEZERA DE LA TABLA
+      // CABEZERA DE LA TABLA VENTAS
       ventasFieldsAdm: [
-        { key: 'index', label: 'ID' },
-        { key: 'prod', label: 'Producto' },
-        { key: 'cat', label: 'Categoria' },
-        { key: 'desc', label: 'Descripcion' },
-        { key: 'ventaUn', label: 'Precio Unidad' },
-        { key: 'cant', label: 'Cantidad Vendida' },
+        { key: 'index', label: 'ID', variant: 'dark' },
         { key: 'venta', label: 'Venta Total' },
         { key: 'fecha', label: 'Fecha Venta' },
+        { key: 'creado', label: 'Creado Por' },
+        { key: 'detalle', label: '' },
+
 
       ],
-
-      // LLENAR TABLA
+      // LLENAR TABLA VENTAS
       listarVentas: [],
+
+      // CABEZERA DE LA TABLA DETALLE VENTA
+      detalleVentaFieldsAdm: [
+        { key: 'nombre', label: 'Nombre producto' },
+        { key: 'descripcion', label: 'Descripcion' },
+        { key: 'categoria', label: 'Categoria' },
+        { key: 'precio', label: 'Precio' },
+        { key: 'cantidad', label: 'Cantidad Vendida' },
+
+
+      ],
+      // LLENAR TABLA DETALLE VENTAS
+      listarDetalleVentas: [],
 
       // ALERT STOCK PRODUCTO
       errorStock: '',
@@ -45,14 +55,14 @@ export default {
   methods: {
 
     // REPORTE EN PDF
-    download () {
-      html2canvas(document.querySelector('#app'), 
-      {
-        // Opciones
-        allowTaint: true,
-        useCORS: false,
-        // Calidad del PDF
-        scale: 2
+    download() {
+      html2canvas(document.querySelector('#app'),
+        {
+          // Opciones
+          allowTaint: true,
+          useCORS: false,
+          // Calidad del PDF
+          scale: 2
         }).then(canvas => {
           var imgData = canvas.toDataURL('image/png');
           var imgWidth = 200;
@@ -61,10 +71,10 @@ export default {
           var heightLeft = imgHeight;
           var doc = new JsPDF('p', 'mm');
           var position = 0; // give some top padding to first page
-    
+
           doc.addImage(imgData, 'PNG', 5, position, imgWidth, imgHeight);
           heightLeft -= pageHeight;
-    
+
           while (heightLeft >= 0) {
             position += heightLeft - imgHeight; // top padding for other pages
             doc.addPage();
@@ -72,7 +82,7 @@ export default {
             heightLeft -= pageHeight;
           }
           doc.save('file.pdf');
-      });
+        });
     },
 
     formatPrice(value) {
@@ -96,9 +106,30 @@ export default {
       this.dismissCountDown4 = this.dismissSecs4;
     },
 
+    // MODAL EDITAR
+    showModalDetalleVenta(id,idVenta) {
+      this.$refs['detalleVenta' + id].show();
+      this.traer_detalle_ventas(idVenta);
+    },
+    hideModalDetalleVenta(id,idVenta) {
+      this.$refs['detalleVenta' + id].hide();
+      this.traer_detalle_ventas(idVenta);
+    },
+
     traer_ventas() {
       this.axios.get('api/traer_ventas').then((response) => {
         this.listarVentas = response.data.ventas;
+        // console.log(this.listarVentas);
+      })
+
+    },
+
+    traer_detalle_ventas(idVenta) {
+      this.listarDetalleVentas = [];
+      this.axios.get('api/traer_detalle_venta/' + idVenta).then((response) => {
+        this.listarDetalleVentas = response.data.detalleVenta;
+        
+
       })
 
     },
@@ -112,7 +143,6 @@ export default {
           this.errorBuscar = ("El campo no puede quedar vacio, ingrese un producto porfavor.");
           this.traer_ventas();
         } else {
-
           if (response.data.estado == 'success') {
 
             this.listarVentas = response.data.producto;

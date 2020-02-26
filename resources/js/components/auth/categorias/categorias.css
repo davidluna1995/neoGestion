@@ -23,3 +23,8 @@ ul {
   .transparencia{
     opacity: 0.9;
 }
+
+.small {
+    max-width: 300px;
+    margin:  5px auto;
+  }

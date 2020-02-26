@@ -17,6 +17,7 @@ class Producto extends Migration
             $table->bigIncrements('id');
             $table->integer('user_id');
             $table->integer('categoria_id');
+            $table->text('sku');
             $table->string('nombre');
             $table->string('descripcion');
             $table->bigInteger('cantidad');
