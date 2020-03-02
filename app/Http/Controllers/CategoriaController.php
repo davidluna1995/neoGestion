@@ -227,5 +227,52 @@ class CategoriaController extends Controller
         ];
         
     }
+    protected function productos_menos_categoria()
+    {
+        $listar = DB::select(
+            " SELECT 
+            producto.categoria_id,
+            categoria.descripcion as nombre_categoria,
+            count(*) as cantidad_productos
+            from producto
+            inner join categoria on categoria.id = producto.categoria_id
+            group by categoria_id,categoria.descripcion
+            order by cantidad_productos asc
+             limit 5"
+        );
+
+        $json_categoria = [];
+        $json_cantidad = [];
+
+        foreach ($listar as $key) {
+            $json_categoria[] = $key->nombre_categoria;
+            $json_cantidad[] = $key->cantidad_productos;
+        }
+
+        return [
+            'labels' => $json_categoria,
+            'datasets' =>[
+                [
+                    'label' => 'Cantidad',
+                    'data' => $json_cantidad,
+                    'backgroundColor' => [
+                        '#D35400',
+                        '#F1C40F',
+                        '#28B463',
+                        '#2980B9',
+                        '#7D3C98'
+                    ],
+                    'hoverBackgroundColor' => [
+                        '#E59866',
+                        '#F9E79F',
+                        '#A9DFBF',
+                        '#7FB3D5',
+                        '#C39BD3'
+                    ],
+                ],
+            ]
+        ];
+        
+    }
    
 }

@@ -379,4 +379,90 @@ class VentasController extends Controller
             ]
         ];
     }
+
+    protected function menos_vendidos_grafico()
+    {
+        $listar = DB::select(
+            " SELECT * from 
+            (select 
+             producto_id,
+             producto.nombre
+             from detalle_venta
+             inner join ventas on ventas.id = detalle_venta.venta_id
+             inner join  producto on producto.id = detalle_venta.producto_id
+             group by producto_id, producto.nombre) producto
+             inner join 
+             (select producto_id, 
+             sum(cantidad) as cantidad_total, 
+             sum(venta_total) as venta_total 
+             from detalle_venta
+             inner join ventas on ventas.id = detalle_venta.venta_id
+             group by producto_id) venta
+             
+             on producto.producto_id = venta.producto_id
+             order by venta.venta_total asc
+             limit 5"
+        );
+
+        $json_producto = [];
+        $json_cantidad = [];
+        $json_total = [];
+
+        foreach ($listar as $key) {
+            $json_producto[] = $key->nombre;
+            $json_cantidad[] = $key->cantidad_total;
+            $json_total[] = $key->venta_total;
+        }
+
+        return [
+            'labels' => $json_producto,
+            'datasets' =>[
+                [
+                    'label' => 'CANTIDAD',
+                    'data' => $json_cantidad,
+                    'backgroundColor' => [
+                        '#D35400',
+                        '#F1C40F',
+                        '#28B463',
+                        '#2980B9',
+                        '#7D3C98'
+                    ],
+                    'hoverBackgroundColor' => [
+                        '#E59866',
+                        '#F9E79F',
+                        '#A9DFBF',
+                        '#7FB3D5',
+                        '#C39BD3'
+                    ],
+                ],
+            ]
+        ];
+    }
+
+    protected function reporte_ventas($desde = '', $hasta = '')
+    {
+        if (isset($desde) && isset($hasta)) {
+            $listar = Ventas::select([
+                'ventas.id as idVenta',
+                'ventas.created_at as creado',
+                'ventas.venta_total',
+                'users.name as nombreUsuarioVenta',
+            ])
+                ->join('users', 'users.id', 'ventas.user_id')
+                ->whereBetween('ventas.created_at', [$desde.' 00:00:00', $hasta.' 23:59:59'])
+                ->orderby('ventas.id', 'desc')
+                ->get();
+            if (count($listar) > 0) {
+                foreach ($listar as $key) {
+                    setlocale(LC_TIME, 'es');
+                    $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
+                }
+            }
+            if (!$listar->isEmpty()) {
+                return ['estado'=>'success' , 'ventas' => $listar];
+            } else {
+                return ['estado'=>'failed', 'mensaje'=>'No existen ventas en el rango de fecha seleccionado.'];
+            }
+        }
+    }
 }

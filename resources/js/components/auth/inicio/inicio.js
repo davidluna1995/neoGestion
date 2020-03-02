@@ -22,9 +22,11 @@ export default {
         { key: 'venta', label: 'Total' },
         { key: 'fecha', label: 'Fecha Venta' },
         { key: 'creado', label: 'Venta por' },
+        { key: 'detalle', label: '' },
 
       ],
       ventasItems: [],
+      listarDetalleVentas: [],
 
       cantidadCategorias: '0',
       cantidadProductos: '0',
@@ -34,9 +36,24 @@ export default {
       //GRAFICO
       datacollection: null,
       datacollection2: null,
+      datacollection3: null,
+      optionsGrafico:{
+        legend: {
+          position: 'top',
+          labels: {
+            fontSize: 16,
+            fontColor: 'black',
+            fontStyle: 'bold',
+          },
+          title: {
+            display: true,
+            text: 'Custom Chart Title'
+        },
+      },
+    },
+
+
     }
-
-
   },
 
   methods: {
@@ -45,7 +62,7 @@ export default {
       let val = (value / 1).toFixed(0).replace('.', ',')
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
     },
-    
+
     url(ruta) {
       this.$router.push({ path: ruta }).catch(error => {
         if (error.name != "NavigationDuplicated") {
@@ -89,7 +106,7 @@ export default {
         this.totalUsuarios = response.data;
       })
     },
-    
+
     mas_vendidos_grafico() {
       this.axios.get('api/mas_vendidos_grafico').then((response) => {
         this.datacollection = response.data;
@@ -100,6 +117,31 @@ export default {
       this.axios.get('api/ultimas_ventas_grafico').then((response) => {
         this.datacollection2 = response.data;
       })
+    },
+
+    menos_vendidos_grafico() {
+      this.axios.get('api/menos_vendidos_grafico').then((response) => {
+        this.datacollection3 = response.data;
+      })
+    },
+
+    traer_detalle_ventas(idVenta) {
+      this.listarDetalleVentas = [];
+      this.axios.get('api/traer_detalle_venta/' + idVenta).then((response) => {
+        this.listarDetalleVentas = response.data.detalleVenta;
+
+      })
+
+    },
+
+    // MODAL EDITAR
+    showModalDetalleVenta(id, idVenta) {
+      this.$refs['detalleVenta' + id].show();
+      this.traer_detalle_ventas(idVenta);
+    },
+    hideModalDetalleVenta(id, idVenta) {
+      this.$refs['detalleVenta' + id].hide();
+      this.traer_detalle_ventas(idVenta);
     },
 
   },
@@ -113,6 +155,7 @@ export default {
     this.total_usuarios();
     this.mas_vendidos_grafico();
     this.ultimas_ventas_grafico();
+    this.menos_vendidos_grafico();
   },
 
 }

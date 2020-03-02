@@ -14,6 +14,8 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('auth/user', 'ApiController@user');
     Route::post('auth/logout', 'ApiController@logout');
     Route::get('allUser', 'ApiController@allUser');
+    Route::post('modificar_perfil', 'ApiController@modificar_perfil');
+    Route::post('cambiar_password', 'ApiController@cambiar_password');
 
     // rutas categoria
     Route::post('registro_categoria', 'CategoriaController@registro_categoria');
@@ -22,6 +24,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('buscar_categoria/{categoria}', 'CategoriaController@buscar_categoria');
     Route::get('cantidad_categoria', 'CategoriaController@cantidad_categoria');
     Route::get('cantidad_productos_categoria', 'CategoriaController@cantidad_productos_categoria');
+    Route::get('productos_menos_categoria', 'CategoriaController@productos_menos_categoria');
 
     // rutas producto
     Route::post('registro_producto', 'ProductoController@registro_producto');
@@ -41,5 +44,8 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('traer_detalle_venta/{idVenta}', 'VentasController@traer_detalle_venta');
     Route::get('mas_vendidos_grafico', 'VentasController@mas_vendidos_grafico');
     Route::get('ultimas_ventas_grafico', 'VentasController@ultimas_ventas_grafico');
+    Route::get('menos_vendidos_grafico', 'VentasController@menos_vendidos_grafico');
+    Route::get('reporte_ventas/{desde?}/{hasta?}', 'VentasController@reporte_ventas');
+
 
 });

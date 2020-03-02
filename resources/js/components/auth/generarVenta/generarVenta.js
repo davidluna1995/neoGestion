@@ -202,8 +202,8 @@ export default {
                 this.totalTemporal = 0;
                 for (let i = 0; i < carroGuardado.length; i++) {
                     this.arregloCarro.push(carroGuardado[i]);
-                    this.totalTemporal = parseInt(this.arregloCarro[i].precio_venta) * parseInt(this.arregloCarro[i].cantidad_ls);
-                    this.total = this.total + this.totalTemporal;
+                    this.totalTemporal = parseInt(this.arregloCarro[i].precio_venta) * (this.arregloCarro[i].cantidad_ls);
+                    this.total = parseInt(this.total + this.totalTemporal);
                 }
             }
 
@@ -244,8 +244,8 @@ export default {
             this.total = 0;
             this.totalTemporal = 0;
             for (let i = 0; i < this.arregloCarro.length; i++) {
-                this.totalTemporal = parseInt(this.arregloCarro[i].precio_venta) * parseInt(this.arregloCarro[i].cantidad_ls);
-                this.total = this.total + this.totalTemporal;
+                this.totalTemporal = parseInt(this.arregloCarro[i].precio_venta) * (this.arregloCarro[i].cantidad_ls);
+                this.total = parseInt(this.total + this.totalTemporal);
             }
 
         },
@@ -265,6 +265,7 @@ export default {
                     this.limpiarCarro();
                     this.correcto3 = response.data.mensaje;
                     this.showAlert3();
+                    this.showModal();
                 }
 
                 if (response.data.estado == 'failed') {

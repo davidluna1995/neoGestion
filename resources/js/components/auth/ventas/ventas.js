@@ -117,6 +117,7 @@ export default {
     },
 
     traer_ventas() {
+      this.listarVentas = [];
       this.axios.get('api/traer_ventas').then((response) => {
         this.listarVentas = response.data.ventas;
         // console.log(this.listarVentas);

@@ -302,14 +302,14 @@
                                   </tr>
                                   <!--Cajero-->
                                   <tr>
-                                    <td class="padding-small" colspan="4">Cajero: david luna -</td>
+                                    <td class="padding-small" colspan="4">Cajero: david luna</td>
                                   </tr>
                                   <!-- Cajero -->
                                   <!--Cajero-->
-                                  <tr>
+                                  <!-- <tr>
                                     <td class="font-13 bold padding-small" colspan="2">Transbank</td>
                                     <td class="font-13 bold padding-small" colspan="2">Nº 3.000</td>
-                                  </tr>
+                                  </tr> -->
                                   <!-- Cajero -->
                                 </tbody>
                                 <!--Tbody-->
@@ -317,7 +317,7 @@
                               <!--Tabla Datos de Empresa-->
 
                               <!--Cliente-->
-                              <table class="top-10">
+                              <!-- <table class="top-10">
                                 <tbody>
                                   <tr>
                                     <td class="border-bottom">
@@ -342,7 +342,7 @@
                                     </td>
                                   </tr>
                                 </tbody>
-                              </table>
+                              </table> -->
                               <!--Cliente-->
 
                               <!--Tabla Detalles de Venta-->

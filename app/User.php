@@ -9,6 +9,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
+    protected $table = 'users';
+
     use Notifiable;
 
     /**

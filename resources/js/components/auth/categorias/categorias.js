@@ -52,6 +52,7 @@ export default {
 
             //GRAFICO
             datacollection: null,
+            datacollection2: null,
 
         }
 
@@ -208,6 +209,12 @@ export default {
             })
         },
 
+        productos_menos_categoria() {
+            this.axios.get('api/productos_menos_categoria').then((response) => {
+                this.datacollection2 = response.data;
+            })
+        },
+
     },
 
 
@@ -215,6 +222,7 @@ export default {
     mounted() {
         this.traer_categorias();
         this.cantidad_productos_categoria();
+        this.productos_menos_categoria();
 
     },
 }

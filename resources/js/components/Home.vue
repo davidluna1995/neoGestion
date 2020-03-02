@@ -4,7 +4,7 @@
       <div id="cover-caption">
         <div class="container">
           <div class="row text-white">
-            <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+            <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4 fondoLogin">
               <h1 class="display-6 py-2">Formulario de Ingreso NeoGestion</h1>
               <div class="px-2">
                 <div class="justify-content-center">
@@ -49,7 +49,7 @@
   z-index: 1;
 }
 /* only used for background overlay not needed for centering */
-form:before {
+.fondoLogin:before {
   content: "";
   height: 100%;
   left: 0;
@@ -81,7 +81,12 @@ export default {
           password: app.password
         },
         success: function() {},
-        error: function() {},
+
+        error: function() {
+          alert("Error, Correo y/o contraseña incorrecto.");
+          this.password = '';
+        },
+
         rememberMe: true,
         redirect: "/index",
         fetchUser: true

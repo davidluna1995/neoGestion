@@ -114,7 +114,7 @@
                         <b-table
                           id="app"
                           show-empty
-                          emptyText="No existen productos aun."
+                          emptyText="Cargando productos..."
                           small
                           striped
                           hover

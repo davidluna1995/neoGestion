@@ -8,6 +8,9 @@ import AgregarProductoComponent from './components/auth/agregarProducto/agregarP
 import AdministrarProductoComponent from './components/auth/administrarProducto/administrarProducto.vue';
 import VentasComponent from './components/auth/ventas/ventas.vue';
 import generarVentaComponent from './components/auth/generarVenta/generarVenta.vue';
+import reportesVentasComponent from './components/auth/reportesVentas/reportesVentas.vue';
+import perfilComponent from './components/auth/perfil/perfil.vue';
+import configuracionesComponent from './components/auth/configuraciones/configuraciones.vue';
 
 const routes = [
   {
@@ -66,6 +69,21 @@ const routes = [
         name: 'generarVenta',
         path: '/generarVenta',
         component: generarVentaComponent
+      },
+      {
+        name: 'reportesVentas',
+        path: '/reportesVentas',
+        component: reportesVentasComponent
+      },
+      {
+        name: 'perfil',
+        path: '/perfil',
+        component: perfilComponent
+      },
+      {
+        name: 'configuraciones',
+        path: '/configuraciones',
+        component: configuracionesComponent
       },
     ]
   },

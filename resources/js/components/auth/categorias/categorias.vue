@@ -1,20 +1,33 @@
 <template>
   <div>
     <div class="row m-4">
-      <div class="col-12 col-md-12 col-lg-4">
-        <!--GRAFICO  -->
+      <div class="col-12 col-md-12 col-lg-8">
+        <!-- FORMULARIO -->
         <b-card class="text-center tituloTabla transparencia">
-          <b-card-header class="fondoCategoria mb-4">TOP 5 CATEGORIAS CON MAS PRODUCTOS</b-card-header>
+          <b-card-header class="fondoCategoria mb-4">AGREGAR CATEGORIA</b-card-header>
 
-          <template>
-            <div class="small">
-              <chart :chart-data="datacollection"></chart>
+          <div class="row">
+            <div class="col-12">
+              <b-form-input
+                type="text"
+                v-on:keyup.enter="registrar_categorias()"
+                v-model="categoria"
+                placeholder="Nombre de la categoria"
+              ></b-form-input>
             </div>
-          </template>
-        </b-card>
-        <!--GRAFICO  -->
+          </div>
 
-        <!-- alertas -->
+          <div class="row justify-content-center">
+            <div class="col-10">
+              <b-button class="my-4" block pill variant="success" @click="registrar_categorias()">
+                <b>Guardar</b>
+              </b-button>
+            </div>
+          </div>
+        </b-card>
+        <!-- FORMULARIO -->
+
+        <!-- ALERTAS -->
         <div class="col-12 my-4">
           <ul v-for="e in errores" :key="e[0]">
             <b-alert variant="danger" show>
@@ -63,35 +76,10 @@
             </b-alert>
           </ul>
         </div>
-        <!-- alertas -->
-      </div>
+        <!-- ALERTAS -->
 
-      <div class="col-12 col-md-12 col-lg-8">
-        <!-- formulario de categorias -->
-        <b-card class="text-center tituloTabla transparencia">
-          <b-card-header class="fondoCategoria mb-4">AGREGAR CATEGORIA</b-card-header>
-
-          <div class="row">
-            <div class="col-12">
-              <b-form-input type="text" 
-              v-on:keyup.enter="registrar_categorias()"
-              v-model="categoria" 
-              placeholder="Nombre de la categoria"></b-form-input>
-            </div>
-          </div>
-
-          <div class="row justify-content-center">
-            <div class="col-10">
-              <b-button class="my-4" block pill variant="success" @click="registrar_categorias()">
-                <b>Guardar</b>
-              </b-button>
-            </div>
-          </div>
-        </b-card>
-        <!-- formulario de categorias -->
-
-        <!-- tabla de categorias -->
-        <b-card class="text-center tituloTabla my-2 transparencia">
+        <!-- TABLA -->
+        <b-card class="text-center tituloTabla my-4 transparencia">
           <b-card-header class="fondoCategoria mb-4">LISTA DE CATEGORIAS</b-card-header>
 
           <div class="row">
@@ -241,7 +229,40 @@
             </b-table>
           </div>
         </b-card>
+        <!-- TABLA -->
       </div>
+
+      <!-- GRAFICOS -->
+      <div class="col-12 col-md-12 col-lg-4">
+        <!--GRAFICO MAS PRODUCTOS-->
+        <div class="col-12 mb-4">
+          <b-card class="text-center tituloTabla transparencia">
+            <b-card-header class="fondoCategoria mb-4">TOP 5 CATEGORIAS CON MAS PRODUCTOS</b-card-header>
+
+            <template>
+              <div class="small">
+                <chart :chart-data="datacollection"></chart>
+              </div>
+            </template>
+          </b-card>
+        </div>
+        <!--GRAFICO MAS PRODUCTOS-->
+
+        <!--GRAFICO MENOS PRODUCTOS -->
+        <div class="col-12 mb-4">
+          <b-card class="text-center tituloTabla transparencia">
+            <b-card-header class="fondoCategoria mb-4">TOP 5 CATEGORIAS CON MENOS PRODUCTOS</b-card-header>
+
+            <template>
+              <div class="small">
+                <chart :chart-data="datacollection2"></chart>
+              </div>
+            </template>
+          </b-card>
+        </div>
+        <!--GRAFICO MENOS PRODUCTOS-->
+      </div>
+      <!-- GRAFICOS -->
     </div>
   </div>
 </template>

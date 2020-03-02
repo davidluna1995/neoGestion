@@ -7,18 +7,18 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item @click="url('index')">Panel de Control</b-nav-item>
-          <b-nav-item @click="url('categorias')">Categorias</b-nav-item>
+          <b-nav-item @click="url('index')"><i class="fas fa-home"></i> Panel de Control</b-nav-item>
+          <b-nav-item @click="url('categorias')"><i class="fas fa-indent"></i> Categorias</b-nav-item>
           <b-nav-item-dropdown text="Productos">
-            <b-dropdown-item @click="url('administrarProducto')">Administrar Productos</b-dropdown-item>
-            <b-dropdown-item @click="url('agregarProducto')">Agregar Productos</b-dropdown-item>
+            <b-dropdown-item @click="url('administrarProducto')"><i class="fas fa-edit"></i> Administrar Productos</b-dropdown-item>
+            <b-dropdown-item @click="url('agregarProducto')"><i class="fas fa-plus"></i> Agregar Productos</b-dropdown-item>
           </b-nav-item-dropdown>
           
           <b-nav-item-dropdown text="Ventas">
-            <b-dropdown-item @click="url('ventas')">Visualizar Ventas</b-dropdown-item>
-            <b-dropdown-item @click="url('#')">Reporte de Ventas</b-dropdown-item>
+            <b-dropdown-item @click="url('ventas')"><i class="fas fa-search-dollar"></i> Visualizar Ventas</b-dropdown-item>
+            <b-dropdown-item @click="url('reportesVentas')"><i class="fas fa-paste"></i> Reporte de Ventas</b-dropdown-item>
           </b-nav-item-dropdown>
-          <b-nav-item @click="url('generarVenta')">Generar Venta</b-nav-item>
+          <b-nav-item @click="url('generarVenta')"><i class="fas fa-cart-plus"></i> Generar Venta POS</b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -28,8 +28,9 @@
             <template v-slot:button-content>
               <em>{{usuario.name}}</em>
             </template>
-            <b-dropdown-item href="#">Perfil</b-dropdown-item>
-            <b-dropdown-item @click="logout()">Cerrar Sesion</b-dropdown-item>
+            <b-dropdown-item @click="url('perfil')"><i class="fas fa-user"></i> Perfil</b-dropdown-item>
+            <b-dropdown-item @click="url('configuraciones')"><i class="fas fa-cog"></i> Configuracion</b-dropdown-item>
+            <b-dropdown-item @click="logout()"><i class="fas fa-sign-in-alt"></i> Cerrar Sesion</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
