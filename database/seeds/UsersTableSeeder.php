@@ -16,11 +16,12 @@ class UsersTableSeeder extends Seeder
             'name' => 'david',
             'email' => 'david@neofox.com',
             'password' => bcrypt('123456'),
+            'rol' => '1',
         ]);
-        DB::table('users')->insert([
-            'name' => 'antonio',
-            'email' => 'antonio@neofox.com',
-            'password' => bcrypt('123456'),
-        ]);
+        // DB::table('users')->insert([
+        //     'name' => 'antonio',
+        //     'email' => 'antonio@neofox.com',
+        //     'password' => bcrypt('123456'),
+        // ]);
     }
 }

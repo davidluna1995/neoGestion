@@ -26,6 +26,18 @@ export default {
 
       ],
       ventasItems: [],
+
+      // CABEZERA DE LA TABLA DETALLE VENTA
+      detalleVentaFieldsAdm: [
+        { key: 'nombre', label: 'Nombre producto' },
+        { key: 'descripcion', label: 'Descripcion' },
+        { key: 'categoria', label: 'Categoria' },
+        { key: 'precio', label: 'Precio' },
+        { key: 'cantidad', label: 'Cantidad Vendida' },
+
+
+      ],
+      // LLENAR TABLA DETALLE VENTAS
       listarDetalleVentas: [],
 
       cantidadCategorias: '0',
@@ -37,9 +49,9 @@ export default {
       datacollection: null,
       datacollection2: null,
       datacollection3: null,
-      optionsGrafico:{
+      optionsGrafico: {
         legend: {
-          position: 'top',
+          position: 'bottom',
           labels: {
             fontSize: 16,
             fontColor: 'black',
@@ -48,9 +60,9 @@ export default {
           title: {
             display: true,
             text: 'Custom Chart Title'
+          },
         },
       },
-    },
 
 
     }

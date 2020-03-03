@@ -11,73 +11,72 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\RegisterFormRequest;
 
-
 class APIController extends Controller
 {
-     public function register(RegisterFormRequest $request)
-	{
-	    $user = new User;
-	    $user->email = $request->email;
-	    $user->name = $request->name;
-	    $user->password = bcrypt($request->password);
-	    $user->save();
-	    return response([
-	        'status' => 'success',
-	        'data' => $user
-	       ], 200);
-	 }
+    public function register(RegisterFormRequest $request)
+    {
+        $user = new User;
+        $user->email = $request->email;
+        $user->name = $request->name;
+        $user->password = bcrypt($request->password);
+        $user->save();
+        return response([
+            'status' => 'success',
+            'data' => $user
+           ], 200);
+    }
 
-	public function login(Request $request)
-	{
-	    $credentials = $request->only('email', 'password');
-	    if ( ! $token = JWTAuth::attempt($credentials)) {
-	            return response([
-	                'status' => 'error',
-	                'error' => 'invalid.credentials',
-	                'msg' => 'Error, Correo y/o contraseña incorrecto.'
-	            ], 400);
-	    }
-	    return response([
-				'status' => 'success',
-	        ])
-	        ->header('Authorization', $token);
-	}
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+        if (! $token = JWTAuth::attempt($credentials)) {
+            return response([
+                    'status' => 'error',
+                    'error' => 'invalid.credentials',
+                    'msg' => 'Error, Correo y/o contraseña incorrecto.'
+                ], 400);
+        }
+        return response([
+                'status' => 'success',
+            ])
+            ->header('Authorization', $token);
+    }
 
-	public function user(Request $request)
-	{
-	    $user = User::find(Auth::user()->id);
-	    return response([
-	            'status' => 'success',
-				'data' => $user
-	        ]);
-	}
-	public function refresh()
-	{
-	    return response([
-	            'status' => 'success'
-	        ]);
-	}
+    public function user(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        return response([
+                'status' => 'success',
+                'data' => $user
+            ]);
+    }
+    public function refresh()
+    {
+        return response([
+                'status' => 'success'
+            ]);
+    }
 
-	public function logout()
-	{
-	    JWTAuth::invalidate();
-	    return response([
-	            'status' => 'success',
-	            'msg' => 'Logged out Successfully.'
-	        ], 200);
-	}
+    public function logout()
+    {
+        JWTAuth::invalidate();
+        return response([
+                'status' => 'success',
+                'msg' => 'Logged out Successfully.'
+            ], 200);
+    }
 
-	public function allUser()
-	{
-		$listar = DB::table('users')->count();
+    public function allUser()
+    {
+        $listar = DB::table('users')->count();
         if ($listar > 0) {
             return $listar;
         } else {
             return 0;
         }
-	}
+    }
 
-	protected function validar_perfil($request)
+    protected function validar_perfil($request)
     {
         switch ($request->campo) {
         case 'name':
@@ -120,7 +119,7 @@ class APIController extends Controller
        
         
         if ($validarDatos['estado'] == 'success') {
-			$idUser = Auth::user()->id;
+            $idUser = Auth::user()->id;
             $modificar = User::find($idUser);
 
             if (!is_null($modificar)) {
@@ -138,8 +137,8 @@ class APIController extends Controller
                             return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
                         }
                     
-				  break;
-				  
+                  break;
+                  
                 case 'email':
 
                   $validar = strtolower($request->input);
@@ -170,25 +169,106 @@ class APIController extends Controller
             return ['estado'=>'failed', 'mensaje'=>'El item que intentas modificar no existe.'];
         }
         return $validarDatos;
-	}
-	
-	protected function cambiar_password(Request $request){
+    }
+    
+    protected function cambiar_password(Request $request)
+    {
+        $idUser = Auth::user()->id;
+        $user = User::find($idUser);
 
-		$idUser = Auth::user()->id;
-		$user = User::find($idUser);
+        if (!is_null($user)) {
+            if (Hash::check($request->password_actual, $user->password)) {
+                $user->password = bcrypt($request->password_nueva);
 
-		if(!is_null($user)){
-			if(Hash::check($request->password_actual, $user->password)){
-				$user->password = bcrypt($request->password_nueva);
-
-				if ($user->save()) {
+                if ($user->save()) {
                     return ['estado' => 'success', 'mensaje' => 'Contraseña actualizada correctamente, por seguridad la sesión cerrará automaticamente.'];
                 } else {
                     return ['estado' => 'failed', 'mensaje' => 'Se ha producido un error al actualizar la contraseña.'];
                 }
-			} else{
-				return ['estado' => 'failed', 'mensaje' => 'Contraseña actual ingresada incorrectamente.'];
-			}
-		}
-	}
+            } else {
+                return ['estado' => 'failed', 'mensaje' => 'Contraseña actual ingresada incorrectamente.'];
+            }
+        }
+    }
+
+    public function validar_usuario($datos)
+    {
+        $validator = Validator::make(
+            $datos->all(),
+            [
+                'email' => 'required|unique:users',
+                'name' => 'required',
+                'password' => 'required|min:6',
+                'rol' => 'required',
+            ],
+            [
+                'email.required' => 'El correo a ingresar es necesario',
+                'email.unique' => 'El correo ingresado ya existe en nuestros registros.',
+                'name.required' => 'El nombre de usuario a ingresar es necesario.',
+                'password.required' => 'La contraseña a ingresar es necesaria.',
+                'password.min' => 'La contraseña debe tener un minmo de 6 caracteres.',
+                'rol.required' => 'Debe seleccionar un tipo de usuario.',
+            ]
+        );
+
+ 
+        if ($validator->fails()) {
+            return ['estado' => 'failed_v', 'mensaje' => $validator->errors()];
+        }
+        return ['estado' => 'success', 'mensaje' => 'success'];
+    }
+
+    protected function crear_usuario(Request $request)
+    {
+        $validarDatos = $this->validar_usuario($request);
+        if ($validarDatos['estado'] == 'success') {
+            if ($request->password == $request->passRepetir) {
+                $user = new User;
+                $user->email = $request->email;
+                $user->name = $request->name;
+                $user->rol = $request->rol;
+                $user->password = bcrypt($request->password);
+            } else {
+                return ['estado' => 'errorPassword', 'mensaje' => 'Las contraseñas no coinciden.'];
+            }
+        
+            if ($user->save()) {
+                return ['estado' => 'success', 'mensaje' => 'Usuario creado correctamente.'];
+            } else {
+                return ['estado' => 'failed', 'mensaje' => 'Se ha producido un error al crear el usuario.'];
+            }
+        }
+        return $validarDatos;
+    }
+
+    protected function traer_usuarios()
+    {
+        return User::withTrashed()->get();
+    }
+
+    public function delete_usuario(Request $request)
+    {
+        if ($request->id != Auth::user()->id) {
+            if ($request->metodo == 'true') {
+                $evento = User::find($request->id)->delete();
+                if ($evento) {
+                    return ['estado' => 'success', 'mensaje' => 'Usuario Bloqueado Correctamente.'];
+                } else {
+                    return ['estado' => 'failed', 'mensaje' => 'Se ha producido un error al bloquear al usuario.'];
+                }
+            } else {
+                $evento = User::withTrashed()
+                    ->where('id', $request->id)
+                    ->restore();
+                if ($evento) {
+                    return ['estado' => 'success', 'mensaje' => 'Usuario Desbloqueado Correctamente.'];
+                } else {
+                    return ['estado' => 'failed', 'mensaje' => 'Se ha producido un error al Desbloquear al usuario.'];
+                }
+            }
+        } else {
+            return ['estado' => 'failed', 'mensaje' => 'No se puede bloquear a si mismo.'];
+        }
+    }
+        
 }

@@ -234,7 +234,7 @@
                           bordered
                           stacked="lg"
                           head-variant="dark"
-                          :fields="reporteDetalleVentaFieldsAdm"
+                          :fields="detalleVentaFieldsAdm"
                           :items="listarDetalleVentas"
                         >
                           <template v-slot:cell(nombre)="data">{{ data.item.nombre }}</template>

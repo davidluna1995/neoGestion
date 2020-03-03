@@ -6,10 +6,14 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class User extends Authenticatable implements JWTSubject
 {
     protected $table = 'users';
+    use softDeletes;
+    protected $dates = ['deleted_at'];
 
     use Notifiable;
 

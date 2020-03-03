@@ -16,7 +16,10 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('allUser', 'ApiController@allUser');
     Route::post('modificar_perfil', 'ApiController@modificar_perfil');
     Route::post('cambiar_password', 'ApiController@cambiar_password');
-
+    Route::post('crear_usuario', 'ApiController@crear_usuario');
+    Route::get('traer_usuarios', 'ApiController@traer_usuarios');
+    Route::post('delete_usuario', 'ApiController@delete_usuario');
+    
     // rutas categoria
     Route::post('registro_categoria', 'CategoriaController@registro_categoria');
     Route::get('traer_categorias', 'CategoriaController@traer_categorias');
