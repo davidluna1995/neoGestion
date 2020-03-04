@@ -22,6 +22,12 @@ export default {
       correcto: '',
       dismissSecs: 5,
       dismissCountDown: 0,
+
+      selected: 'S',
+      options: [
+        { item: 'S', name: 'Unidad' },
+        { item: 'N', name: 'Granel' },
+      ]
     }
 
   },
@@ -63,6 +69,7 @@ export default {
         'cantidad': this.cantidad,
         'precio_compra': this.precio_compra,
         'precio_venta': this.precio_venta,
+        'stock': this.selected,
 
       }
       this.axios.post('api/registro_producto', data).then((response) => {

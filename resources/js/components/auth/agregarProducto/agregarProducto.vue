@@ -6,7 +6,6 @@
           <b-card-header class="fondo mb-4 text-center">AGREGAR PRODUCTO</b-card-header>
 
           <div class="row">
-
             <div class="col-12 col-md-12 col-lg-2 col-xl-2 mb-4">
               <b-form-group id="sku" label="Sku:">
                 <div class="row">
@@ -104,18 +103,32 @@
               </b-form-group>
             </div>
 
-            <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
-              <b-form-group id="cantidad" label="Cantidad del producto:">
-                <div class="row">
-                  <div class="col-1">
-                    <i class="fas fa-sort-numeric-up-alt mr-1 mt-1 fa-2x"></i>
-                  </div>
-                  <div class="col-11">
-                    <b-form-input v-model="cantidad" type="number" placeholder="Cantidad"></b-form-input>
-                  </div>
-                </div>
+            <div class="col-12 col-md-12 col-lg-2 col-xl-2 mb-4">
+              <b-form-group label="Tipo de Stock">
+                <b-form-radio-group
+                  v-model="selected"
+                  :options="options"
+                  class="mb-3"
+                  value-field="item"
+                  text-field="name"
+                  disabled-field="notEnabled"
+                ></b-form-radio-group>
               </b-form-group>
+               <!-- <div class="mt-3">Selected: <strong>{{ selected }}</strong></div> -->
             </div>
+
+              <div class="col-12 col-md-12 col-lg-4 col-xl-4 mb-4">
+                <b-form-group id="cantidad" label="Cantidad del producto:">
+                  <div class="row">
+                    <div class="col-1">
+                      <i class="fas fa-sort-numeric-up-alt mr-1 mt-1 fa-2x"></i>
+                    </div>
+                    <div class="col-11">
+                      <b-form-input v-model="cantidad" type="number" placeholder="Cantidad"></b-form-input>
+                    </div>
+                  </div>
+                </b-form-group>
+              </div>
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
               <b-form-group id="compra" label="Ingrese precio de compra:">

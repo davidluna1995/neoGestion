@@ -68,12 +68,15 @@ class VentasController extends Controller
             'producto.cantidad',
             'producto.id',
             'producto.nombre',
+            'producto.stock',
         ])
             ->where('producto.id', $carro[$i]['id'])
+            ->where('producto.stock', 'S')
             ->first();
-
-            if ($carro[$i]['cantidad_ls'] > $productoCantidad->cantidad) {
-                return false;
+            if ($productoCantidad) {
+                if ($carro[$i]['cantidad_ls'] > $productoCantidad->cantidad) {
+                    return false;
+                }
             }
         }
         $count = 0;
@@ -89,9 +92,17 @@ class VentasController extends Controller
 
             if ($venta->save()) {
                 $actualizarCantidad = Producto::find($carro[$i]['id']);
-                $actualizarCantidad->cantidad = $actualizarCantidad->cantidad - $carro[$i]['cantidad_ls'];
-                if ($actualizarCantidad->save()) {
-                    $count++;
+
+                if ($actualizarCantidad->stock == 'S') {
+                    $actualizarCantidad->cantidad = $actualizarCantidad->cantidad - $carro[$i]['cantidad_ls'];
+                    if ($actualizarCantidad->save()) {
+                        $count++;
+                    }
+                } else {
+                    $actualizarCantidad->cantidad = null;
+                    if ($actualizarCantidad->save()) {
+                        $count++;
+                    }
                 }
             }
         }

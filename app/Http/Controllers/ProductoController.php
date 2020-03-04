@@ -21,7 +21,7 @@ class ProductoController extends Controller
                 'nombre' => 'required',
                 'sku' => 'required',
                 'descripcion' => 'required',
-                'cantidad' => 'required',
+                // 'cantidad' => 'required',
                 'precio_compra' => 'required',
                 'precio_venta' => 'required',
             ],
@@ -30,7 +30,7 @@ class ProductoController extends Controller
                 'nombre.required' => 'El nombre a ingresar es necesario',
                 'sku.required' => 'El sku a ingresar es necesario',
                 'descripcion.required' => 'La descripcion a ingresar es necesaria',
-                'cantidad.required' => 'La cantidad a ingresar es necesaria',
+                // 'cantidad.required' => 'La cantidad a ingresar es necesaria',
                 'precio_compra.required' => 'El precio de compra a ingresar es necesario',
                 'precio_venta.required' => 'el precio de venta a ingresar es necesario',
             ]
@@ -54,9 +54,15 @@ class ProductoController extends Controller
             $producto->sku =  strtolower($datos->sku);
             $producto->nombre =  strtolower($datos->nombre);
             $producto->descripcion = strtolower($datos->descripcion);
+
+
+          
             $producto->cantidad = $datos->cantidad;
+
+
             $producto->precio_compra = $datos->precio_compra;
             $producto->precio_venta = $datos->precio_venta;
+            $producto->stock = $datos->stock;
 
             if ($producto->save()) {
                 return ['estado'=>'success', 'mensaje'=>'Producto guardado con exito.'];
