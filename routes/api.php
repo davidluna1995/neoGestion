@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 Route::post('auth/login', 'ApiController@login');
 Route::post('register', 'ApiController@register');
+//Rutas para el reinicio de password
+Route::post('sendEmail','ResetPasswordController@sendEmail');
+Route::post('resetPassword','ResetPasswordController@process');
 
 Route::group(['middleware' => 'auth.jwt'], function () {
 

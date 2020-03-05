@@ -11,6 +11,8 @@ import generarVentaComponent from './components/auth/generarVenta/generarVenta.v
 import reportesVentasComponent from './components/auth/reportesVentas/reportesVentas.vue';
 import perfilComponent from './components/auth/perfil/perfil.vue';
 import configuracionesComponent from './components/auth/configuraciones/configuraciones.vue';
+import recuperarPasswordComponent from './components/recuperarPassword.vue';
+import resetearPasswordComponent from './components/resetearPassword.vue';
 
 const routes = [
   {
@@ -26,6 +28,18 @@ const routes = [
         name: 'home',
         path: '/',
         component: HomeComponent
+      },
+
+      {
+        name: 'recuperarPassword',
+        path: '/recuperarPassword',
+        component: recuperarPasswordComponent
+      },
+
+      {
+        name: 'resetearPassword',
+        path: '/resetearPassword/:token',
+        component: resetearPasswordComponent
       },
 
     ]

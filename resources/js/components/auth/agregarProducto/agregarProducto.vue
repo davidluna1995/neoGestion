@@ -103,7 +103,7 @@
               </b-form-group>
             </div>
 
-            <div class="col-12 col-md-12 col-lg-2 col-xl-2 mb-4">
+            <div class="col-12 col-md-12 col-lg-3 col-xl-3 mb-4">
               <b-form-group label="Tipo de Stock">
                 <b-form-radio-group
                   v-model="selected"
@@ -117,21 +117,21 @@
                <!-- <div class="mt-3">Selected: <strong>{{ selected }}</strong></div> -->
             </div>
 
-              <div class="col-12 col-md-12 col-lg-4 col-xl-4 mb-4">
-                <b-form-group id="cantidad" label="Cantidad del producto:">
+              <div class="col-12 col-md-12 col-lg-3 col-xl-3 mb-4">
+                <b-form-group id="cantidad" label="Cantidad del producto unitario:">
                   <div class="row">
                     <div class="col-1">
                       <i class="fas fa-sort-numeric-up-alt mr-1 mt-1 fa-2x"></i>
                     </div>
                     <div class="col-11">
-                      <b-form-input v-model="cantidad" type="number" placeholder="Cantidad"></b-form-input>
+                      <b-form-input :disabled="selected == 'N'" v-model="cantidad" type="number" placeholder="Cantidad"></b-form-input>
                     </div>
                   </div>
                 </b-form-group>
               </div>
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
-              <b-form-group id="compra" label="Ingrese precio de compra:">
+              <b-form-group id="compra" label="Ingrese precio de compra (Unidad / Kg):">
                 <div class="row">
                   <div class="col-1">
                     <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-primary"></i>
@@ -144,7 +144,7 @@
             </div>
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
-              <b-form-group id="venta" label="Ingrese precio de venta:">
+              <b-form-group id="venta" label="Ingrese precio de venta (Unidad / Kg):">
                 <div class="row">
                   <div class="col-1">
                     <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-success"></i>

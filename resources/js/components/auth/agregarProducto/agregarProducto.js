@@ -26,7 +26,7 @@ export default {
       selected: 'S',
       options: [
         { item: 'S', name: 'Unidad' },
-        { item: 'N', name: 'Granel' },
+        { item: 'N', name: 'Granel (Stock - ilimitado)' },
       ]
     }
 

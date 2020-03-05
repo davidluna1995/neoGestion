@@ -4,26 +4,33 @@
       <div id="cover-caption">
         <div class="container">
           <div class="row text-white">
-            <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4 fondoLogin">
+            <div
+              class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4 fondoLogin"
+            >
               <h1 class="display-6 py-2">Formulario de Ingreso NeoGestion</h1>
               <div class="px-2">
                 <div class="justify-content-center">
                   <div class="form-group">
-                    <label class="sr-only">Correo</label>
-                    <input v-model="email" name="correo" type="text" class="form-control" placeholder="Correo" />
+                    <input
+                      v-model="email"
+                      name="correo"
+                      type="text"
+                      class="form-control"
+                      placeholder="Correo"
+                    />
                   </div>
                   <div class="form-group">
-                    <label class="sr-only">Contraseña</label>
                     <input
-                    v-model="password"
+                      v-model="password"
                       name="pass"
                       type="password"
                       class="form-control"
-                      placeholder="Contraseña"
+                      placeholder="******"
                     />
                   </div>
                   <button type="submit" class="btn btn-primary btn-lg" @click="login()">Ingresar</button>
                 </div>
+                <a @click="url('recuperarPassword')"><em style="cursor:pointer;" class="float-left">Olvido su contraseña</em></a>
               </div>
             </div>
           </div>
@@ -66,13 +73,11 @@
 export default {
   data() {
     return {
-      email:'',
-      password:'',
-
+      email: "",
+      password: ""
     };
   },
   methods: {
-
     login() {
       var app = this;
       this.$auth.login({
@@ -84,7 +89,7 @@ export default {
 
         error: function() {
           alert("Error, Correo y/o contraseña incorrecto.");
-          this.password = '';
+          this.password = "";
         },
 
         rememberMe: true,
@@ -93,6 +98,13 @@ export default {
       });
     },
 
+    url(ruta) {
+      this.$router.push({ path: ruta }).catch(error => {
+        if (error.name != "NavigationDuplicated") {
+          throw error;
+        }
+      });
+    }
   }
 };
 </script>
