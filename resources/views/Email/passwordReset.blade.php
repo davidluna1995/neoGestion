@@ -3,7 +3,7 @@
 
 Si usted no ha solicitado el cambio de contraseña puede omitir este mensaje.
 
-@component('mail::button', ['url' => 'http://127.0.0.1:8000/#/resetearPassword/'.$token])
+@component('mail::button', ['url' => 'http://gestion.neodev.cl//#/resetearPassword/'.$token])
 Reiniciar Contraseña
 @endcomponent
 
