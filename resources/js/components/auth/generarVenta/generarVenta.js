@@ -106,8 +106,10 @@ export default {
                 extraHead: '<meta http-equiv="Content-Language"content="zh-cn"/>'
             },
 
-            ticketPrint:[],
-            ticketPrintDetalle:[],
+            ticketPrint: [],
+            ticketPrintDetalle: [],
+            listarConf: [],
+            logoNull: false,
         }
 
 
@@ -122,7 +124,6 @@ export default {
         // MODAL VENTAS
         showModal() {
             this.$refs['ventasModal'].show();
-            // window.print();
         },
         hideModal() {
             this.$refs['ventasModal'].hide();
@@ -315,18 +316,29 @@ export default {
             }
         },
 
-        getNow: function () {
-            const today = new Date();
-            const date = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear();
-            const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-            this.fechaLocal = date;
-            this.horaLocal = time;
+        traer_configuraciones() {
+            this.axios.get('api/traer_configuraciones').then((response) => {
+                if (response.data.estado == 'success') {
+                    this.logoNull = true;
+                    this.listarConf = response.data.configuraciones;
+
+                }
+            })
         },
+
+        // getNow: function () {
+        //     const today = new Date();
+        //     const date = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear();
+        //     const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        //     this.fechaLocal = date;
+        //     this.horaLocal = time;
+        // },
 
 
     },
 
     mounted() {
         this.cargarCarro();
+        this.traer_configuraciones();
     },
 }

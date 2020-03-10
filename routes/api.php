@@ -53,5 +53,8 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('menos_vendidos_grafico', 'VentasController@menos_vendidos_grafico');
     Route::get('reporte_ventas/{desde?}/{hasta?}', 'VentasController@reporte_ventas');
 
-
+    // rutas configuraciones
+    Route::post('registro_configuraciones', 'ConfiguracionesController@registro_configuraciones');
+    Route::post('modificar_campo_configuraciones', 'ConfiguracionesController@modificar_campo_configuraciones');
+    Route::get('traer_configuraciones', 'ConfiguracionesController@traer_configuraciones');
 });

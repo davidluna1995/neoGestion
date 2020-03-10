@@ -41,6 +41,18 @@ export default {
                 { value: '2', text: 'Cajera' },
             ],
 
+            logo: '',
+            empresa: '',
+            direccion: '',
+            listarConf: [],
+            logoNull: false,
+
+            // ALERTS MODIFICAR
+            erroresConf: [],
+            correcto: '',
+            dismissSecs: 5,
+            dismissCountDown: 0,
+
         }
     },
     methods: {
@@ -64,6 +76,14 @@ export default {
         hideModalBloquearUsuario() {
             this.$refs['bloquearUsuario'].hide();
         },
+        // MODAL CONFIG
+        showModalConf() {
+            this.$refs['configuraciones'].show();
+            this.traer_configuraciones();
+        },
+        hideModalConf() {
+            this.$refs['configuraciones'].hide();
+        },
 
         contadorUsuarioCreado(dismissCountDown2) {
             this.dismissCountDown2 = dismissCountDown2;
@@ -77,6 +97,13 @@ export default {
         },
         alertRolUsuario() {
             this.dismissCountDown3 = this.dismissSecs3;
+        },
+
+        contadorConf(dismissCountDown) {
+            this.dismissCountDown = dismissCountDown;
+        },
+        alertConf() {
+            this.dismissCountDown = this.dismissSecs;
         },
 
         crear_usuario() {
@@ -149,7 +176,63 @@ export default {
                 .catch(error => {
                     alert(error);
                 })
-        }
+        },
+
+        crear_actualizar_configuraciones() {
+
+            let formData = new FormData();
+            formData.append('logo', this.logo[0]);
+            formData.append('empresa', this.empresa);
+            formData.append('direccion', this.direccion);
+
+            this.axios.post('api/registro_configuraciones', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then((response) => {
+
+                if (response.data.estado == 'success') {
+                    this.correcto = response.data.mensaje;
+                    this.alertConf();
+                    this.traer_configuraciones();
+                    this.erroresConf = [];
+                }
+
+                if (response.data.estado == 'failed_v') {
+                    this.erroresConf = response.data.mensaje;
+                }
+
+                if (response.data.estado == 'failed') {
+                    alert(response.data.mensaje);
+                }
+            });
+
+
+        },
+
+        traer_configuraciones() {
+            this.axios.get('api/traer_configuraciones').then((response) => {
+                if (response.data.estado == 'success') {
+
+                    this.logoNull = true;
+
+                    this.listarConf = response.data.configuraciones;
+                    if (this.empresa == null || this.direccion == null) {
+                        this.empresa = '';
+                        this.direccion = '';
+                    } else {
+                        this.empresa = this.listarConf.empresa;
+                        this.direccion = this.listarConf.direccion;
+                    }
+                }
+            })
+        },
+
+        onFileChange(e) {
+            this.logo = e.target.files || e.dataTransfer.files;
+            console.log(this.logo[0]);
+        },
+
     },
 
 
