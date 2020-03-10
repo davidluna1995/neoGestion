@@ -92,11 +92,29 @@ export default {
             // ALERTS INGRESO VENTA
             errores3: [],
             correcto3: '',
-            dismissSecs3: 3,
+            dismissSecs3: 10,
             dismissCountDown3: 0,
 
+            fechaLocal: '',
+            horaLocal: '',
+            usuario: this.$auth.user(),
+
+            printVenta: {
+                id: "printVenta",
+                popTitle: 'good print',
+                extraCss: 'https://www.google.com,https://www.google.com',
+                extraHead: '<meta http-equiv="Content-Language"content="zh-cn"/>'
+            },
+
+            ticketPrint:[],
+            ticketPrintDetalle:[],
         }
 
+
+    },
+
+    created() {
+        setInterval(this.getNow, 1000);
     },
 
     methods: {
@@ -104,9 +122,11 @@ export default {
         // MODAL VENTAS
         showModal() {
             this.$refs['ventasModal'].show();
+            // window.print();
         },
         hideModal() {
             this.$refs['ventasModal'].hide();
+            // this.limpiarCarro();
         },
 
         formatPrice(value) {
@@ -117,6 +137,9 @@ export default {
         // SUCCESS VENTA CONTADOR
         countDownChanged3(dismissCountDown3) {
             this.dismissCountDown3 = dismissCountDown3;
+            if (this.dismissCountDown3 == 0) {
+                this.limpiarCarro();
+            }
         },
         showAlert3() {
             this.dismissCountDown3 = this.dismissSecs3;
@@ -262,10 +285,13 @@ export default {
                 if (response.data.estado == 'success') {
                     this.producto_id = '';
                     this.errores3 = [];
-                    this.limpiarCarro();
+                    // this.limpiarCarro();
                     this.correcto3 = response.data.mensaje;
                     this.showAlert3();
                     this.showModal();
+                    this.ticketPrintDetalle = response.data.ticketDetalle;
+                    this.ticketPrint = response.data.ticket;
+
                 }
 
                 if (response.data.estado == 'failed') {
@@ -289,11 +315,18 @@ export default {
             }
         },
 
+        getNow: function () {
+            const today = new Date();
+            const date = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear();
+            const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            this.fechaLocal = date;
+            this.horaLocal = time;
+        },
+
 
     },
 
     mounted() {
         this.cargarCarro();
-
     },
 }

@@ -47,7 +47,15 @@ class VentasController extends Controller
             $ingresarDetalle = $this->registro_detalle_venta($datos->carro, $venta->id);
             if ($ingresarDetalle == true) {
                 DB::commit();
-                return ['estado'=>'success', 'mensaje'=>'Venta realizada con exito, actualizando nuevo stock.'];
+                $ticketDetalle = $this->ticketDetalle($venta->id);
+                $ticket = $this->ticket($venta->id);
+                if ($ticketDetalle['estado'] == 'success' && $ticket['estado'] == 'success') {
+                    return ['estado'=>'success',
+                            'mensaje'=>'Venta realizada con exito, actualizando nuevo stock.',
+                            'ticketDetalle'=>$ticketDetalle['ticketDetalle'],
+                            'ticket'=>$ticket['ticket']
+                            ];
+                }
             } else {
                 if ($ingresarDetalle == false) {
                     return ['estado'=>'failed', 'mensaje'=>'Error, la cantidad de venta es mayor al stock.'];
@@ -129,7 +137,7 @@ class VentasController extends Controller
                                             ->get();
         if (count($listar) > 0) {
             foreach ($listar as $key) {
-                setlocale(LC_TIME, 'es');
+                setlocale(LC_TIME, 'es_CL.UTF-8');
                 $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
             }
         }
@@ -157,7 +165,7 @@ class VentasController extends Controller
 
         if (count($listar) > 0) {
             foreach ($listar as $key) {
-                setlocale(LC_TIME, 'es');
+                setlocale(LC_TIME, 'es_CL.UTF-8');
                 $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
             }
         }
@@ -193,7 +201,7 @@ class VentasController extends Controller
                                     ->get();
         if (count($listar) > 0) {
             foreach ($listar as $key) {
-                setlocale(LC_TIME, 'es');
+                setlocale(LC_TIME, 'es_CL.UTF-8');
                 $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
             }
         }
@@ -465,7 +473,7 @@ class VentasController extends Controller
                 ->get();
             if (count($listar) > 0) {
                 foreach ($listar as $key) {
-                    setlocale(LC_TIME, 'es');
+                    setlocale(LC_TIME, 'es_CL.UTF-8');
                     $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
                 }
             }
@@ -474,6 +482,43 @@ class VentasController extends Controller
             } else {
                 return ['estado'=>'failed', 'mensaje'=>'No existen ventas en el rango de fecha seleccionado.'];
             }
+        }
+    }
+
+    protected function ticketDetalle($idVenta)
+    {
+        $listar = DetalleVenta::select([
+            'detalle_venta.cantidad as cantidadDetalle',
+            'detalle_venta.precio',
+            'producto.nombre',
+            ])
+            ->join('ventas', 'ventas.id', 'detalle_venta.venta_id')
+            ->join('producto', 'producto.id', 'detalle_venta.producto_id')
+            ->join('categoria', 'categoria.id', 'producto.categoria_id')
+            ->join('users', 'users.id', 'ventas.user_id')
+            ->where('venta_id', $idVenta)
+            ->get();
+
+        if (!$listar->isEmpty()) {
+            return ['estado'=>'success' , 'ticketDetalle' => $listar];
+        } else {
+            return ['estado'=>'failed', 'mensaje'=>'No existen ventas.'];
+        }
+    }
+    protected function ticket($idVenta)
+    {
+        $listar = Ventas::select([
+            'ventas.id as idVenta',
+            'ventas.created_at as fechaVenta',
+            'ventas.venta_total as totalVenta'
+            ])
+            ->where('ventas.id', $idVenta)
+            ->get();
+
+        if (!$listar->isEmpty()) {
+            return ['estado'=>'success' , 'ticket' => $listar];
+        } else {
+            return ['estado'=>'failed', 'mensaje'=>'No existen ventas.'];
         }
     }
 }

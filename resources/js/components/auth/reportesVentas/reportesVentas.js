@@ -1,6 +1,23 @@
+
 export default {
     data() {
+
         return {
+
+            printVenta: {
+                id: "printVenta",
+                popTitle: 'good print',
+                extraCss: 'https://www.google.com,https://www.google.com',
+                extraHead: '<meta http-equiv="Content-Language"content="zh-cn"/>'
+            },
+            printDetalle: {
+                id: "printDetalle",
+                popTitle: 'good print',
+                extraCss: 'https://www.google.com,https://www.google.com',
+                extraHead: '<meta http-equiv="Content-Language"content="zh-cn"/>'
+            },
+
+    
             desde: '',
             hasta: '',
 
@@ -32,6 +49,7 @@ export default {
         }
     },
     methods: {
+
         formatPrice(value) {
             let val = (value / 1).toFixed(0).replace('.', ',')
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
@@ -55,7 +73,8 @@ export default {
                 this.listarReporteVentas = [];
                 this.axios.get('api/reporte_ventas/' + this.desde + '/' + this.hasta).then((response) => {
                     if (response.data.estado == 'success') {
-                    this.listarReporteVentas = response.data.ventas;
+                        this.listarReporteVentas = response.data.ventas;
+                        console.log(this.listarReporteVentas);
                     }
                     if (response.data.estado == 'failed') {
                         alert(response.data.mensaje);

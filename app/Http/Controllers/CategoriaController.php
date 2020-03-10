@@ -66,7 +66,7 @@ class CategoriaController extends Controller
 
         if (count($listar) > 0) {
             foreach ($listar as $key) {
-                setlocale(LC_TIME, 'es');
+                setlocale(LC_TIME, 'es_CL.UTF-8');
                 $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
             }
         }
@@ -159,7 +159,7 @@ class CategoriaController extends Controller
 
         if (count($listar) > 0) {
             foreach ($listar as $key) {
-                setlocale(LC_TIME, 'es');
+                setlocale(LC_TIME, 'es_CL.UTF-8');
                 $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
             }
         }

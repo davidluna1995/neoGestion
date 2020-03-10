@@ -18,7 +18,7 @@ export default {
                 { key: 'stock', label: 'Stock', class: 'text-center' },
                 { key: 'detalle', label: '' },
                 { key: 'editar', label: '' },
-                { key: 'ventaModal', label: '' },
+                // { key: 'ventaModal', label: '' },
                 { key: 'eliminarProd', label: '' },
             ],
 

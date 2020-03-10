@@ -14,9 +14,9 @@
                         id="inputBuscar"
                         v-on:keyup="escribiendoProducto"
                         size="sm"
-                         placeholder="Escanee el producto o ingrese el código de barras SKU"
-                         v-model="buscadorProducto"
-                         v-on:keyup.enter="traer_producto()"
+                        placeholder="Escanee el producto o ingrese el código de barras SKU"
+                        v-model="buscadorProducto"
+                        v-on:keyup.enter="traer_producto()"
                       ></b-form-input>
                       <b-input-group-append>
                         <b-button
@@ -61,7 +61,9 @@
                           <br />
                           <em>{{ formatPrice(data.item.cantidad)}} unidades disponibles</em>
                         </template>
-                        <template v-slot:cell(precioProd)="data">$ {{ formatPrice(data.item.precio_venta) }}</template>
+                        <template
+                          v-slot:cell(precioProd)="data"
+                        >$ {{ formatPrice(data.item.precio_venta) }}</template>
                         <template
                           v-slot:cell(subtotal)="data"
                         >$ {{ formatPrice(data.item.precio_venta * data.item.cantidad_ls) }}</template>
@@ -125,7 +127,12 @@
                 <div v-if="formaPago == '1' || formaPago == '1,2' || formaPago =='2,1'">
                   <b-form-group label="Monto en CLP">
                     <b-input-group>
-                      <b-form-input size="sm" type="number" placeholder="Ingrese el monto que cancela el cliente" v-model="montoEfectivo">{{formatPrice()}}</b-form-input>
+                      <b-form-input
+                        size="sm"
+                        type="number"
+                        placeholder="Ingrese el monto que cancela el cliente"
+                        v-model="montoEfectivo"
+                      >{{formatPrice()}}</b-form-input>
                       <b-input-group-append>
                         <b-button size="sm" text="Button" disabled>Efectivo</b-button>
                       </b-input-group-append>
@@ -136,7 +143,12 @@
                 <div v-if="formaPago == '2' || formaPago == '1,2' || formaPago =='2,1'">
                   <b-form-group label="Monto en CLP">
                     <b-input-group>
-                      <b-form-input size="sm" type="number" placeholder="Ingrese el monto que cancela el cliente" v-model="montoDebito"></b-form-input>
+                      <b-form-input
+                        size="sm"
+                        type="number"
+                        placeholder="Ingrese el monto que cancela el cliente"
+                        v-model="montoDebito"
+                      ></b-form-input>
                       <b-input-group-append>
                         <b-button size="sm" text="Button" disabled>T.Debito</b-button>
                       </b-input-group-append>
@@ -147,7 +159,12 @@
                 <div v-if="formaPago == '3'">
                   <b-form-group label="Monto en CLP">
                     <b-input-group>
-                      <b-form-input size="sm" type="number" placeholder="Ingrese el monto que cancela el cliente" v-model="montoCredito"></b-form-input>
+                      <b-form-input
+                        size="sm"
+                        type="number"
+                        placeholder="Ingrese el monto que cancela el cliente"
+                        v-model="montoCredito"
+                      ></b-form-input>
                       <b-input-group-append>
                         <b-button size="sm" text="Button" disabled>T.Credito</b-button>
                       </b-input-group-append>
@@ -200,7 +217,7 @@
                       </div>
                       <!-- <div v-if="formaPago == '1,2' || formaPago =='2,1'">
                         <label>({{montoEfectivo}} + {{montoDebito}})</label>
-                      </div> -->
+                      </div>-->
                     </div>
 
                     <div class="col-8">
@@ -250,7 +267,7 @@
                             hide-footer
                             centered
                           >
-                            <section class="A7 width-82mm">
+                            <section class="A7 width-82mm" id="printVenta">
                               <!--Tabla Datos de Empresa-->
                               <table>
                                 <!--Titulo-->
@@ -266,7 +283,7 @@
                                   <!--Logotipo-->
 
                                   <!--Datos Empresa-->
-                                  <tr>
+                                  <tr align="center">
                                     <th class="border-black" style="width:100%" colspan="4">
                                       <h1
                                         class="top-0 bottom-0 text-left line-height-140 font-14"
@@ -282,34 +299,44 @@
                                 <!--Tbody-->
                                 <tbody>
                                   <!--Fecha Emisión-->
-                                  <tr>
+                                  <tr v-for="t in ticketPrint" :key="t.id">
                                     <td
                                       class="font-13 bold padding-small padding-top width-50"
-                                      colspan="2"
-                                    >Fecha : 12-feb-2020</td>
+                                      colspan="4"
+                                    >Fecha: {{t.fechaVenta}}</td>
+                                  </tr>
+                                    <tr v-for="t in ticketPrint" :key="t.id">
+                                      <td
+                                        class="font-13 bold padding-small"
+                                        colspan="4"
+                                      >Comprobante de Venta</td>
+                                      <td class="font-13 bold padding-small" colspan="2">Nº {{t.idVenta}}</td>
+                                    </tr>
+                                  
+                                  <!-- <tr>
                                     <td
                                       class="font-13 bold padding-small padding-top"
-                                      colspan="2"
-                                    >Hora : 11:53:15</td>
-                                  </tr>
+                                      colspan="4"
+                                    >Hora: {{horaLocal}}</td>
+                                  </tr>-->
                                   <!--Tipo Documento y folio-->
-                                  <tr>
+                                  <!-- <tr>
                                     <td
                                       class="font-13 bold padding-small"
                                       colspan="2"
                                     >Comprobante de Venta</td>
                                     <td class="font-13 bold padding-small" colspan="2">Nº 2</td>
-                                  </tr>
+                                  </tr>-->
                                   <!--Cajero-->
                                   <tr>
-                                    <td class="padding-small" colspan="4">Cajero: david luna</td>
+                                    <td class="font-13 bold padding-small" colspan="4">Cajero: {{usuario.name}}</td>
                                   </tr>
                                   <!-- Cajero -->
                                   <!--Cajero-->
                                   <!-- <tr>
                                     <td class="font-13 bold padding-small" colspan="2">Transbank</td>
                                     <td class="font-13 bold padding-small" colspan="2">Nº 3.000</td>
-                                  </tr> -->
+                                  </tr>-->
                                   <!-- Cajero -->
                                 </tbody>
                                 <!--Tbody-->
@@ -342,7 +369,7 @@
                                     </td>
                                   </tr>
                                 </tbody>
-                              </table> -->
+                              </table>-->
                               <!--Cliente-->
 
                               <!--Tabla Detalles de Venta-->
@@ -360,25 +387,25 @@
                                   </tr>
 
                                   <!--Producto-->
-                                  <tr>
-                                    <td>MANZANA ($ 600 C/U)</td>
-                                    <td>5</td>
-                                    <td class="text-right">3.000</td>
+                                  <tr v-for="t in ticketPrintDetalle" :key="t.id">
+                                    <td>{{t.nombre}} ($ {{formatPrice(t.precio)}} C/U)</td>
+                                    <td>{{t.cantidadDetalle}}</td>
+                                    <td class="text-right">{{ formatPrice(t.precio * t.cantidadDetalle) }}</td>
                                   </tr>
                                   <!--Producto-->
 
                                   <!--Totales-->
-                                  <tr>
+                                  <tr v-for="t in ticketPrint" :key="t.id">
                                     <td
                                       class="padding-small border-top bold font-16 text-right"
                                     >Total</td>
                                     <td class="padding-small border-top text-right font-16">$</td>
                                     <td
                                       class="padding-small border-top text-right font-16 bold"
-                                    >3.000</td>
+                                    >{{formatPrice(t.totalVenta)}}</td>
                                   </tr>
 
-                                  <tr>
+                                  <!-- <tr>
                                     <td class="padding-small text-right">T. Débito</td>
                                     <td class="padding-small text-right">$</td>
                                     <td class="padding-small text-right">3.000</td>
@@ -387,12 +414,22 @@
                                     <td class="padding-small text-right">Total Pagos</td>
                                     <td class="padding-small text-right">$</td>
                                     <td class="padding-small text-right">3.000</td>
-                                  </tr>
+                                  </tr>-->
 
                                   <tr>
                                     <td class="padding-small text-right">Vuelto</td>
                                     <td class="padding-small text-right">$</td>
-                                    <td class="padding-small text-right">0</td>
+                                    <td class="padding-small text-right">
+                                      <div v-if="formaPago == '1'">
+                                        <label>$ {{formatPrice(montoEfectivo - total)}}</label>
+                                      </div>
+                                      <div v-if="formaPago == '2'">
+                                        <label>$ {{formatPrice(montoDebito - total)}}</label>
+                                      </div>
+                                      <div v-if="formaPago == '3'">
+                                        <label>$ {{formatPrice(montoCredito - total)}}</label>
+                                      </div>
+                                    </td>
                                   </tr>
                                   <!--Totales-->
 
@@ -416,6 +453,18 @@
                                 </tbody>
                               </table>
                             </section>
+                            <div class="row justify-content-center bordeFooter">
+                              <div class="col-4">
+                                <b-button
+                                  class="my-2"
+                                  block
+                                  pill
+                                  variant="info"
+                                  v-print="printVenta"
+                                  @click="hideModal()"
+                                >imprimir</b-button>
+                              </div>
+                            </div>
                           </b-modal>
                         </div>
                       </template>
@@ -507,7 +556,6 @@
               </b-alert>
             </ul>
           </div>
-
         </b-card>
       </div>
     </div>
