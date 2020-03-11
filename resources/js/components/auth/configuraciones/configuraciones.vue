@@ -258,12 +258,26 @@
                     ref="configuraciones"
                   >
                     <template v-slot:modal-title>
-                      <h5 class="text-center">INFORMACION DE LA EMPRESA
-                        <img :src="listarConf.logo" v-show="logoNull" width="150px" height="50px">
+                      <h5 class="text-center">
+                        INFORMACION DE LA EMPRESA
+                        <img
+                          :src="listarConf.logo"
+                          v-show="logoNull"
+                          width="80px"
+                          height="50px"
+                        />
                       </h5>
                     </template>
 
                     <div class="row">
+                      <b-alert show variant="warning">
+                        <b>NOTA:</b>
+                        <em>
+                          Al cambiar algun dato de este formulario por seguridad la
+                          sesión se cerrará automaticamente para que efectue un nuevo
+                          inicio de sesión con los nuevos datos ingresados.
+                        </em>
+                      </b-alert>
                       <div class="col-12 col-md-3 col-lg-3 text-left">
                         <b>SUBIR LOGO:</b>
                       </div>

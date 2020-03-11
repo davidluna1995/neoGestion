@@ -50,7 +50,7 @@ export default {
             // ALERTS MODIFICAR
             erroresConf: [],
             correcto: '',
-            dismissSecs: 5,
+            dismissSecs: 3,
             dismissCountDown: 0,
 
         }
@@ -101,6 +101,9 @@ export default {
 
         contadorConf(dismissCountDown) {
             this.dismissCountDown = dismissCountDown;
+            if (this.dismissCountDown == 0) {
+                this.logout();
+            }
         },
         alertConf() {
             this.dismissCountDown = this.dismissSecs;
@@ -232,6 +235,13 @@ export default {
             this.logo = e.target.files || e.dataTransfer.files;
             console.log(this.logo[0]);
         },
+
+        logout: function () {
+            this.$auth.logout({
+                makeRequest: true,
+                redirect: "/"
+            });
+        }
 
     },
 

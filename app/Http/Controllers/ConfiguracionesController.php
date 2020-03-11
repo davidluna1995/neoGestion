@@ -54,7 +54,7 @@ class ConfiguracionesController extends Controller
 
 
                 if ($update->save()) {
-                    return ['estado'=>'success', 'mensaje'=>'Información guardada con éxito.'];
+                    return ['estado'=>'success', 'mensaje'=>'Información guardada con éxito, por seguridad la sesión cerrará automaticamente.'];
                 } else {
                     return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error, verifique esten correcto los campos.'];
                 }
@@ -73,7 +73,7 @@ class ConfiguracionesController extends Controller
                 }
 
                 if ($conf->save()) {
-                    return ['estado'=>'success', 'mensaje'=>'Información guardada con éxito.'];
+                    return ['estado'=>'success', 'mensaje'=>'Información guardada con éxito, por seguridad la sesión cerrará automaticamente.'];
                 } else {
                     return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error, verifique esten correcto los campos.'];
                 }
