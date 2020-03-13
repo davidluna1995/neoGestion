@@ -5,7 +5,7 @@
         <b-card class="text-center transparencia">
           <div class="row">
             <!-- buscar por codigo -->
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-md-6 col-lg-8">
               <b-card class="largoCard">
                 <div class="row">
                   <div class="col-12">
@@ -109,7 +109,7 @@
             <!-- buscar por codigo -->
 
             <!-- tipo de venta -->
-            <div class="col-12 col-md-4 text-right">
+            <div class="col-12 col-md-6 col-lg-4 text-right">
               <b-card>
                 <div>
                   <b-form-group label="Forma de pago">
@@ -267,189 +267,87 @@
                             hide-footer
                             centered
                           >
-                            <section class="A7 width-82mm" id="printVenta">
-                              <!--Tabla Datos de Empresa-->
-                              <table>
-                                <!--Titulo-->
-                                <thead>
-                                  <!--Logotipo-->
-                                  <tr>
-                                    <th class="logo text-center" style="width:100%" colspan="4">
-                                     <img :src="listarConf.logo" v-show="logoNull" width="177px" height="86px">
-                                    </th>
-                                  </tr>
-                                  <!--Logotipo-->
-
-                                  <!--Datos Empresa-->
-                                  <tr align="center">
-                                    <th class="border-black" style="width:100%" colspan="4">
-                                      <h1
-                                        class="top-0 bottom-0 text-left line-height-140 font-14"
-                                      >{{listarConf.empresa}}</h1>
-                                      <h3
-                                        class="top-0 bottom-0 text-left line-height-130 font-11 light"
-                                      >{{listarConf.direccion}}</h3>
-                                    </th>
-                                  </tr>
-                                  <!--Datos Empresa-->
-                                </thead>
-                                <!--Titulo-->
-                                <!--Tbody-->
-                                <tbody>
-                                  <!--Fecha Emisión-->
-                                  <tr v-for="t in ticketPrint" :key="t.id">
-                                    <td
-                                      class="font-13 bold padding-small padding-top width-50"
-                                      colspan="4"
-                                    >Fecha: {{t.fechaVenta}}</td>
-                                  </tr>
+                            <section>
+                              <div class="ticket" id="printVenta" style=" font-size: 12px;font-family: 'Times New Roman'">
+                                <center>
+                                  <img
+                                    :src="listarConf.logo"
+                                    v-show="logoNull"
+                                    width="177px"
+                                    height="86px"
+                                  />
+                                </center>
+                                <center>
+                                  <p>
+                                    TICKET DE VENTA
+                                    <br />
+                                    {{listarConf.empresa}}
+                                    <br />
+                                    {{listarConf.direccion}}
+                                  </p>
+                                </center>
+                                <table align="center">
+                                  <thead>
+                                    <!--Fecha Emisión-->
                                     <tr v-for="t in ticketPrint" :key="t.id">
-                                      <td
-                                        class="font-13 bold padding-small"
-                                        colspan="4"
-                                      >Comprobante de Venta</td>
-                                      <td class="font-13 bold padding-small" colspan="2">Nº {{t.idVenta}}</td>
+                                      <th colspan="4">Fecha: {{t.fechaVenta}}</th>
                                     </tr>
-                                  
-                                  <!-- <tr>
-                                    <td
-                                      class="font-13 bold padding-small padding-top"
-                                      colspan="4"
-                                    >Hora: {{horaLocal}}</td>
-                                  </tr>-->
-                                  <!--Tipo Documento y folio-->
-                                  <!-- <tr>
-                                    <td
-                                      class="font-13 bold padding-small"
-                                      colspan="2"
-                                    >Comprobante de Venta</td>
-                                    <td class="font-13 bold padding-small" colspan="2">Nº 2</td>
-                                  </tr>-->
-                                  <!--Cajero-->
-                                  <tr>
-                                    <td class="font-13 bold padding-small" colspan="4">Cajero: {{usuario.name}}</td>
-                                  </tr>
-                                  <!-- Cajero -->
-                                  <!--Cajero-->
-                                  <!-- <tr>
-                                    <td class="font-13 bold padding-small" colspan="2">Transbank</td>
-                                    <td class="font-13 bold padding-small" colspan="2">Nº 3.000</td>
-                                  </tr>-->
-                                  <!-- Cajero -->
-                                </tbody>
-                                <!--Tbody-->
-                              </table>
-                              <!--Tabla Datos de Empresa-->
+                                    <tr v-for="t in ticketPrint" :key="t.id">
+                                      <th colspan="4">Comprobante de Venta Nº {{t.idVenta}}</th>
+                                    </tr>
 
-                              <!--Cliente-->
-                              <!-- <table class="top-10">
-                                <tbody>
-                                  <tr>
-                                    <td class="border-bottom">
-                                      <h3
-                                        class="top-0 bottom-0 text-left line-height-130 font-12 bold"
-                                      >Genérico</h3>
-                                      <h3
-                                        class="top-0 bottom-0 text-left line-height-130 font-12 light"
-                                      >RUT: 1-9</h3>
-                                      <h3
-                                        class="top-0 bottom-0 text-left line-height-130 font-12 light"
-                                      >Giro: Servicios</h3>
-                                      <h3
-                                        class="top-0 bottom-0 text-left line-height-130 font-12 light"
-                                      >Comuna: Providencia</h3>
-                                      <h3
-                                        class="top-0 bottom-0 text-left line-height-130 font-12 light"
-                                      >Cuidad: Santiago</h3>
-                                      <h3
-                                        class="top-0 bottom-0 text-left line-height-130 font-12 light"
-                                      >Dirección: Padre Mariano 210</h3>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>-->
-                              <!--Cliente-->
-
-                              <!--Tabla Detalles de Venta-->
-                              <table class="top-10">
-                                <tbody>
-                                  <tr>
-                                    <td class="font-14 light padding-top" colspan="3">Detalle</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="font-13 bold width-65 padding-small">Producto</td>
-                                    <td class="font-13 bold width-5 padding-small">Cant.</td>
-                                    <td
-                                      class="font-13 bold text-right width-30 padding-small"
-                                    >Precio</td>
-                                  </tr>
-
-                                  <!--Producto-->
-                                  <tr v-for="t in ticketPrintDetalle" :key="t.id">
-                                    <td>{{t.nombre}} ($ {{formatPrice(t.precio)}} C/U)</td>
-                                    <td>{{t.cantidadDetalle}}</td>
-                                    <td class="text-right">{{ formatPrice(t.precio * t.cantidadDetalle) }}</td>
-                                  </tr>
-                                  <!--Producto-->
-
-                                  <!--Totales-->
-                                  <tr v-for="t in ticketPrint" :key="t.id">
-                                    <td
-                                      class="padding-small border-top bold font-16 text-right"
-                                    >Total</td>
-                                    <td class="padding-small border-top text-right font-16">$</td>
-                                    <td
-                                      class="padding-small border-top text-right font-16 bold"
-                                    >{{formatPrice(t.totalVenta)}}</td>
-                                  </tr>
-
-                                  <!-- <tr>
-                                    <td class="padding-small text-right">T. Débito</td>
-                                    <td class="padding-small text-right">$</td>
-                                    <td class="padding-small text-right">3.000</td>
-                                  </tr>
-                                  <tr>
-                                    <td class="padding-small text-right">Total Pagos</td>
-                                    <td class="padding-small text-right">$</td>
-                                    <td class="padding-small text-right">3.000</td>
-                                  </tr>-->
-
-                                  <tr>
-                                    <td class="padding-small text-right">Vuelto</td>
-                                    <td class="padding-small text-right">$</td>
-                                    <td class="padding-small text-right">
-                                      <div v-if="formaPago == '1'">
-                                        <label>$ {{formatPrice(montoEfectivo - total)}}</label>
-                                      </div>
-                                      <div v-if="formaPago == '2'">
-                                        <label>$ {{formatPrice(montoDebito - total)}}</label>
-                                      </div>
-                                      <div v-if="formaPago == '3'">
-                                        <label>$ {{formatPrice(montoCredito - total)}}</label>
-                                      </div>
-                                    </td>
-                                  </tr>
-                                  <!--Totales-->
-
-                                  <!--Totales-->
-                                </tbody>
-                              </table>
-                              <!--Tabla Detalles de Venta-->
-
-                              <table class="top-20 bottom-20">
-                                <tbody>
-                                  <tr>
-                                    <td class="padding-bottom-20">
-                                      <h3
-                                        class="top-0 bottom-0 text-center line-height-130 font-12 light"
-                                      >Neo-POS</h3>
-                                      <h3
-                                        class="top-0 bottom-0 text-center line-height-130 font-12 light"
-                                      >Comprobante de Venta</h3>
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
+                                    <tr
+                                      style="border-top: 1px solid black; border-collapse: collapse;"
+                                    >
+                                      <th
+                                        style="border-top: 1px solid black; border-collapse: collapse;"
+                                      >PRODUCTO</th>
+                                      <th
+                                        style="border-top: 1px solid black; border-collapse: collapse;"
+                                      >CANT</th>
+                                      <th
+                                        style="border-top: 1px solid black; border-collapse: collapse;"
+                                      >PRECIO</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <!--Producto-->
+                                    <tr v-for="t in ticketPrintDetalle" :key="t.id">
+                                      <td>{{t.nombre}} ($ {{formatPrice(t.precio)}} C/U)</td>
+                                      <td>{{t.cantidadDetalle}}</td>
+                                      <td
+                                        class="text-right"
+                                      >{{ formatPrice(t.precio * t.cantidadDetalle) }}</td>
+                                    </tr>
+                                    <!--Producto-->
+                                     <br />
+                                    <!--Totales-->
+                                    <tr v-for="t in ticketPrint" :key="t.id">
+                                      <td><b>Total: </b>$ {{formatPrice(t.totalVenta)}}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>
+                                        <div v-if="formaPago == '1'">
+                                          <label><b>Vuelto:</b> $ {{formatPrice(montoEfectivo - total)}}</label>
+                                        </div>
+                                        <div v-if="formaPago == '2'">
+                                          <label><b>Vuelto:</b> $ {{formatPrice(montoDebito - total)}}</label>
+                                        </div>
+                                        <div v-if="formaPago == '3'">
+                                          <label><b>Vuelto:</b> $ {{formatPrice(montoCredito - total)}}</label>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                                <br />
+                                <center>
+                                  <p class="centrado">¡GRACIAS POR SU COMPRA!</p>
+                                  <p>NEO-GESTION</p>
+                                  <p>.................</p>
+                                </center>
+                              </div>
+                              <!-- MODAL VENTAS  -->
                             </section>
                             <div class="row justify-content-center bordeFooter">
                               <div class="col-4">
@@ -458,9 +356,11 @@
                                   block
                                   pill
                                   variant="info"
-                                  v-print="printVenta"
+                                  onclick="printJS({
+                                            printable: 'printVenta',
+                                            type:'html', })"
                                   @click="hideModal()"
-                                >imprimir</b-button>
+                                >imprimir ticket</b-button>
                               </div>
                             </div>
                           </b-modal>
