@@ -39,3 +39,9 @@ table#table-transition-example .flip-list-move {
   .table > thead > tr > th {
     vertical-align: middle;
   }
+
+
+#output_image
+{
+ width:100%;
+}

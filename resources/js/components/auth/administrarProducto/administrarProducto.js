@@ -73,7 +73,12 @@ export default {
             dismissCountDown4: 0,
             showAlertBuscar: false,
             errorBuscar: '',
+
+            imagen:null,
         }
+    },
+    created(){
+        
     },
 
     methods: {
@@ -93,6 +98,19 @@ export default {
                     throw error;
                 }
             });
+        },
+
+        preview_image(event) 
+        {
+            console.log("entroooo")
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('output_image');
+                output.src = reader.result;
+                console.log(output.src)
+            }
+            reader.readAsDataURL(event.target.files[0]);
+            this.imagen = event.target.files[0];
         },
         // MODAL VENTAS
         showModalVentas(id) {
@@ -181,6 +199,20 @@ export default {
                     alert(error);
                     this.loading = false;
                 })
+        },
+
+        actualizar_imagen(id){
+            const data = new FormData();
+            data.append('imagen', this.imagen);
+
+            this.axios.post('api/subir_imagen', data).then((res) => {
+                if (res.data.estado == 'success') {
+                    alert(res.data.mensaje)
+                } else {
+                    alert(res.data.mensaje)
+                    console.log(res.data);
+                }
+            });
         },
 
         registrar_venta() {

@@ -13,7 +13,7 @@
                   <b-form-input
                     id="inputBuscar"
                     v-on:keyup="escribiendoProducto"
-                    placeholder="Buscar producto"
+                    placeholder="Buscar producto..."
                     v-model="buscadorProducto"
                     v-on:keyup.enter="traer_producto()"
                     class="my-2"
@@ -335,6 +335,34 @@
                                   <li>{{e2[0]}}</li>
                                 </b-alert>
                               </ul>
+                            </div>
+
+
+
+                            <div class="col-8 mb-4">
+                              <div class="row">
+                                <div class="col-2">
+                                  <i class="fas fa-camera-retro fa-2x text-success"></i>
+                                </div>
+                                <div class="col-10">
+                                 
+                                    <!-- <b-form-file size="sm" ref="cony" id="cony" @change="captar_foto"   placeholder="Seleccione un logo"></b-form-file> -->
+                                    <input class="form-control" type="file" accept="image/*" @change="preview_image">
+                                    <img id="output_image"/>
+                                   
+                                  
+                                </div>
+                                
+                              </div>
+                            </div>
+                            <div class="col-3">
+                              <b-button
+                                block
+                                variant="light"
+                                @click="actualizar_imagen(data.item.id)"
+                              >
+                                <i class="fas fa-edit text-success"></i>
+                              </b-button>
                             </div>
                           </div>
                         </div>

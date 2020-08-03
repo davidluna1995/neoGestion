@@ -372,4 +372,35 @@ class ProductoController extends Controller
             return ['estado'=>'failed', 'mensaje'=>'El producto no existe en nuestros registros,refrescando la tabla.'];
         }
     }
+
+
+    //aqui toco alejandro
+    public function subir_imagen(Request $r)
+    {
+      dd($r->all());
+       $validar_img=$this->validar_archivo($r->logo,'logo', 'image/jpeg','image/png');
+    }
+
+    public function validar_archivo($archivo, $campo_name, $formato1, $formato2)
+    {
+       
+        if($archivo == "null" || $archivo == "undefined"){
+            return "nofile";
+        }else{
+            
+            if($_FILES[$campo_name]['type']==$formato1 ){
+                return true;
+                //  dd("true");
+                
+            }
+            if ($_FILES[$campo_name]['type']==$formato2) {
+                return true;
+            }
+
+            else{
+                // dd("false");
+                return false;
+            }
+        }
+    }
 }
