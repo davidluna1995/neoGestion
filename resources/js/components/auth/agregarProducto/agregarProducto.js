@@ -18,6 +18,7 @@ export default {
       listarCategorias: [],
 
       // ALERTS INGRESO PRODUCTO
+      guardar_load:false,
       errores: [],
       correcto: '',
       dismissSecs: 5,
@@ -61,6 +62,26 @@ export default {
     },
 
     registrar_producto() {
+      
+      if (this.categoria_id == null ||
+        this.sku.trim() == '' ||
+        this.nombre.trim() == '' ||
+        this.descripcion.trim() == '' ||
+        this.cantidad.trim() == '' ||
+        this.precio_compra.trim() == '' ||
+        this.precio_venta.trim() == ''){
+          this.guardar_load = false;
+          alert("faltan campos por llenar");
+          return false;
+      }
+
+      if (this.precio_compra < 0 || this.precio_venta < 0 || this.cantidad < 0){
+        alert("Algunos campos numericos no pueden ser negativos")
+        this.guardar_load = false;
+        return false;
+      }
+
+      this.guardar_load = true;
       const data = {
         'categoria_id': this.categoria_id.id,
         'sku': this.sku,
@@ -84,14 +105,18 @@ export default {
           this.precio_compra = '';
           this.precio_venta = '';
           this.errores = [];
+
+          this.guardar_load = false;
         }
 
         if (response.data.estado == 'failed_v') {
           this.errores = response.data.mensaje;
+          this.guardar_load = false;
         }
 
         if (response.data.estado == 'failed') {
           alert(response.data.mensaje);
+          this.guardar_load = false;
         }
 
       });

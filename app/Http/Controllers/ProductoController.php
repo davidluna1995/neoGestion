@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProductoController extends Controller
@@ -53,7 +54,7 @@ class ProductoController extends Controller
             $producto->categoria_id = $datos->categoria_id;
             $producto->sku =  strtolower($datos->sku);
             $producto->nombre =  strtolower($datos->nombre);
-            $producto->descripcion = strtolower($datos->descripcion);
+            $producto->descripcion = ($datos->descripcion);
 
 
           
@@ -63,6 +64,7 @@ class ProductoController extends Controller
             $producto->precio_compra = $datos->precio_compra;
             $producto->precio_venta = $datos->precio_venta;
             $producto->stock = $datos->stock;
+            $producto->activo = 'S';
 
             if ($producto->save()) {
                 return ['estado'=>'success', 'mensaje'=>'Producto guardado con exito.'];
@@ -87,10 +89,12 @@ class ProductoController extends Controller
                                     'categoria.id as catId',
                                     'producto.created_at as creado',
                                     'u.name as nombreUsuario',
+                                    'producto.imagen'
                                 ])
                                     ->join('categoria', 'categoria.id', 'producto.categoria_id')
                                     ->join('users as u', 'u.id', 'producto.user_id')
-                                    ->orderby('producto.id', 'asc')
+                                    ->where('producto.activo','S')
+                                    ->orderby('categoria.descripcion', 'asc')
                                     ->get();
         if (count($listar) > 0) {
             foreach ($listar as $key) {
@@ -324,10 +328,23 @@ class ProductoController extends Controller
         }
         return $validarDatos;
     }
-
-    protected function cantidad_productos()
+    protected function inhabilitar_producto($id)
     {
-        $listar = DB::table('producto')->count();
+      $producto = Producto::find($id);
+      if ($producto) {
+        $producto->activo = 'N';
+        if($producto->save()){
+          return [
+            'estado'=>'success',
+            'mensaje'=>'Producto inhabilitado'
+          ];
+        }
+      }
+    }
+
+    protected function cantidad_productos()//productos activos
+    {
+        $listar = DB::table('producto')->where('activo','S')->count();
         if ($listar > 0) {
             return $listar;
         } else {
@@ -349,14 +366,16 @@ class ProductoController extends Controller
                                     'categoria.descripcion as catDesc',
                                     'categoria.id as catId',
                                     'u.name as nombreUsuario',
+                                    'producto.imagen'
                                     ])
                                     ->join('categoria', 'categoria.id', 'producto.categoria_id')
                                     ->join('users as u', 'u.id', 'producto.user_id')
                                     ->whereRaw(
-                                      "producto.nombre like lower('%$producto%') or 
-                                      categoria.descripcion like lower('%$producto%') or
-                                      producto.descripcion like lower('%$producto%')"
+                                      "lower(producto.nombre) like lower('%$producto%') or 
+                                      lower(categoria.descripcion) like lower('%$producto%') or
+                                      lower(producto.descripcion) like lower('%$producto%')"
                                     )
+                                    ->where('activo','S')
                                     ->get();
 
         if (count($listar) > 0) {
@@ -377,8 +396,48 @@ class ProductoController extends Controller
     //aqui toco alejandro
     public function subir_imagen(Request $r)
     {
-      dd($r->all());
-       $validar_img=$this->validar_archivo($r->logo,'logo', 'image/jpeg','image/png');
+   
+       $validar_img=$this->validar_archivo($r->imagen,'imagen', 'image/jpeg','image/png');
+     
+       if ($validar_img == false) {
+                return [
+                    'estado' => 'failed',
+                    'mensaje' => 'El archivo no es una imagen o logo'
+                ];  
+        }else{
+          
+                if ($validar_img==="nofile") {
+                  return ['estado'=>'failed', 'mensaje'=>'No hay una imagen'];
+                }
+                if ($validar_img==true) {
+                 
+                  $producto = Producto::find($r->id);
+                      if ($producto) {
+                       
+                        $file = $this->guardarArchivo($r->imagen,'foto_productos/');
+
+
+                        if($file['estado'] == "success"){
+                           $ruta = substr($producto->imagen, 8);
+                            $borrar = Storage::delete($ruta);
+
+                            $producto->imagen = 'storage/'.$file['archivo'];
+                        }else{
+
+                            // $u->avatar = '--';
+                            //return ['estado'=>'failed','mensaje'=>'el archivo no se subio correctamente'];
+                        } 
+
+                        if ($producto->save()) {
+                            return ['estado'=>'success','mensaje'=>'La imagen se ha subido correctamente'];
+                        }
+                      }
+                }
+                
+                
+                         
+                    
+            }
     }
 
     public function validar_archivo($archivo, $campo_name, $formato1, $formato2)
@@ -402,5 +461,27 @@ class ProductoController extends Controller
                 return false;
             }
         }
+    }
+
+    protected function guardarArchivo($archivo, $ruta)
+    {
+    	try{
+	        $filenameext = $archivo->getClientOriginalName();
+	        $filename = pathinfo($filenameext, PATHINFO_FILENAME);
+	        $extension = $archivo->getClientOriginalExtension();
+	        $nombreArchivo = $filename . '_' . time() . '.' . $extension;
+	        $rutaDB = $ruta . $nombreArchivo;
+
+	        $guardar = Storage::put($ruta . $nombreArchivo, (string) file_get_contents($archivo), 'public');
+          
+             if ($guardar) {
+                
+	            return ['estado' =>  'success', 'archivo' => $rutaDB];
+	        } else {
+	            return ['estado' =>  'failed', 'mensaje' => 'error al guardar el archivo.'];
+	        }
+	    }catch (\Throwable $t) {
+    			return ['estado' =>  'failed', 'mensaje' => 'error al guardar el archivo, posiblemente este dañado o no exista.'];
+		}
     }
 }

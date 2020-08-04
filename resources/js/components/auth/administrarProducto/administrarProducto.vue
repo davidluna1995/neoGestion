@@ -119,6 +119,12 @@
               <template v-slot:cell(index)="data">
                 <div class="col-12">{{ data.item.sku }}</div>
               </template>
+              <template v-slot:cell(imagen)="data">
+                <div class="col-12">
+                 
+                   <b-img class="tamanio" thumbnail v-if="data.item.imagen"  :src="data.item.imagen" alt="Image 1"></b-img>
+                </div>
+              </template>
               <template v-slot:cell(prod)="data">
                 <div class="col-12">{{ data.item.nombre }}</div>
               </template>
@@ -347,8 +353,8 @@
                                 <div class="col-10">
                                  
                                     <!-- <b-form-file size="sm" ref="cony" id="cony" @change="captar_foto"   placeholder="Seleccione un logo"></b-form-file> -->
-                                    <input class="form-control" type="file" accept="image/*" @change="preview_image">
-                                    <img id="output_image"/>
+                                    <input name="imagen" class="imagen form-control" type="file" accept="image/*" @change="preview_image">
+                                    <img class="thumbnail" id="output_image"/>
                                    
                                   
                                 </div>
@@ -382,10 +388,10 @@
                   </template>
                 </div>
               </template>
-              <template v-slot:cell(eliminarProd)>
+              <template v-slot:cell(eliminarProd)="data">
                 <div class="row">
                   <div class="col-12">
-                    <b-button block class="my-2" variant="danger">Borrar</b-button>
+                    <b-button @click="inhabilitar(data.item.id)" block class="my-2" variant="danger">Inhabilitar </b-button>
                   </div>
                 </div>
               </template>

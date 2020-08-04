@@ -38,6 +38,8 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('modificar_campo_producto', 'ProductoController@modificar_campo_producto');
     Route::get('cantidad_productos', 'ProductoController@cantidad_productos');
     Route::get('buscar_producto/{producto}', 'ProductoController@buscar_producto');
+    Route::get('inhabilitar_producto/{producto}', 'ProductoController@inhabilitar_producto');
+    
     Route::post('subir_imagen','ProductoController@subir_imagen');
 
     // rutas ventas

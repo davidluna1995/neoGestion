@@ -159,8 +159,8 @@
 
           <div class="row justify-content-center">
             <div class="col-12 col-md-12 col-lg-3 my-2">
-              <b-button block pill variant="success" @click="registrar_producto();">
-                <b>Guardar</b>
+              <b-button :disabled="guardar_load" block pill variant="success" @click="registrar_producto();">
+                <b>Guardar <b-spinner v-if="guardar_load" label="Loading..."></b-spinner></b>
               </b-button>
             </div>
             <div class="col-12 col-md-12 col-lg-3 my-2">
