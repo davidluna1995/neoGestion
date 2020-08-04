@@ -370,12 +370,13 @@ class ProductoController extends Controller
                                     ])
                                     ->join('categoria', 'categoria.id', 'producto.categoria_id')
                                     ->join('users as u', 'u.id', 'producto.user_id')
+                                    ->where('activo','S')
                                     ->whereRaw(
                                       "lower(producto.nombre) like lower('%$producto%') or 
                                       lower(categoria.descripcion) like lower('%$producto%') or
                                       lower(producto.descripcion) like lower('%$producto%')"
                                     )
-                                    ->where('activo','S')
+                                    
                                     ->get();
 
         if (count($listar) > 0) {
