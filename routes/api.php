@@ -61,6 +61,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('listar_clientes','ClientesController@listar_clientes');
     Route::post('actualizar_cliente','ClientesController@actualizar_cliente');
     Route::get('inhabilitar_cliente/{cliente}','ClientesController@inhabilitar_cliente');
+    Route::get('select_clientes','ClientesController@select_clientes');
     
 
     // rutas configuraciones

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Cliente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ClientesController extends Controller
 {
@@ -44,6 +45,24 @@ class ClientesController extends Controller
     public function listar_clientes()
     {
         $cuerpo = Cliente::where('activo','S')->get();
+        if (count($cuerpo)>0) {
+            return[
+                'estado'=>'success',
+                'cuerpo'=>$cuerpo
+            ];
+        }
+        return[
+            'estado'=>'failed',
+            'cuerpo'=>null
+        ];
+    }
+    public function select_clientes()
+    {
+        $cuerpo = Cliente::select([
+            'id',
+            DB::raw("concat(nombres,' ',apellidos,' - ',rut) texto")
+        ])
+                         ->where('activo','S')->get();
         if (count($cuerpo)>0) {
             return[
                 'estado'=>'success',
