@@ -377,7 +377,7 @@
                                 </table>
                                 <br />
                                 <center>
-                                  <p class="centrado">{{cliente}}</p>
+                                  <p class="centrado"><b>Cliente: </b>{{cliente}}</p>
                                   <p class="centrado">¡GRACIAS POR SU COMPRA!</p>
                                   <p>NEO-GESTION</p>
                                   <p>.................</p>
