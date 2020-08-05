@@ -6,6 +6,9 @@
 use Illuminate\Http\Request;
 
 Route::post('auth/login', 'APIController@login');
+Route::post("json", function(){
+    return "kalida";
+});
 Route::post('register', 'APIController@register');
 //Rutas para el reinicio de password
 Route::post('sendEmail','ResetPasswordController@sendEmail');

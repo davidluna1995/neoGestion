@@ -42,6 +42,7 @@ export default {
                 { key: 'categoria', label: 'Categoria' },
                 { key: 'precio', label: 'Precio' },
                 { key: 'cantidad', label: 'Cantidad Vendida' },
+                { key: 'cliente', label: 'Cliente' },
 
 
             ],

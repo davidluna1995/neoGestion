@@ -1,5 +1,9 @@
+import Multiselect from 'vue-multiselect';
 
 export default {
+  components: {
+    Multiselect
+  },
     data() {
         return {
 
@@ -18,6 +22,7 @@ export default {
             errorBuscar: '',
 
             // FORMA DE PAGO
+            cliente_id: null,
             efectivo: false,
             debito: false,
             credito: false,
@@ -30,6 +35,9 @@ export default {
 
             arregloCarro: [],
             cantidadStock: '',
+
+            listar_clientes: [],
+            cliente:'',
 
             // CABEZERA DE LA TABLA AGREGAR
             carroFieldsAdm: [
@@ -121,6 +129,17 @@ export default {
     },
 
     methods: {
+
+        traer_clientes() {
+            this.axios.get('api/listar_clientes').then((response) => {
+              this.listar_clientes = response.data.cuerpo;
+                    })
+      
+          },
+
+        buscadorClientes({ nombres,apellidos,rut }) {
+            return `${nombres} ${apellidos} - ${rut}`
+          },
 
         // MODAL VENTAS
         showModal() {
@@ -281,6 +300,7 @@ export default {
                 'venta_total': this.total,
                 'forma_pago_id': this.formaPago[0] + ',' + this.formaPago[1],
                 'tipo_entrega_id': this.entrega,
+                'cliente_id': this.cliente_id.id,
             }
 
             this.axios.post('api/registro_venta', data).then((response) => {
@@ -292,6 +312,7 @@ export default {
                     this.showAlert3();
                     this.showModal();
                     this.ticketPrintDetalle = response.data.ticketDetalle;
+                    this.cliente = response.data.cliente;
                     this.ticketPrint = response.data.ticket;
 
                 }
@@ -335,10 +356,10 @@ export default {
         //     this.horaLocal = time;
         // },
 
-
     },
 
     mounted() {
+        this.traer_clientes();
         this.cargarCarro();
         this.traer_configuraciones();
     },

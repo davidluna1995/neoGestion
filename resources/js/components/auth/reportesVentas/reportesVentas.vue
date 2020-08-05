@@ -133,6 +133,7 @@
                                 v-slot:cell(precio)="data"
                               >{{ formatPrice(data.item.precio) }}</template>
                               <template v-slot:cell(cantidad)="data">{{ data.item.cantidadDetalle }}</template>
+                              <template v-slot:cell(cliente)="data">{{ data.item.nombres }} {{data.item.apellidos}}</template>
                             </b-table>
                           </div>
 
