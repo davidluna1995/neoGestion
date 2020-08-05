@@ -92,14 +92,6 @@
                     </multiselect>
                   </div>
                 </div>
-                <!-- <b-form-select v-model="categoria_id" class="mb-3">
-                    <b-form-select-option :value="null" disabled>--Seleccione--</b-form-select-option>
-                    <b-form-select-option
-                      v-for="i in listarCategorias"
-                      :key="i.id"
-                      :value="i.id"
-                    >{{ i.descripcion }}</b-form-select-option>
-                </b-form-select>-->
               </b-form-group>
             </div>
 

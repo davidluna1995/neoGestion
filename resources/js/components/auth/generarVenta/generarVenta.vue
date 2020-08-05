@@ -111,6 +111,25 @@
             <!-- tipo de venta -->
             <div class="col-12 col-md-6 col-lg-4 text-right">
               <b-card>
+                <b-form-group id="cliente" label="Selecione Cliente:">
+                  <div class="row">
+                    <div class="col-12">
+                      <multiselect
+                        v-model="cliente_id"
+                        :options="listar_clientes"
+                        :custom-label="buscadorClientes"
+                        open-direction="bottom"
+                        placeholder="Seleccione"
+                        select-label
+                        selectedLabel="Selecionado"
+                        deselectLabel="Quitar"
+                      >
+                        <span slot="noResult">No se encontraron resultados.</span>
+                      </multiselect>
+                    </div>
+                  </div>
+                </b-form-group>
+
                 <div>
                   <b-form-group label="Forma de pago">
                     <b-form-checkbox-group
@@ -268,7 +287,11 @@
                             centered
                           >
                             <section>
-                              <div class="ticket" id="printVenta" style=" font-size: 12px;font-family: 'Times New Roman'">
+                              <div
+                                class="ticket"
+                                id="printVenta"
+                                style=" font-size: 12px;font-family: 'Times New Roman'"
+                              >
                                 <center>
                                   <img
                                     :src="listarConf.logo"
@@ -320,21 +343,33 @@
                                       >{{ formatPrice(t.precio * t.cantidadDetalle) }}</td>
                                     </tr>
                                     <!--Producto-->
-                                     <br />
+                                    <br />
                                     <!--Totales-->
                                     <tr v-for="t in ticketPrint" :key="t.id">
-                                      <td><b>Total: </b>$ {{formatPrice(t.totalVenta)}}</td>
+                                      <td>
+                                        <b>Total:</b>
+                                        $ {{formatPrice(t.totalVenta)}}
+                                      </td>
                                     </tr>
                                     <tr>
                                       <td>
                                         <div v-if="formaPago == '1'">
-                                          <label><b>Vuelto:</b> $ {{formatPrice(montoEfectivo - total)}}</label>
+                                          <label>
+                                            <b>Vuelto:</b>
+                                            $ {{formatPrice(montoEfectivo - total)}}
+                                          </label>
                                         </div>
                                         <div v-if="formaPago == '2'">
-                                          <label><b>Vuelto:</b> $ {{formatPrice(montoDebito - total)}}</label>
+                                          <label>
+                                            <b>Vuelto:</b>
+                                            $ {{formatPrice(montoDebito - total)}}
+                                          </label>
                                         </div>
                                         <div v-if="formaPago == '3'">
-                                          <label><b>Vuelto:</b> $ {{formatPrice(montoCredito - total)}}</label>
+                                          <label>
+                                            <b>Vuelto:</b>
+                                            $ {{formatPrice(montoCredito - total)}}
+                                          </label>
                                         </div>
                                       </td>
                                     </tr>
@@ -342,6 +377,7 @@
                                 </table>
                                 <br />
                                 <center>
+                                  <p class="centrado">{{cliente}}</p>
                                   <p class="centrado">¡GRACIAS POR SU COMPRA!</p>
                                   <p>NEO-GESTION</p>
                                   <p>.................</p>
@@ -463,3 +499,4 @@
 
 <script src="../generarVenta/generarVenta.js"></script>
 <style scoped src="../generarVenta/generarVenta.css"></style>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
