@@ -56,6 +56,13 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('menos_vendidos_grafico', 'VentasController@menos_vendidos_grafico');
     Route::get('reporte_ventas/{desde?}/{hasta?}', 'VentasController@reporte_ventas');
 
+    //rutas cliente
+    Route::post('guardar_cliente','ClientesController@guardar');
+    Route::get('listar_clientes','ClientesController@listar_clientes');
+    Route::post('actualizar_cliente','ClientesController@actualizar_cliente');
+    Route::get('inhabilitar_cliente/{cliente}','ClientesController@inhabilitar_cliente');
+    
+
     // rutas configuraciones
     Route::post('registro_configuraciones', 'ConfiguracionesController@registro_configuraciones');
     Route::post('modificar_campo_configuraciones', 'ConfiguracionesController@modificar_campo_configuraciones');

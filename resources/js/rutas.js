@@ -14,6 +14,8 @@ import configuracionesComponent from './components/auth/configuraciones/configur
 import recuperarPasswordComponent from './components/recuperarPassword.vue';
 import resetearPasswordComponent from './components/resetearPassword.vue';
 
+import ClientesComponent from './components/auth/clientes/clientes.vue';
+
 const routes = [
   {
     path: '/',
@@ -63,6 +65,11 @@ const routes = [
         name: 'categorias',
         path: '/categorias',
         component: CategoriasComponent
+      },
+      {
+        name: 'clientes',
+        path: '/clientes',
+        component: ClientesComponent
       },
       {
         name: 'agregarProducto',
