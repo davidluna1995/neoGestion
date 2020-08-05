@@ -13,7 +13,7 @@
                   <b-form-input
                     id="inputBuscar"
                     v-on:keyup="escribiendoProducto"
-                    placeholder="Buscar producto"
+                    placeholder="Buscar producto..."
                     v-model="buscadorProducto"
                     v-on:keyup.enter="traer_producto()"
                     class="my-2"
@@ -118,6 +118,12 @@
             >
               <template v-slot:cell(index)="data">
                 <div class="col-12">{{ data.item.sku }}</div>
+              </template>
+              <template v-slot:cell(imagen)="data">
+                <div class="col-12">
+                 
+                   <b-img class="tamanio" thumbnail v-if="data.item.imagen"  :src="data.item.imagen" alt="Image 1"></b-img>
+                </div>
               </template>
               <template v-slot:cell(prod)="data">
                 <div class="col-12">{{ data.item.nombre }}</div>
@@ -336,6 +342,34 @@
                                 </b-alert>
                               </ul>
                             </div>
+
+
+
+                            <div class="col-8 mb-4">
+                              <div class="row">
+                                <div class="col-2">
+                                  <i class="fas fa-camera-retro fa-2x text-success"></i>
+                                </div>
+                                <div class="col-10">
+                                 
+                                    <!-- <b-form-file size="sm" ref="cony" id="cony" @change="captar_foto"   placeholder="Seleccione un logo"></b-form-file> -->
+                                    <input name="imagen" class="imagen form-control" type="file" accept="image/*" @change="preview_image">
+                                    <img class="thumbnail" id="output_image"/>
+                                   
+                                  
+                                </div>
+                                
+                              </div>
+                            </div>
+                            <div class="col-3">
+                              <b-button
+                                block
+                                variant="light"
+                                @click="actualizar_imagen(data.item.id)"
+                              >
+                                <i class="fas fa-edit text-success"></i>
+                              </b-button>
+                            </div>
                           </div>
                         </div>
                         <div class="row justify-content-center bordeFooter">
@@ -354,10 +388,10 @@
                   </template>
                 </div>
               </template>
-              <template v-slot:cell(eliminarProd)>
+              <template v-slot:cell(eliminarProd)="data">
                 <div class="row">
                   <div class="col-12">
-                    <b-button block class="my-2" variant="danger">Borrar</b-button>
+                    <b-button @click="inhabilitar(data.item.id)" block class="my-2" variant="danger">Inhabilitar </b-button>
                   </div>
                 </div>
               </template>

@@ -21,6 +21,7 @@ export default {
 
       // CABEZERA DE LA TABLA DETALLE VENTA
       detalleVentaFieldsAdm: [
+        { key: 'imagen', label: 'Imagen' },
         { key: 'nombre', label: 'Nombre producto' },
         { key: 'descripcion', label: 'Descripcion' },
         { key: 'categoria', label: 'Categoria' },

@@ -12,6 +12,7 @@ export default {
             // CABEZERA DE LA TABLA
             productosFieldsAdm: [
                 { key: 'index', label: 'SKU', variant: 'dark', class: 'text-center' },
+                { key: 'imagen', label: 'Imagen', class: 'text-center' },
                 { key: 'prod', label: 'Producto', class: 'text-center' },
                 { key: 'cat', label: 'Categoria', class: 'text-center' },
                 { key: 'desc', label: 'Descripcion', class: 'text-center' },
@@ -73,7 +74,12 @@ export default {
             dismissCountDown4: 0,
             showAlertBuscar: false,
             errorBuscar: '',
+
+            imagen:null,
         }
+    },
+    created(){
+       
     },
 
     methods: {
@@ -94,6 +100,19 @@ export default {
                 }
             });
         },
+
+        preview_image(event) 
+        {
+            
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('output_image');
+                output.src = reader.result;
+                console.log(output.src)
+            }
+            reader.readAsDataURL(event.target.files[0]);
+            this.imagen = event.target.files[0];
+        },
         // MODAL VENTAS
         showModalVentas(id) {
             this.producto_id = id;
@@ -104,6 +123,7 @@ export default {
         },
         // MODAL EDITAR
         showModalEditarProducto(id) {
+            this.limpiar_inputs();
             this.$refs['editarModalProducto' + id].show();
         },
         hideModalEditarProducto(id) {
@@ -181,6 +201,61 @@ export default {
                     alert(error);
                     this.loading = false;
                 })
+        },
+        limpiar_inputs(){
+            this.skuUpd= '';
+            this.nombreUpd= '';
+            this.descripcionUpd= '';
+            this.categoria_id= null;
+            this.cantidadUpd= '';
+            this.precioCompraUpd= '';
+            this.precioVentaUpd= '';
+
+            // REGISTRO DE VENTA
+            this.producto_id= '';
+            this.cantidad= '';
+        },
+
+        actualizar_imagen(id){
+            
+            const data = new FormData();
+            data.append('id', id);
+            data.append('imagen', this.imagen);
+
+            this.axios.post('api/subir_imagen', data).then((res) => {
+                if (res.data.estado == 'success') {
+                    this.traer_productos();
+                    var file = document.getElementsByClassName('imagen');
+                    file[0].value ='';
+                    this.imagen = null;
+                    document.getElementById('output_image').src='';
+                    alert(res.data.mensaje)
+                } else {
+                    alert(res.data.mensaje)
+                    console.log(res.data);
+                }
+            });
+        },
+        inhabilitar(id){
+
+            
+            var r = confirm("¿Quiere inhabilitar el producto con id "+id+'?');
+            if (r == true) {
+                this.axios.get('api/inhabilitar_producto/' + id).then((res) => {
+                    if (res.data.estado == 'success') {
+                        this.traer_productos();
+
+                        alert(res.data.mensaje)
+                    } else {
+                        alert(res.data.mensaje)
+                        console.log(res.data);
+                    }
+                });
+            } else {
+                alert("Proceso cancelado!")
+            }
+
+            
         },
 
         registrar_venta() {

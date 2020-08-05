@@ -41,6 +41,9 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('modificar_campo_producto', 'ProductoController@modificar_campo_producto');
     Route::get('cantidad_productos', 'ProductoController@cantidad_productos');
     Route::get('buscar_producto/{producto}', 'ProductoController@buscar_producto');
+    Route::get('inhabilitar_producto/{producto}', 'ProductoController@inhabilitar_producto');
+    
+    Route::post('subir_imagen','ProductoController@subir_imagen');
 
     // rutas ventas
     Route::post('registro_venta', 'VentasController@registro_venta');
@@ -55,6 +58,13 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('ultimas_ventas_grafico', 'VentasController@ultimas_ventas_grafico');
     Route::get('menos_vendidos_grafico', 'VentasController@menos_vendidos_grafico');
     Route::get('reporte_ventas/{desde?}/{hasta?}', 'VentasController@reporte_ventas');
+
+    //rutas cliente
+    Route::post('guardar_cliente','ClientesController@guardar');
+    Route::get('listar_clientes','ClientesController@listar_clientes');
+    Route::post('actualizar_cliente','ClientesController@actualizar_cliente');
+    Route::get('inhabilitar_cliente/{cliente}','ClientesController@inhabilitar_cliente');
+    
 
     // rutas configuraciones
     Route::post('registro_configuraciones', 'ConfiguracionesController@registro_configuraciones');

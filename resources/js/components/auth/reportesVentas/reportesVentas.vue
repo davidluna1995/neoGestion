@@ -125,6 +125,7 @@
                               :fields="reporteDetalleVentaFieldsAdm"
                               :items="listarReporteDetalleVentas"
                             >
+                            <template v-slot:cell(imagen)="data"><b-img class="tamanio" thumbnail v-if="data.item.imagen"  :src="data.item.imagen" alt="Image 1"></b-img></template>
                               <template v-slot:cell(nombre)="data">{{ data.item.nombre }}</template>
                               <template v-slot:cell(descripcion)="data">{{ data.item.proDesc }}</template>
                               <template v-slot:cell(categoria)="data">{{ data.item.catDesc }}</template>

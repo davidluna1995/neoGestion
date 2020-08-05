@@ -39,7 +39,7 @@ class CategoriaController extends Controller
         if ($validarDatos['estado'] == 'success') {
             $categoria = new Categoria();
             $categoria->user_id = Auth::user()->id;
-            $categoria->descripcion =  strtolower($datos->descripcion);
+            $categoria->descripcion =  ($datos->descripcion);
 
             if ($categoria->save()) {
                 return ['estado'=>'success', 'mensaje'=>'Categoria guardada con exito.'];

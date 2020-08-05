@@ -12,6 +12,9 @@
           <b-nav-item @click="url('index')">
             <i class="fas fa-home"></i> Panel de Control
           </b-nav-item>
+          <b-nav-item @click="url('clientes')">
+            <i class="fas fa-user-friends"></i> Clientes
+          </b-nav-item>
           <b-nav-item @click="url('categorias')">
             <i class="fas fa-indent"></i> Categorias
           </b-nav-item>

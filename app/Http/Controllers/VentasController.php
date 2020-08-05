@@ -252,11 +252,13 @@ class VentasController extends Controller
                                     'producto.cantidad',
                                     'producto.precio_venta',
                                     ])
-      
+                                    ->where('producto.activo','S')
                                     ->whereRaw(
-                                        "producto.nombre like lower('%$producto%') or
-                                      producto.sku like lower('%$producto%')"
+                                        "lower(producto.nombre) like lower('%$producto%') or
+                                         lower(producto.sku) like lower('%$producto%')"
                                     )
+                                    
+                                    
                                     ->get();
 
         if (count($listar) > 0) {
@@ -265,7 +267,7 @@ class VentasController extends Controller
             }
             return ['estado'=>'success' , 'producto' => $listar];
         } else {
-            return ['estado'=>'failed', 'mensaje'=>'El producto no existe en nuestros registros'];
+            return ['estado'=>'failed', 'mensaje'=>'El producto no existe o esta inhabilitado'];
         }
     }
 
@@ -278,6 +280,7 @@ class VentasController extends Controller
                                         'producto.descripcion as proDesc',
                                         'categoria.descripcion as catDesc',
                                         'categoria.id as catId',
+                                        'producto.imagen'
                                         ])
                                         ->join('ventas', 'ventas.id', 'detalle_venta.venta_id')
                                         ->join('producto', 'producto.id', 'detalle_venta.producto_id')
