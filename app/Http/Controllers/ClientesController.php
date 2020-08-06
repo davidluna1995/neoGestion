@@ -13,16 +13,16 @@ class ClientesController extends Controller
         
         $nombres = ucwords($r->nombres);
         $apellidos = ucwords($r->apellidos);
-
+        $rut_limpio = $this->limpiar($r->rut);
         
-        if($this->validadorRut($r->rut)){
-            $rut = (string)$r->rut;
+        if($this->validadorRut($rut_limpio)){
+            $rut = (string)$rut_limpio;
             $verify = Cliente::whereRaw("upper(rut) = upper('$rut')")->first();
             if($verify){
                 return ['estado'=>'failed','mensaje'=>'El rut ya estan en uso'];
             }else{
                 $c = new Cliente;
-                $c->rut = strtolower($r->rut);
+                $c->rut = strtolower($rut);
                 $c->nombres = $nombres;
                 $c->apellidos = $apellidos;
                 $c->contacto = $r->contacto;
@@ -149,5 +149,28 @@ class ClientesController extends Controller
         {
             return false;
         }
+    }
+
+    function limpiar($s) 
+    { 
+        $s = str_replace('á', 'a', $s); 
+        $s = str_replace('Á', 'A', $s); 
+        $s = str_replace('é', 'e', $s); 
+        $s = str_replace('É', 'E', $s); 
+        $s = str_replace('í', 'i', $s); 
+        $s = str_replace('Í', 'I', $s); 
+        $s = str_replace('ó', 'o', $s); 
+        $s = str_replace('Ó', 'O', $s); 
+        $s = str_replace('Ú', 'U', $s); 
+        $s= str_replace('ú', 'u', $s); 
+
+        //Quitando Caracteres Especiales 
+        $s= str_replace('"', '', $s); 
+        $s= str_replace(':', '', $s); 
+        $s= str_replace('.', '', $s); 
+        $s= str_replace(',', '', $s); 
+        $s= str_replace(';', '', $s); 
+        $s= str_replace('-', '', $s); 
+        return $s; 
     }
 }
