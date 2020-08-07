@@ -88,7 +88,7 @@ class ClientesController extends Controller
             $c->apellidos = ucwords($r->apellidos);
             $c->contacto = ($r->contacto=='null')?null:$r->contacto;
             $c->email = ($r->email=='null')?null:$r->email;
-            $c->direccion = ($r->direccion=='null')?null:$r->directorio;
+            $c->direccion = ($r->direccion=='null')?null:$r->direccion;
             if ($c->save()) {
                 return ['estado'=>'success', 'mensaje'=>'Información del cliente actualizada'];
             }else{
