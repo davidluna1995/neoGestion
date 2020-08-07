@@ -232,7 +232,7 @@ class VentasController extends Controller
              producto.nombre
              from detalle_venta
              inner join ventas on ventas.id = detalle_venta.venta_id
-             inner join  producto on producto.id = detalle_venta.producto_id
+             inner join  producto on producto.id = detalle_venta.producto_id 
              group by producto_id, producto.nombre) producto
              inner join 
              (select producto_id, 
