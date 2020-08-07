@@ -76,6 +76,7 @@ export default {
             errorBuscar: '',
 
             imagen:null,
+            load_img:false,
         }
     },
     created(){
@@ -217,13 +218,14 @@ export default {
         },
 
         actualizar_imagen(id){
-            
+            this.load_img = true;
             const data = new FormData();
             data.append('id', id);
             data.append('imagen', this.imagen);
 
             this.axios.post('api/subir_imagen', data).then((res) => {
                 if (res.data.estado == 'success') {
+                    this.load_img = false;
                     this.traer_productos();
                     var file = document.getElementsByClassName('imagen');
                     file[0].value ='';
@@ -231,6 +233,7 @@ export default {
                     document.getElementById('output_image').src='';
                     alert(res.data.mensaje)
                 } else {
+                    this.load_img = false;
                     alert(res.data.mensaje)
                     console.log(res.data);
                 }

@@ -365,12 +365,14 @@
                               </div>
                               <div class="col-3">
                                 <b-button
+                                v-if="!load_img"
                                   block
                                   variant="light"
                                   @click="actualizar_imagen(data.item.id)"
                                 >
                                   <i class="fas fa-edit text-success"></i>
                                 </b-button>
+                                <b-spinner v-if="load_img" variant="success" label="Spinning"></b-spinner>
                               </div>
                             </div>
                           </div>
