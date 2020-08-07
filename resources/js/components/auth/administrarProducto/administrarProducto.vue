@@ -105,6 +105,7 @@
 
             <!-- TABLA DE PRODUCTOS -->
             <b-table
+             responsive
               show-empty
               emptyText="No existen productos aun."
               small
