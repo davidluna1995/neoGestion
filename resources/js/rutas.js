@@ -46,6 +46,20 @@ const routes = [
         component: resetearPasswordComponent
       },
 
+      // {
+      //   path: '/404',
+        
+      //   name: '',
+      //   redirect: { path: '/home' },
+      //   hidden: true
+      // },
+
+      // {
+      //   path: '*',
+      //   hidden: true,
+      //   redirect: { name: 'home' }
+      // }
+
     ]
   },
 
@@ -108,19 +122,19 @@ const routes = [
         path: '/configuraciones',
         component: configuracionesComponent
       },
-      {
-        path: '/404',
-        // component: NotFoundAuth,
-        name: '',
-        redirect: { path: '/index' },
-        hidden: true
-      },
+      // {
+      //   path: '/404',
+      //   // component: NotFoundAuth,
+      //   name: '',
+      //   redirect: { path: '/index' },
+      //   hidden: true
+      // },
 
-      {
-        path: '*',
-        hidden: true,
-        redirect: { path: '/index' }
-      }
+      // {
+      //   path: '*',
+      //   hidden: true,
+      //   redirect: { path: '/index' }
+      // }
       
     ]
   },
