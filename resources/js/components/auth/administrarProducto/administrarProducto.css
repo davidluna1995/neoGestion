@@ -138,8 +138,8 @@ table#table-transition-example .flip-list-move {
 @media (min-width: 481px) and (max-width: 767px) {
   
    .tamanio{
-        max-width: 30%;
-        max-height: 30%;
+        max-width: 50%;
+        max-height: 50%;
     }
   
 }
@@ -152,8 +152,8 @@ table#table-transition-example .flip-list-move {
 @media (min-width: 320px) and (max-width: 480px) {
   
    .tamanio{
-        max-width: 30%;
-        max-height: 30%;
+        max-width: 50%;
+        max-height: 50%;
     }
   
 }
