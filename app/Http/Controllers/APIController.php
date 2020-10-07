@@ -68,7 +68,7 @@ class APIController extends Controller
 
     public function allUser()
     {
-        $listar = DB::table('users')->count();
+        $listar = DB::table('users')->where('id','>=','1')->count();
         if ($listar > 0) {
             return $listar;
         } else {
