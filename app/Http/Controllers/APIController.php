@@ -243,7 +243,7 @@ class APIController extends Controller
 
     protected function traer_usuarios()
     {
-        return User::withTrashed()->get();
+        return User::withTrashed()->where('id','>=','1')->get();
     }
 
     public function delete_usuario(Request $request)
