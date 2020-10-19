@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DetalleVenta extends Migration
+class CreateFormaPago extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,9 @@ class DetalleVenta extends Migration
      */
     public function up()
     {
-        Schema::create('detalle_venta', function (Blueprint $table) {
+        Schema::create('forma_pago', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('user_id');
-            $table->integer('venta_id');
-            $table->integer('producto_id');
-            $table->bigInteger('cantidad');
-            $table->bigInteger('precio');
+            $table->text('descripcion');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -32,6 +28,6 @@ class DetalleVenta extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('detalle_venta');
+        Schema::dropIfExists('forma_pago');
     }
 }

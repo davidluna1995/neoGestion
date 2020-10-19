@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Configuraciones extends Migration
+class CreateDetalleVenta extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,13 @@ class Configuraciones extends Migration
      */
     public function up()
     {
-        Schema::create('configuraciones', function (Blueprint $table) {
+        Schema::create('detalle_venta', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('logo')->nullable();
-            $table->string('empresa')->nullable();
-            $table->string('direccion')->nullable();
+            $table->bigInteger('user_id');
+            $table->bigInteger('venta_id');
+            $table->bigInteger('producto_id');
+            $table->bigInteger('cantidad');
+            $table->bigInteger('precio');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -30,6 +32,6 @@ class Configuraciones extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('configuraciones');
+        Schema::dropIfExists('detalle_venta');
     }
 }

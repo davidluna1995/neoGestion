@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class FormaPago extends Migration
+class CreateUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,13 @@ class FormaPago extends Migration
      */
     public function up()
     {
-        Schema::create('forma_pago', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('descripcion');
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->integer('rol');
+            $table->text('password');
+            $table->string('remember_token')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -28,6 +32,6 @@ class FormaPago extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('forma_pago');
+        Schema::dropIfExists('users');
     }
 }

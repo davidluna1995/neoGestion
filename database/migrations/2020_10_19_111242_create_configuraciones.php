@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class Ventas extends Migration
+class CreateConfiguraciones extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class Ventas extends Migration
      */
     public function up()
     {
-        Schema::create('ventas', function (Blueprint $table) {
+        Schema::create('configuraciones', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('user_id');
-            $table->bigInteger('venta_total');
-            $table->string('forma_pago_id');
-            $table->integer('tipo_entrega_id');
+            $table->text('logo');
+            $table->text('empresa');
+            $table->text('direccion');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -31,6 +30,6 @@ class Ventas extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ventas');
+        Schema::dropIfExists('configuraciones');
     }
 }

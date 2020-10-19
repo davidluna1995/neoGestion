@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Producto extends Migration
+class CreateProducto extends Migration
 {
     /**
      * Run the migrations.
@@ -15,14 +15,17 @@ class Producto extends Migration
     {
         Schema::create('producto', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('user_id');
+            $table->bigInteger('user_id');
             $table->integer('categoria_id');
             $table->text('sku');
             $table->string('nombre');
-            $table->string('descripcion');
+            $table->text('descripcion');
             $table->bigInteger('cantidad');
             $table->bigInteger('precio_compra');
             $table->bigInteger('precio_venta');
+            $table->char('stock');
+            $table->text('imagen')->nullable();
+            $table->char('activo',1)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
