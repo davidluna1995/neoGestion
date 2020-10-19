@@ -11,5 +11,15 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-   .sass('resources/sass/app.scss', 'public/css');
+// mix.js('resources/js/app.js', 'public/js')
+//    .sass('resources/sass/app.scss', 'public/css').version();
+
+let version = 6;
+
+mix.config.webpackConfig.output = {
+   chunkFilename: 'v/' + version + '/scripts/[name].js',
+   publicPath: '/',
+};
+
+mix.js('resources/js/app.js', 'public/v/' + version + '/public/js')
+   .sass('resources/sass/app.scss', 'public/v/' + version + '/public/css');

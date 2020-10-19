@@ -7,7 +7,7 @@
             <div
               class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4 fondoLogin"
             >
-              <h1 class="display-6 py-2">Formulario de Ingreso NeoGestion</h1>
+              <h1 class="display-6 py-2">Formulario de Ingreso ARNI</h1>
               <div class="px-2">
                 <div class="justify-content-center">
                   <div class="form-group">

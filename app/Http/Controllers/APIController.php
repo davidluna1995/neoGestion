@@ -68,7 +68,7 @@ class APIController extends Controller
 
     public function allUser()
     {
-        $listar = DB::table('users')->count();
+        $listar = DB::table('users')->where('id','>=','1')->count();
         if ($listar > 0) {
             return $listar;
         } else {
@@ -243,7 +243,7 @@ class APIController extends Controller
 
     protected function traer_usuarios()
     {
-        return User::withTrashed()->get();
+        return User::withTrashed()->where('id','>=','1')->get();
     }
 
     public function delete_usuario(Request $request)

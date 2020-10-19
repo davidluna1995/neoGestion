@@ -92,14 +92,6 @@
                     </multiselect>
                   </div>
                 </div>
-                <!-- <b-form-select v-model="categoria_id" class="mb-3">
-                    <b-form-select-option :value="null" disabled>--Seleccione--</b-form-select-option>
-                    <b-form-select-option
-                      v-for="i in listarCategorias"
-                      :key="i.id"
-                      :value="i.id"
-                    >{{ i.descripcion }}</b-form-select-option>
-                </b-form-select>-->
               </b-form-group>
             </div>
 
@@ -159,8 +151,8 @@
 
           <div class="row justify-content-center">
             <div class="col-12 col-md-12 col-lg-3 my-2">
-              <b-button block pill variant="success" @click="registrar_producto();">
-                <b>Guardar</b>
+              <b-button :disabled="guardar_load" block pill variant="success" @click="registrar_producto();">
+                <b>Guardar <b-spinner v-if="guardar_load" label="Loading..."></b-spinner></b>
               </b-button>
             </div>
             <div class="col-12 col-md-12 col-lg-3 my-2">

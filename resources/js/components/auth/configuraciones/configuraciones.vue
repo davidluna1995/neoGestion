@@ -7,13 +7,21 @@
 
           <div class="row">
             <div class="col-6">
-              <b-button
+              <!-- <b-button
                 size="xl"
                 id="show-btn"
                 class="my-2"
                 variant="success"
                 @click="showModalCrearUsuario()"
-              >CREAR USUARIO</b-button>
+              >CREAR USUARIO</b-button> -->
+
+               <b-button
+                size="xl"
+                id="show-btn"
+                class="my-2"
+                variant="success"
+                @click="showModalBloquearUsuario()"
+              >BLOQUEAR USUARIO</b-button>
 
               <template>
                 <div>
@@ -139,13 +147,21 @@
             </div>
 
             <div class="col-6">
-              <b-button
+              <!-- <b-button
                 size="xl"
                 id="show-btn"
                 class="my-2"
                 variant="success"
                 @click="showModalBloquearUsuario()"
-              >BLOQUEAR USUARIO</b-button>
+              >BLOQUEAR USUARIO</b-button> -->
+
+              <b-button
+                size="xl"
+                id="show-btn"
+                class="my-2"
+                variant="success"
+                @click="showModalConf()"
+              >INFORMACION DE LA EMPRESA</b-button>
 
               <template>
                 <div>
@@ -239,13 +255,13 @@
             </div>
 
             <div class="col-6">
-              <b-button
+              <!-- <b-button
                 size="xl"
                 id="show-btn"
                 class="my-2"
                 variant="success"
                 @click="showModalConf()"
-              >INFORMACION DE LA EMPRESA</b-button>
+              >INFORMACION DE LA EMPRESA</b-button> -->
 
               <template>
                 <div>

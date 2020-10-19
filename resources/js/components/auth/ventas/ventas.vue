@@ -124,11 +124,13 @@
                           :fields="detalleVentaFieldsAdm"
                           :items="listarDetalleVentas"
                         >
+                          <template v-slot:cell(imagen)="data"><b-img class="tamanio" thumbnail v-if="data.item.imagen"  :src="data.item.imagen" alt="Image 1"></b-img></template>
                           <template v-slot:cell(nombre)="data">{{ data.item.nombre }}</template>
                           <template v-slot:cell(descripcion)="data">{{ data.item.proDesc }}</template>
                           <template v-slot:cell(categoria)="data">{{ data.item.catDesc }}</template>
                           <template v-slot:cell(precio)="data">{{ formatPrice(data.item.precio) }}</template>
                           <template v-slot:cell(cantidad)="data">{{ data.item.cantidadDetalle }}</template>
+                          <template v-slot:cell(cliente)="data">{{ data.item.nombres }} {{data.item.apellidos}}</template>
                         </b-table>
 
                         <div class="row justify-content-center bordeFooter">

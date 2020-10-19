@@ -39,7 +39,7 @@ class CategoriaController extends Controller
         if ($validarDatos['estado'] == 'success') {
             $categoria = new Categoria();
             $categoria->user_id = Auth::user()->id;
-            $categoria->descripcion =  strtolower($datos->descripcion);
+            $categoria->descripcion =  ($datos->descripcion);
 
             if ($categoria->save()) {
                 return ['estado'=>'success', 'mensaje'=>'Categoria guardada con exito.'];
@@ -189,6 +189,7 @@ class CategoriaController extends Controller
             count(*) as cantidad_productos
             from producto
             inner join categoria on categoria.id = producto.categoria_id
+            where producto.activo = 'S'
             group by categoria_id,categoria.descripcion
             order by cantidad_productos desc
              limit 5"
@@ -236,6 +237,7 @@ class CategoriaController extends Controller
             count(*) as cantidad_productos
             from producto
             inner join categoria on categoria.id = producto.categoria_id
+            where producto.activo='S'
             group by categoria_id,categoria.descripcion
             order by cantidad_productos asc
              limit 5"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Cliente;
 use App\Ventas;
 use App\Producto;
 use Carbon\Carbon;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Expr\AssignOp\Concat;
 
 class VentasController extends Controller
 {
@@ -42,9 +44,17 @@ class VentasController extends Controller
         } else {
             $venta->tipo_entrega_id = $datos->tipo_entrega_id;
         }
-
+        if ($datos->cliente_id == []) {
+            return ['estado'=>'failed', 'mensaje'=>'seleccione un cliente.'];
+        } else {
+            $venta->cliente_id = $datos->cliente_id;
+        }
+        
         if ($venta->save()) {
             $ingresarDetalle = $this->registro_detalle_venta($datos->carro, $venta->id);
+
+            $cliente=Cliente::find($datos->cliente_id);
+
             if ($ingresarDetalle == true) {
                 DB::commit();
                 $ticketDetalle = $this->ticketDetalle($venta->id);
@@ -53,7 +63,8 @@ class VentasController extends Controller
                     return ['estado'=>'success',
                             'mensaje'=>'Venta realizada con exito, actualizando nuevo stock.',
                             'ticketDetalle'=>$ticketDetalle['ticketDetalle'],
-                            'ticket'=>$ticket['ticket']
+                            'ticket'=>$ticket['ticket'],
+                            'cliente'=>$cliente->nombres.' '.$cliente->apellidos.' - '.$cliente->rut
                             ];
                 }
             } else {
@@ -221,7 +232,7 @@ class VentasController extends Controller
              producto.nombre
              from detalle_venta
              inner join ventas on ventas.id = detalle_venta.venta_id
-             inner join  producto on producto.id = detalle_venta.producto_id
+             inner join  producto on producto.id = detalle_venta.producto_id 
              group by producto_id, producto.nombre) producto
              inner join 
              (select producto_id, 
@@ -252,11 +263,13 @@ class VentasController extends Controller
                                     'producto.cantidad',
                                     'producto.precio_venta',
                                     ])
-      
+                                    ->where('producto.activo','S')
                                     ->whereRaw(
-                                        "producto.nombre like lower('%$producto%') or
-                                      producto.sku like lower('%$producto%')"
+                                        "lower(producto.nombre) like lower('%$producto%') or
+                                         lower(producto.sku) like lower('%$producto%')"
                                     )
+                                    
+                                    
                                     ->get();
 
         if (count($listar) > 0) {
@@ -265,7 +278,7 @@ class VentasController extends Controller
             }
             return ['estado'=>'success' , 'producto' => $listar];
         } else {
-            return ['estado'=>'failed', 'mensaje'=>'El producto no existe en nuestros registros'];
+            return ['estado'=>'failed', 'mensaje'=>'El producto no existe o esta inhabilitado'];
         }
     }
 
@@ -278,11 +291,15 @@ class VentasController extends Controller
                                         'producto.descripcion as proDesc',
                                         'categoria.descripcion as catDesc',
                                         'categoria.id as catId',
+                                        'producto.imagen',
+                                        'cliente.nombres',
+                                        'cliente.apellidos'
                                         ])
                                         ->join('ventas', 'ventas.id', 'detalle_venta.venta_id')
                                         ->join('producto', 'producto.id', 'detalle_venta.producto_id')
                                         ->join('categoria', 'categoria.id', 'producto.categoria_id')
                                         ->join('users', 'users.id', 'ventas.user_id')
+                                        ->join('cliente','cliente.id','ventas.cliente_id')
                                         ->orderby('ventas.id', 'desc')
                                         ->where('venta_id', $idVenta)
                                         ->get();
