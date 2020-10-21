@@ -20,10 +20,10 @@ class CreateProducto extends Migration
             $table->text('sku');
             $table->string('nombre');
             $table->text('descripcion');
-            $table->bigInteger('cantidad');
+            $table->bigInteger('cantidad')->nullable();
             $table->bigInteger('precio_compra');
             $table->bigInteger('precio_venta');
-            $table->char('stock');
+            $table->char('stock',1);
             $table->text('imagen')->nullable();
             $table->char('activo',1)->nullable();
             $table->softDeletes();
