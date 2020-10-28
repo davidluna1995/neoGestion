@@ -28,7 +28,6 @@
     <!-- </b-card>
     </div>-->
 
-
     <div class="col-12 col-lg-12">
       <b-card class="text-center tituloTabla transparencia mb-4">
         <b-card-header class="fondoCategoria mb-4">REPORTE DE VENTAS</b-card-header>
@@ -56,14 +55,14 @@
             <b-button block variant="success" v-print="printVenta">Imprimir Ventas</b-button>
           </div>
         </div>
-
-        <div v-if="filtro">
+          <br>
+         <div v-if="filtro">
           <div class="row justify-content-center">
             <div class="col-md-5">
               <table class="table table-bordered">
                 <tr>
-                  <th style="background:#343a40; color:white">MONTO TOAL</th>
-                  <td>{{ formatPrice(suma_ventas) }}</td>
+                  <th style="background:#343a40; color:white">Resumen venta total</th>
+                  <td><span class="green">$</span> {{ formatPrice(suma_ventas) }}</td>
                 </tr>
               </table>
             </div>
@@ -94,7 +93,10 @@
 
                   <template v-slot:cell(fecha)="data">{{data.item.creado}}</template>
                   <template v-slot:cell(creado)="data">{{data.item.nombreUsuarioVenta}}</template>
-
+                  <template v-slot:cell(cliente)="data">{{data.item.nombres+' '+data.item.apellidos}}</template>
+                   <template v-slot:cell(tipo_pago)="data"><small>{{ 'Efectivo: '+formatPrice((data.item.pago_efectivo)?data.item.pago_efectivo : 0) }} <br>
+                                                       {{ 'Debito: '+formatPrice((data.item.pago_debito)?data.item.pago_debito : 0)}}   </small>       
+                   </template>
                   <template v-slot:cell(detalle)="data">
                     <!-- EDITAR PRODUCTOS -->
                     <!-- BOTON EDITAR -->

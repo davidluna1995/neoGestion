@@ -72,7 +72,7 @@ export default {
             formaPagoOpcion: [
                 { text: 'Efectivo', value: '1' },
                 { text: 'T.Debito', value: '2' },
-                { text: 'T.Credito', value: '3' },
+                // { text: 'T.Credito', value: '3' },
             ],
 
             entrega: [],
@@ -301,6 +301,8 @@ export default {
                 'forma_pago_id': this.formaPago[0] + ',' + this.formaPago[1],
                 'tipo_entrega_id': this.entrega,
                 'cliente_id': this.cliente_id.id,
+                'pago_efectivo': this.montoEfectivo,
+                'pago_debito': this.montoDebito
             }
 
             this.axios.post('api/registro_venta', data).then((response) => {
