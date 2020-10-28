@@ -1,9 +1,11 @@
 import ChartProductos from './Chart.js'
 import ChartVentas from './ChartVentas.js'
+import LineChar from './Line.js'
 export default {
   components: {
     ChartProductos,
-    ChartVentas
+    ChartVentas,
+    LineChar
   },
   data() {
 
@@ -49,6 +51,14 @@ export default {
       datacollection: null,
       datacollection2: null,
       datacollection3: null,
+      periodico_ventas:null,
+
+      select_anio:'2020',
+      anios:[
+        {'anio':2020, 'activo':'selected'},
+        {'anio':2021, 'activo':''},
+        {'anio':2022, 'activo':''}
+      ],
       optionsGrafico: {
         legend: {
           position: 'bottom',
@@ -119,6 +129,12 @@ export default {
       })
     },
 
+    periodico_ventas_grafico() {
+      this.axios.get('api/periodico_ventas_grafico/'+this.select_anio).then((response) => {
+        this.periodico_ventas = response.data;
+      })
+    },
+
     mas_vendidos_grafico() {
       this.axios.get('api/mas_vendidos_grafico').then((response) => {
         this.datacollection = response.data;
@@ -162,12 +178,17 @@ export default {
     this.cantidad_categorias();
     this.cantidad_productos();
     this.total_ventas();
+
+    this.periodico_ventas_grafico();
+
     this.ultimas_ventas();
     this.mas_vendidos();
     this.total_usuarios();
     this.mas_vendidos_grafico();
     this.ultimas_ventas_grafico();
     this.menos_vendidos_grafico();
+
+    
   },
 
 }

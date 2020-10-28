@@ -111,8 +111,35 @@
       </div>
     </div>
 
+
+    
+
     <div class="row m-4">
       <div class="col-12 col-md-12 col-lg-6">
+        
+         <b-card class="text-center tituloTabla transparencia">
+              <b-card-header class="fondoCategoria mb-4">Cronologia en ventas</b-card-header>
+              <template>
+                <select class="form-control" v-model="select_anio"  @change="periodico_ventas_grafico">
+                    <option v-for="(a,i) in anios" :key="i"  :selected="a.activo"  :value="a.anio">{{a.anio}}</option>
+                   
+                </select>
+                <div class="small">
+                  <LineChar :chart-data="periodico_ventas" :options="{legend: {
+                        position: 'bottom',
+                        labels: {
+                          fontSize: 16,
+                          fontColor: '#ffc107',
+                          fontStyle: 'bold',
+                        },
+                        title: {
+                          display: true,
+                          text: 'Custom Chart Title'
+                        },
+                      },}" ></LineChar>
+                </div>
+              </template>
+            </b-card>
         <b-card class="text-center tituloTabla mt-2 mb-4 col-12 transparencia">
           <b-card-header class="fondoProductos mb-4">PRODUCTOS MAS VENDIDOS</b-card-header>
           <div>
@@ -142,6 +169,9 @@
         </b-card>
 
         <!--GRAFICO  -->
+
+      
+
         <div class="row">
           <div class="col-12 col-lg-6 mb-4">
             <b-card class="text-center tituloTabla transparencia">
@@ -168,9 +198,13 @@
           </div>
         </div>
         <!--GRAFICO  -->
+
+          
       </div>
 
       <div class="col-12 col-md-12 col-lg-6">
+
+
         <b-card class="text-center tituloTabla mt-2 mb-4 col-12 transparencia">
           <b-card-header class="fondoProductos mb-4">ULTIMAS VENTAS</b-card-header>
           <div>

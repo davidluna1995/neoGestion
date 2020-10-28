@@ -58,6 +58,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('ultimas_ventas_grafico', 'VentasController@ultimas_ventas_grafico');
     Route::get('menos_vendidos_grafico', 'VentasController@menos_vendidos_grafico');
     Route::get('reporte_ventas/{desde?}/{hasta?}', 'VentasController@reporte_ventas');
+    Route::get('periodico_ventas_grafico/{anio}', 'VentasController@periodico_ventas_grafico');
 
     //rutas cliente
     Route::post('guardar_cliente','ClientesController@guardar');

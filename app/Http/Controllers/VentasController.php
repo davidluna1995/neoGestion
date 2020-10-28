@@ -541,4 +541,68 @@ class VentasController extends Controller
             return ['estado'=>'failed', 'mensaje'=>'No existen ventas.'];
         }
     }
+
+    protected function periodico_ventas_grafico($anio){
+        $meses = [1,2,3,4,5,6,7,8,9,10,11,12];
+        $obj = [];
+        $val = [];
+
+        foreach ($meses as $key) {
+            $moment = DB::select("SELECT sum(venta_total) venta_total from ventas where 
+            EXTRACT(MONTH FROM created_at) = $key
+            and EXTRACT(year FROM created_at) = $anio");
+
+            $obj[$key] = $moment[0];
+
+        }
+        foreach ($obj as $key) {
+            $val[] = !empty($key->venta_total)?$key->venta_total:0;
+        }
+
+        return [
+            'labels' => ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+            'datasets' =>[
+                [
+                    'label' => 'Venta',
+                    'data' => $val,
+                    'backgroundColor' => [
+                        '#D35400',
+                        '#F1C40F',
+                        '#28B463',
+                        '#2980B9',
+                        '#7D3C98',
+                        '#D35400',
+                        '#F1C40F',
+                        '#28B463',
+                        '#2980B9',
+                        '#7D3C98',
+                        '#D35400',
+                        '#F1C40F',
+                        '#28B463',
+                        '#2980B9',
+                        '#7D3C98'
+                    ],
+                    'hoverBackgroundColor' => [
+                        '#E59866',
+                        '#F9E79F',
+                        '#A9DFBF',
+                        '#7FB3D5',
+                        '#C39BD3',
+                        '#D35400',
+                        '#F1C40F',
+                        '#28B463',
+                        '#2980B9',
+                        '#7D3C98',
+                        '#D35400',
+                        '#F1C40F',
+                        '#28B463',
+                        '#2980B9',
+                        '#7D3C98'
+                    ],
+                ],
+            ]
+        ];
+
+        return response()->json($obj);
+    }
 }
