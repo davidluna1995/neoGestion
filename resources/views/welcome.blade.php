@@ -28,5 +28,5 @@
             }	
         </script> --}}
         
-        <script src="{{ mix('v/8/public/js/app.js') }}" type="text/javascript"></script>
+        <script src="{{ mix('v/9/public/js/app.js') }}" type="text/javascript"></script>
 </html>
