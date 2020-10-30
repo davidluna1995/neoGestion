@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar toggleable="lg" type="dark" variant="dark">
+    <b-navbar toggleable="lg" type="dark"  style="background:#34495E;">
       <a class="navbar-brand" @click="url('index')" style="cursor:pointer;">
         <img :src="listarConf.logo" v-show="logoNull" width="50px" height="30px" />
         {{listarConf.empresa}}

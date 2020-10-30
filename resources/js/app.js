@@ -1,5 +1,6 @@
+require('./bootstrap');
 
-window.Vue = require('vue');
+import Vue from 'vue'
 
 import Rutas from './rutas.js';
 
@@ -41,7 +42,10 @@ Vue.use(require('@websanova/vue-auth'), {
   refreshData: { enabled: false },
 });
 
-new Vue(App).$mount('#app');
+// new Vue(App).$mount('#app');
 
 import Print from 'vue-print-nb'
 Vue.use(Print);
+
+
+new Vue(App).$mount('#app');

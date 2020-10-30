@@ -2,7 +2,7 @@
 
     <div >
                    
-        <transition name>
+        <transition name="">
            <div> <router-view></router-view></div>
         </transition>
            
