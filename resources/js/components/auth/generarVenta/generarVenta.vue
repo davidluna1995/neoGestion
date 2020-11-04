@@ -382,6 +382,18 @@
                                             $ {{formatPrice(montoDebito - total)}}
                                           </label>
                                         </div>
+                                        <div v-if="formaPago == '2,1'">
+                                          <label>
+                                            <b>Vuelto:</b>
+                                            $ {{formatPrice(montoDebito - total)}}
+                                          </label>
+                                        </div>
+                                        <div v-if="formaPago == '1,2'">
+                                          <label>
+                                            <b>Vuelto:</b>
+                                            $ {{formatPrice(montoDebito - total)}}
+                                          </label>
+                                        </div>
                                         <div v-if="formaPago == '3'">
                                           <label>
                                             <b>Vuelto:</b>
