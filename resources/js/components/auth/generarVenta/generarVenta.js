@@ -326,7 +326,8 @@ export default {
                 'tipo_entrega_id': this.entrega,
                 'cliente_id': this.cliente_id.id,
                 'pago_efectivo': this.montoEfectivo,
-                'pago_debito': this.montoDebito
+                'pago_debito': this.montoDebito,
+                'vuelto': (Number(this.montoEfectivo)+ Number(this.montoDebito)) - Number(this.total)
             }
 
             this.axios.post('api/registro_venta', data).then((response) => {

@@ -67,7 +67,8 @@ class VentasController extends Controller
                             'mensaje'=>'Venta realizada con exito, actualizando nuevo stock.',
                             'ticketDetalle'=>$ticketDetalle['ticketDetalle'],
                             'ticket'=>$ticket['ticket'],
-                            'cliente'=>$cliente->nombres.' '.$cliente->apellidos.' - '.$cliente->rut
+                            'cliente'=>$cliente->nombres.' '.$cliente->apellidos.' - '.$cliente->rut,
+                            'vuelto'=>$datos->vuelto
                             ];
                 }
             } else {
