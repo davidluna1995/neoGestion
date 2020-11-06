@@ -32,10 +32,23 @@ class VentasController extends Controller
 
         if ($datos->forma_pago_id == '1,undefined') {
             $venta->forma_pago_id = '1';
+            $vuelto = (int)$datos->pago_efectivo - (int)$datos->venta_total;
         } elseif ($datos->forma_pago_id == '2,undefined') {
             $venta->forma_pago_id = '2';
-        } elseif ($datos->forma_pago_id == '3,undefined') {
+            $vuelto = (int)$datos->pago_debito - (int)$datos->venta_total;
+            
+        }
+        elseif ($datos->forma_pago_id == '1,2'){
+            $venta->forma_pago_id = '1,2';
+            $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
+        }
+        elseif ($datos->forma_pago_id == '2,1'){
+            $venta->forma_pago_id = '2,1';
+            $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
+        }
+        elseif ($datos->forma_pago_id == '3,undefined') {
             $venta->forma_pago_id = '3';
+           
         } elseif ($datos->forma_pago_id == 'undefined,undefined') {
             return ['estado'=>'failed', 'mensaje'=>'seleccione una forma de pago.'];
         } else {

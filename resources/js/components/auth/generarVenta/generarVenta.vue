@@ -370,38 +370,11 @@
                                     </tr>
                                     <tr>
                                       <td>
-                                        <div v-if="formaPago == '1'">
+                                        
+                                        <div >
                                           <label>
                                             <b>Vuelto:</b>
-                                            <!-- $ {{formatPrice(montoEfectivo - total)}} -->
-                                            $ {{formatPrice(Number(montoEfectivo) - Number(total))}}
-                                          </label>
-                                        </div>
-                                        <div v-if="formaPago == '2'">
-                                          <label>
-                                            <b>Vuelto:</b>
-                                            <!-- $ {{formatPrice(montoDebito - total)}} -->
-                                            $ {{formatPrice(Number(montoDebito) - Number(total))}}
-                                          </label>
-                                        </div>
-                                        <div v-if="formaPago == '2,1'">
-                                          <label>
-                                            <b>Vuelto:</b>
-                                            <!-- $ {{formatPrice(montoDebito - total)}} -->
-                                            $ {{formatPrice((Number(montoEfectivo)+ Number(montoDebito)) - Number(total) )}}
-                                          </label>
-                                        </div>
-                                        <div v-if="formaPago == '1,2'">
-                                          <label>
-                                            <b>Vuelto:</b>
-                                            <!-- $ {{formatPrice(montoDebito - total)}} -->
-                                            $ {{formatPrice((Number(montoEfectivo)+ Number(montoDebito)) - Number(total) )}}
-                                          </label>
-                                        </div>
-                                        <div v-if="formaPago == '3'">
-                                          <label>
-                                            <b>Vuelto:</b>
-                                            $ {{formatPrice(montoCredito - total)}}
+                                            $ {{formatPrice(get_vuelto)}}
                                           </label>
                                         </div>
                                       </td>

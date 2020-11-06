@@ -119,6 +119,7 @@ export default {
             ticketPrintDetalle: [],
             listarConf: [],
             logoNull: false,
+            get_vuelto:0,
         }
 
 
@@ -327,7 +328,7 @@ export default {
                 'cliente_id': this.cliente_id.id,
                 'pago_efectivo': this.montoEfectivo,
                 'pago_debito': this.montoDebito,
-                'vuelto': (Number(this.montoEfectivo)+ Number(this.montoDebito)) - Number(this.total)
+                // 'vuelto': (Number(this.montoEfectivo)+ Number(this.montoDebito)) - Number(this.total)
             }
 
             this.axios.post('api/registro_venta', data).then((response) => {
@@ -341,6 +342,7 @@ export default {
                     this.ticketPrintDetalle = response.data.ticketDetalle;
                     this.cliente = response.data.cliente;
                     this.ticketPrint = response.data.ticket;
+                    this.get_vuelto = response.data.vuelto;
 
                 }
 
