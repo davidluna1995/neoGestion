@@ -81,7 +81,7 @@ class VentasController extends Controller
                             'ticketDetalle'=>$ticketDetalle['ticketDetalle'],
                             'ticket'=>$ticket['ticket'],
                             'cliente'=>$cliente->nombres.' '.$cliente->apellidos.' - '.$cliente->rut,
-                            'vuelto'=>$datos->vuelto
+                            'vuelto'=>$vuelto
                             ];
                 }
             } else {
