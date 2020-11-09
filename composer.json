@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.0",
         "laraveles/spanish": "^1.4",
         "mike42/escpos-php": "^3.0",
+        "sasco/libredte": "^20.10",
         "tymon/jwt-auth": "dev-develop"
     },
     "require-dev": {

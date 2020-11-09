@@ -17,6 +17,9 @@ class VentasController extends Controller
 {
     protected function registro_venta(Request $datos)
     {
+
+        return $this->ambiente();
+
         DB::beginTransaction();
         $venta = new Ventas();
         $venta->user_id = Auth::user()->id;
@@ -626,5 +629,14 @@ class VentasController extends Controller
         ];
 
         return response()->json($obj);
+    }
+
+
+
+
+
+    protected function ambiente(){
+
+        $semilla = self::getSeed();
     }
 }
