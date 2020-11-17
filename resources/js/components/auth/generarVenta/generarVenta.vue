@@ -17,11 +17,11 @@
 
                        <div v-if="view_buscando"  style="border: 1px solid #BFC9CA; border-radius: 4px; height:200px; overflow:scroll; ">
                           <div v-for="data in lista_buscando" :key="data.id" class="row">
-                              <div class="col-md-2">
+                              <div class="col-3">
                               <img class="avatar_indexx" :src="data.imagen" />
                               </div>
-                              <div class="col-md-6">
-                              <span @click="getData(data.sku)" >{{data.nombre}}</span>
+                              <div class="col-6">
+                              <center><a href="#" @click="getData(data.sku)" >{{data.nombre}}</a></center>
                               </div>
                           </div>
                       </div> 
