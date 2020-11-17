@@ -8,7 +8,8 @@ export default {
 
     data() {
 
-        return {
+        return {çusuario: this.$auth.user(),
+            admin:1,
             // CABEZERA DE LA TABLA
             productosFieldsAdm: [
                 { key: 'index', label: 'SKU', variant: 'dark', class: 'text-center' },

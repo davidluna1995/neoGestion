@@ -145,6 +145,7 @@
                   <div class="row">
                     <div class="col-12">
                       <b-button
+                      v-if="usuario.rol==admin"
                         block
                         id="show-btn"
                         class="my-2"
@@ -395,7 +396,7 @@
                 <template v-slot:cell(eliminarProd)="data">
                   <div class="row">
                     <div class="col-12">
-                      <b-button @click="inhabilitar(data.item.id)" block class="my-2" variant="danger">Inhabilitar </b-button>
+                      <b-button v-if="usuario.rol==admin" @click="inhabilitar(data.item.id)" block class="my-2" variant="danger">Inhabilitar </b-button>
                     </div>
                   </div>
                 </template>

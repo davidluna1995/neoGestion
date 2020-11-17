@@ -10,6 +10,8 @@ export default {
   data() {
 
     return {
+      usuario: this.$auth.user(),
+      admin:1,
       productosFields: [
         { key: 'index', label: 'ID', variant: 'dark' },
         { key: 'producto', label: 'Productos' },

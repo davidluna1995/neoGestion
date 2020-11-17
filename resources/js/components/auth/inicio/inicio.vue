@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="usuario.rol==admin">
     <div class="row my-4 mx-4">
       <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-3">
         <div class="transparencia">

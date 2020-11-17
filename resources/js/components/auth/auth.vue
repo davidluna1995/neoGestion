@@ -9,7 +9,7 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item @click="url('index')">
+          <b-nav-item v-if="usuario.rol==admin" @click="url('index')">
             <i class="fas fa-home"></i> Panel de Control
           </b-nav-item>
           <b-nav-item @click="url('clientes')">
@@ -22,12 +22,12 @@
             <b-dropdown-item @click="url('administrarProducto')">
               <i class="fas fa-edit"></i> Administrar Productos
             </b-dropdown-item>
-            <b-dropdown-item @click="url('agregarProducto')">
+            <b-dropdown-item v-if="usuario.rol==admin" @click="url('agregarProducto')">
               <i class="fas fa-plus"></i> Agregar Productos
             </b-dropdown-item>
           </b-nav-item-dropdown>
 
-          <b-nav-item-dropdown text="Ventas">
+          <b-nav-item-dropdown v-if="usuario.rol==admin" text="Ventas">
             <b-dropdown-item @click="url('ventas')">
               <i class="fas fa-search-dollar"></i> Visualizar Ventas
             </b-dropdown-item>
@@ -72,6 +72,7 @@ export default {
   data() {
     return {
       usuario: this.$auth.user(),
+      admin:1,
       listarConf: [],
       logoNull: false
     };

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="usuario.rol==admin">
     <div class="row m-4 justify-content-center">
       <div class="col-12 col-md-10">
         <b-card class="tituloTabla transparencia">
