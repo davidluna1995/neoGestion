@@ -109,6 +109,17 @@ class ProductoController extends Controller
         }
     }
 
+    public function filter(Request $request)
+    {
+        if(trim($request->q)=='none'){
+          return [];
+        }
+        
+        return DB::select("SELECT id, concat(nombre,' - ',descripcion) as nombre, imagen, sku from producto
+        where concat(nombre,' ',descripcion) like '%$request->q%'");
+        //return $id;
+    }
+
     protected function validar_modificar_producto($request)
     {
         switch ($request->campo) {

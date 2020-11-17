@@ -14,6 +14,9 @@ Route::post('register', 'APIController@register');
 Route::post('sendEmail','ResetPasswordController@sendEmail');
 Route::post('resetPassword','ResetPasswordController@process');
 
+
+Route::get('users/autocomplete/{q}','ProductoController@filter');
+
 Route::group(['middleware' => 'auth.jwt'], function () {
 
     //login y user

@@ -4,13 +4,29 @@
     <div class="row my-4 mx-1">
       <div class="col-12">
         <b-card class="text-center transparencia">
+          
           <div class="row">
             <!-- buscar por codigo -->
             <div class="col-12 col-md-6 col-lg-8">
               <b-card class="largoCard">
                 <div class="row">
                   <div class="col-12">
-                   
+                   <div class="row" >
+                    <div class="col-md-12">
+                      <input placeholder="Buscar por nombre o descripcion de producto..." class="form-control form-control-sm" v-model="buscando_txt" type="text" v-on:keyup="buscando_personalizado">
+
+                       <div v-if="view_buscando"  style="border: 1px solid #BFC9CA; border-radius: 4px; height:200px; overflow:scroll; ">
+                          <div v-for="data in lista_buscando" :key="data.id" class="row">
+                              <div class="col-md-2">
+                              <img class="avatar_indexx" :src="data.imagen" />
+                              </div>
+                              <div class="col-md-6">
+                              <span @click="getData(data.sku)" >{{data.nombre}}</span>
+                              </div>
+                          </div>
+                      </div> 
+                    </div>
+                  </div>
                     <b-input-group>
                       <b-form-input
                         ref="inputBuscar"
@@ -111,7 +127,7 @@
             <!-- buscar por codigo -->
 
             <!-- tipo de venta -->
-            <div class="col-12 col-md-6 col-lg-4 text-right">
+            <div class="col-12 col-md-4 col-lg-4 text-right">
               <b-card>
                 <b-form-group id="cliente" label="Selecione Cliente:">
                   <div class="row">
@@ -506,3 +522,9 @@
 <script src="../generarVenta/generarVenta.js"></script>
 <style scoped src="../generarVenta/generarVenta.css"></style>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
+<style>
+.avatar_indexx{
+      height: 135px;width: 135px; border-radius: 30px;
+    }
+</style>

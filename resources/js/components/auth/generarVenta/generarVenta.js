@@ -1,13 +1,19 @@
 import Multiselect from 'vue-multiselect';
+import Autocomplete from 'vue2-autocomplete-js'
+
 
 export default {
   components: {
-    Multiselect
+    Multiselect,
+    Autocomplete
   },
     data() {
         return {
 
             // BUSCADOR
+            view_buscando:false,
+            lista_buscando:[],
+            buscando_txt:'',
             buscadorProducto: '',
             productoSearch: '',
             idProducto: '0',
@@ -133,6 +139,30 @@ export default {
      
 
     methods: {
+
+        buscando_personalizado(){
+            this.view_buscando = false;
+            this.lista_buscando = [];
+            if(this.buscando_txt.trim() == ''){
+              
+                this.view_buscando = false;
+                this.lista_buscando = [];
+
+                this.axios.get('api/users/autocomplete/none').then((response) => {
+                    this.view_buscando = false;
+                    console.log(response)
+                     this.lista_buscando = response.data;
+                });
+            }else{
+                this.axios.get('api/users/autocomplete/'+this.buscando_txt).then((response) => {
+                    this.view_buscando = true;
+                    console.log(response)
+                     this.lista_buscando = response.data;
+                });
+            }
+            
+            
+        },
 
 
         traer_clientes() {
@@ -375,6 +405,34 @@ export default {
 
                 }
             })
+        },
+
+        renderChild(data) {
+            return `
+            <div style="border: 1px solid black;">
+                <div class="row">
+                    <div class="col-md-2">
+                    <img class="avatar_indexx" src="${data.imagen}" />
+                    </div>
+                    <div class="col-md-6">
+                    <span>${data.nombre}</span>
+                    </div>
+                </div>
+             </div> 
+            `
+        },
+
+        getData(sku) {
+            
+             this.buscadorProducto = sku;
+             this.traer_producto();
+            
+            
+        },
+
+        redirect_user($id){
+            this.exist = false;
+            this.$router.push({name: 'User', params: {id:$id }});
         },
 
         // getNow: function () {

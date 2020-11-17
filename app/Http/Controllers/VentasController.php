@@ -18,7 +18,7 @@ class VentasController extends Controller
     protected function registro_venta(Request $datos)
     {
 
-        return $this->ambiente();
+       
 
         DB::beginTransaction();
         $venta = new Ventas();
@@ -75,17 +75,20 @@ class VentasController extends Controller
             $cliente=Cliente::find($datos->cliente_id);
 
             if ($ingresarDetalle == true) {
-                DB::commit();
+                 DB::commit(); /*descomentar aqui despues*/
                 $ticketDetalle = $this->ticketDetalle($venta->id);
                 $ticket = $this->ticket($venta->id);
                 if ($ticketDetalle['estado'] == 'success' && $ticket['estado'] == 'success') {
-                    return ['estado'=>'success',
+                    $datos_finales = ['estado'=>'success',
                             'mensaje'=>'Venta realizada con exito, actualizando nuevo stock.',
                             'ticketDetalle'=>$ticketDetalle['ticketDetalle'],
                             'ticket'=>$ticket['ticket'],
                             'cliente'=>$cliente->nombres.' '.$cliente->apellidos.' - '.$cliente->rut,
                             'vuelto'=>$vuelto
                             ];
+                    // DB::rollBack();
+                    return $datos_finales;
+                    //return $this->ambiente($datos_finales);
                 }
             } else {
                 if ($ingresarDetalle == false) {
@@ -635,8 +638,150 @@ class VentasController extends Controller
 
 
 
-    protected function ambiente(){
+    public function ambiente(Array $datos_venta){
+        // activar todos los errores
+        // ini_set('display_errors', true);
+        // error_reporting(E_ALL);
 
-        $semilla = self::getSeed();
+        // // zona horaria
+        // date_default_timezone_set('America/Santiago');
+
+        
+        // $config = [
+        //     'firma' => [
+        //         'file' => '/Users/alejandroesteban/Downloads/firma_digital_certificado.pfx',
+        //         //'data' => '', // contenido del archivo certificado.p12
+        //         'pass' => '1028',
+        //     ],
+        // ];
+        
+        // // trabajar en ambiente de certificación
+        // \sasco\LibreDTE\Sii::setAmbiente(\sasco\LibreDTE\Sii::CERTIFICACION);
+
+        // // solicitar token
+         $token = \sasco\LibreDTE\Sii\Autenticacion::getToken($config['firma']);
+        // var_dump($token);
+
+        // si hubo errores se muestran
+        foreach (\sasco\LibreDTE\Log::readAll() as $error) {
+            echo $error,"\n";
+        }
+
+        $obtener_rut_cliente = explode(' - ',$datos_venta['cliente']);
+     
+
+        $rut_cliente = (string) $this->div_rut($datos_venta['cliente']);
+        
+        
+        $detalle = [];
+        $recorre_detalle = 0;
+        foreach ($datos_venta['ticketDetalle'] as $key) {
+
+            $detalle[$recorre_detalle]['NmbItem'] = $key['nombre'];
+            $detalle[$recorre_detalle]['QtyItem'] = $key['cantidadDetalle'];
+            $detalle[$recorre_detalle]['PrcItem'] = $key['precio'];
+
+            $recorre_detalle++;
+        }
+
+        // datos
+         $factura = [
+             'Encabezado' => [
+                'IdDoc' => [
+                    'TipoDTE' => 33,
+                    'Folio' => 1,
+                ],
+                'Emisor' => [
+                    'RUTEmisor' => '77106553-8',
+                    'RznSoc' => 'NEOFOX INFORMATICA LIMITADA',
+                    'GiroEmis' => 'Informatico',
+                    'Acteco' => 500000,
+                    'DirOrigen' => 'RIO YAQUI 1971 ',
+                    'CmnaOrigen' => 'LOS ANGELES',
+                ],
+                'Receptor' => [
+                    'RUTRecep' => $rut_cliente,
+                    'RznSocRecep' => $obtener_rut_cliente[0],
+                    'GiroRecep' => 'tareas de Gobierno',
+                    'DirRecep' => 'Villo pto alegre, los angeles',
+                    'CmnaRecep' => 'Los Angeles, chile',
+                ],
+             ],
+            'Detalle' => $detalle,
+         ];
+
+
+         return $factura;
+
+
+         
+    //     $caratula = [
+    //         //'RutEnvia' => '11222333-4', // se obtiene de la firma
+    //         'RutReceptor' => '60803000-K',
+    //         'FchResol' => '2014-12-05',
+    //         'NroResol' => 0,
+    //     ];
+
+        $xml = file_get_contents(storage_path('xml/folios/33.xml'));
+        // Objetos de Firma y Folios
+        $Firma = new \sasco\LibreDTE\FirmaElectronica($config['firma']);
+        $Folios = new \sasco\LibreDTE\Sii\Folios($xml);
+        return response()->json($Folios);
+
+        // generar XML del DTE timbrado y firmado
+        $DTE = new \sasco\LibreDTE\Sii\Dte($factura);
+        $DTE->timbrar($Folios);
+        $DTE->firmar($Firma);
+       
+        
+        // generar sobre con el envío del DTE y enviar al SII
+        $EnvioDTE = new \sasco\LibreDTE\Sii\EnvioDte();
+        $EnvioDTE->agregar($DTE);
+        $EnvioDTE->setFirma($Firma);
+        $EnvioDTE->setCaratula($caratula);
+        $EnvioDTE->generar();
+       //Folio del DTE LibreDTE_T33F1 está fuera de rango
+        if ($EnvioDTE->schemaValidate()) {
+            echo $EnvioDTE->generar();
+            //$track_id = $EnvioDTE->enviar();
+            //var_dump($track_id);
+        }
+
+        // si hubo algún error se muestra
+        foreach (\sasco\LibreDTE\Log::readAll() as $log)
+            echo $log,"\n";
+
+
+
+
+
+
+    
+
+       
+
+        
+    }
+
+
+    function div_rut($rut){
+        $obtener_rut_cliente = explode(" - ", $rut);
+        $revers_rut_client = str_split(strrev($obtener_rut_cliente[1]));
+        $i=1;
+        $rut='';
+        $dv='';
+        foreach ($revers_rut_client as $key) {
+            if($i == 1){
+                
+                $dv = $key;
+            }else{
+           
+                $rut= $key.$rut;                          
+            }
+        
+            $i++;
+        }
+        return $rut.'-'.$dv;
+        // 188056520
     }
 }
