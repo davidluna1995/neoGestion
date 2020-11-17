@@ -15,18 +15,21 @@
                     <div class="col-md-12">
                       <input placeholder="Buscar por nombre o descripcion de producto..." class="form-control form-control-sm" v-model="buscando_txt" type="text" v-on:keyup="buscando_personalizado">
 
-                       <div v-if="view_buscando"  style="border: 1px solid #BFC9CA; border-radius: 4px; height:200px; overflow:scroll; ">
-                          <div v-for="data in lista_buscando" :key="data.id" class="row">
-                              <div class="col-3">
-                              <img class="avatar_indexx" :src="data.imagen" />
-                              </div>
-                              <div class="col-6">
-                              <center><a href="#" @click="getData(data.sku)" >{{data.nombre}}</a></center>
-                              </div>
-                          </div>
-                      </div> 
+                      <div v-if="view_buscando"  style="border: 1px solid #BFC9CA; border-radius: 4px; height:200px; overflow:scroll; ">
+                        <table class="table">
+                            <tr v-for="data in lista_buscando" :key="data.id" class="row">
+                                <td >
+                                <img class="avatar_indexx" :src="data.imagen" />
+                                </td>
+                                <td >
+                                <button @click="getData(data.sku)" type="button" class="btn btn-link" >{{data.nombre}}</button>
+                                </td>
+                            </tr>
+                        </table> 
+                      </div>
                     </div>
                   </div>
+                  <br>
                     <b-input-group>
                       <b-form-input
                         ref="inputBuscar"
