@@ -19,7 +19,7 @@
                         <table class="table">
                             <tr v-for="data in lista_buscando" :key="data.id" class="row">
                                 <td >
-                                <img class="avatar_indexx" :src="data.imagen" />
+                                 <b-img class="tamanio" thumbnail v-if="data.imagen"  :src="data.imagen" alt="Image 1"></b-img>
                                 </td>
                                 <td >
                                 <button @click="getData(data.sku)" type="button" class="btn btn-link" >{{data.nombre}}</button>
@@ -529,5 +529,61 @@
 <style>
 .avatar_indexx{
       height: 135px;width: 135px; border-radius: 30px;
+}
+
+/* Móviles en horizontal o tablets en vertical */
+   /* ------------------------------------------------------------------------- / */
+@media (min-width: 768px) { 
+    .tamanio{
+        max-width: 30%;
+        max-height: 30%;
     }
+}
+ 
+/* / Tablets en horizonal y escritorios normales
+   ------------------------------------------------------------------------- / */
+/* @media (min-width: 1024px) { 
+    .tamanio{
+        max-width: 50%;
+        max-height: 50%;
+    }
+} */
+ 
+/* / Escritorios muy anchos
+   ------------------------------------------------------------------------- */ 
+/* @media (min-width: 1200px) { 
+    .tamanio{
+        max-width: 150px;
+        max-height: 150px;
+    }
+} */
+
+
+/* 
+  ##Device = Desktops
+  ##Screen = 1281px to higher resolution desktops
+*/
+
+@media (min-width: 1281px) {
+  
+   .tamanio{
+        max-width: 150px;
+        max-height: 150px;
+    }
+  
+}
+
+/* 
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  
+   .tamanio{
+        max-width: 150px;
+        max-height: 150px;
+    }
+  
+}
 </style>
