@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\AssignOp\Concat;
+use App\User;
 
 class VentasController extends Controller
 {
@@ -130,7 +131,7 @@ class VentasController extends Controller
             $venta->venta_id = $venta_id;
             $venta->producto_id = $carro[$i]['id'];
             $venta->cantidad = $carro[$i]['cantidad_ls'];
-            $venta->precio = $carro[$i]['precio_venta'];
+            $venta->precio = $carro[$i]['precio'];
 
             if ($venta->save()) {
                 $actualizarCantidad = Producto::find($carro[$i]['id']);
@@ -279,12 +280,21 @@ class VentasController extends Controller
 
     protected function buscar_producto_carro($producto)
     {
+        $precio = empty(Auth::user()->tipo_precio)? 1 : Auth::user()->tipo_precio;
+
+        if($precio == 1){
+            $tipo_precio = 'precio_1';
+        }
+        if($precio == 2){
+            $tipo_precio = 'precio_2';
+        }
+
         $listar = Producto::select([
                                     'producto.id',
                                     'producto.sku',
                                     'producto.nombre',
                                     'producto.cantidad',
-                                    'producto.precio_venta',
+                                    'producto.'.$tipo_precio.' as precio',
                                     ])
                                     ->where('producto.activo','S')
                                     ->whereRaw(
@@ -761,6 +771,20 @@ class VentasController extends Controller
        
 
         
+    }
+
+    public function cambiar_tipo_precio($precio){
+
+        $u = User::find(Auth::user()->id);
+        $u->tipo_precio = $precio;
+
+        if($u->save()){
+            return [
+                'user' => $u,
+                'estado' => 'success'
+            ];
+        }
+
     }
 
 

@@ -123,26 +123,26 @@
               </div>
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
-              <b-form-group id="compra" label="Ingrese precio de compra (Unidad / Kg):">
+              <b-form-group id="compra" label="Ingrese precio 1 (Unidad / Kg):">
                 <div class="row">
                   <div class="col-1">
                     <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-primary"></i>
                   </div>
                   <div class="col-11">
-                    <b-form-input v-model="precio_compra" type="number" placeholder="Precio compra"></b-form-input>
+                    <b-form-input v-model="precio_1" type="number" placeholder="Precio 1"></b-form-input>
                   </div>
                 </div>
               </b-form-group>
             </div>
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
-              <b-form-group id="venta" label="Ingrese precio de venta (Unidad / Kg):">
+              <b-form-group id="venta" label="Ingrese precio 2 (Unidad / Kg):">
                 <div class="row">
                   <div class="col-1">
                     <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-success"></i>
                   </div>
                   <div class="col-11">
-                    <b-form-input v-model="precio_venta" type="number" placeholder="Precio venta"></b-form-input>
+                    <b-form-input v-model="precio_2" type="number" placeholder="Precio 2"></b-form-input>
                   </div>
                 </div>
               </b-form-group>

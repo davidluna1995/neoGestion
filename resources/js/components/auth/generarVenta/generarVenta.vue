@@ -84,10 +84,10 @@
                         </template>
                         <template
                           v-slot:cell(precioProd)="data"
-                        >$ {{ formatPrice(data.item.precio_venta) }}</template>
+                        >$ {{ formatPrice(data.item.precio) }}</template>
                         <template
                           v-slot:cell(subtotal)="data"
-                        >$ {{ formatPrice(data.item.precio_venta * data.item.cantidad_ls) }}</template>
+                        >$ {{ formatPrice(data.item.precio * data.item.cantidad_ls) }}</template>
                         <template v-slot:cell(opc)="data">
                           <div class="col-12 col-xl-12">
                             <b-button

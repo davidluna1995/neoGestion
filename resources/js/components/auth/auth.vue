@@ -38,6 +38,10 @@
           <b-nav-item @click="url('generarVenta')">
             <i class="fas fa-cart-plus"></i> Generar Venta POS
           </b-nav-item>
+
+          <b-nav-item >
+            <button type="button" @click="cambiar_tipo_precio(usuario.tipo_precio)" class="btn btn-secondary btn-sm">Usando precio {{ usuario.tipo_precio }}  de venta</button>
+          </b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -100,6 +104,25 @@ export default {
           this.listarConf = response.data.configuraciones;
         }
       });
+    },
+
+    cambiar_tipo_precio(tipo_precio){
+        var numero_send = 0;
+        if(tipo_precio == 1){
+          numero_send = 2;
+        }
+        if(tipo_precio == 2){
+          numero_send = 1;
+        }
+        this.axios.get("api/cambiar_tipo_precio/"+numero_send).then((res)=>{
+         
+          if(res.data.estado == 'success'){
+            alert("Usando ahora precio "+numero_send);
+            this.usuario = res.data.user;
+          }
+            
+        });
+
     }
   },
 

@@ -63,6 +63,8 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('reporte_ventas/{desde?}/{hasta?}', 'VentasController@reporte_ventas');
     Route::get('periodico_ventas_grafico/{anio}', 'VentasController@periodico_ventas_grafico');
 
+    Route::get('cambiar_tipo_precio/{tipo_precio}', 'VentasController@cambiar_tipo_precio');
+
     //rutas cliente
     Route::post('guardar_cliente','ClientesController@guardar');
     Route::get('listar_clientes','ClientesController@listar_clientes');

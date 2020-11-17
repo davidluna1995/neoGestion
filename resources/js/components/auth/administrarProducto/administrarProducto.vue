@@ -415,14 +415,14 @@
                   <b-card>
                     <b-row class="mb-2">
                       <b-col sm="12" lg="3">
-                        <b>Compra:</b>
+                        <b>Precio 1:</b>
                         <span class="green">$</span>
-                        {{ formatPrice(data.item.precio_compra) }}
+                        {{ formatPrice(data.item.precio_1) }}
                       </b-col>
                       <b-col sm="12" lg="3">
-                        <b>Venta:</b>
+                        <b>Precio 2:</b>
                         <span class="green">$</span>
-                        {{ formatPrice(data.item.precio_venta) }}
+                        {{ formatPrice(data.item.precio_2) }}
                       </b-col>
                       <b-col sm="12" lg="3">
                         <b>Fecha Creacion:</b>
