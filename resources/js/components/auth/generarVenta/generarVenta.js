@@ -441,6 +441,24 @@ export default {
             this.$router.push({name: 'User', params: {id:$id }});
         },
 
+        generar_un_xml(){
+            this.axios.get('api/generar_un_xml').then((res)=>{
+
+            });
+        },
+        printDiv(contenido) {
+            
+            // html2canvas(document.querySelector("#pdfFactura")).then(canvas => {
+            //     document.body.appendChild(canvas)
+            // });
+            // var ficha = document.getElementById(contenido);
+            // var ventanaImpresion = window.open(' ', 'popUp');
+            // ventanaImpresion.document.write(ficha.innerHTML);
+            // ventanaImpresion.document.close();
+            // ventanaImpresion.print();
+            // ventanaImpresion.close();
+        }
+
         // getNow: function () {
         //     const today = new Date();
         //     const date = ('0' + today.getDate()).slice(-2) + '/' + ('0' + (today.getMonth() + 1)).slice(-2) + '/' + today.getFullYear();

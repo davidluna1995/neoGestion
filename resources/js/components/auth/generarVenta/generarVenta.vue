@@ -1,6 +1,127 @@
 <template>
   <div>
-     
+     <button @click="generar_un_xml">Genera un xml factura</button>
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalFactura">Ver xml como una factura real</button>
+
+<!-- Modal factura -->
+<div class="modal fade" id="modalFactura" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title" id="exampleModalLabel">Modal Factura</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+<div id="pdfFactura">
+<!-- AQUI EL DISEÑO DE LA FACTURA ELECTRONICA -->
+    <div class="factura" style="margin:2em">
+
+      <center style=" color:red; padding: 15px;border-width: 5px;border-style: solid;border-color: red; font-family: Sans Serif;width: 100%;white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;">
+        <pre>18.8.5.652-0</pre> 
+        <pre>FACTURA ELECTRONICA</pre> 
+        <pre>Nº 001</pre>
+      </center>
+      <br>
+      <center style="color:red; font-size:1.3em">
+       <pre> S.I.I SANTIAGO, RM</pre>
+      </center>
+      <br>
+
+      <!-- DATOS DEL EMISOR  -->
+    <section class="datos_emisor" style="font-family: Sans Serif;font-size: 15px;width: 100%;white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;" >
+      <pre><b>Razón social del emisor</b></pre>
+      <pre>Venta de productos de alimentacio1n, limpieza, etc, ete sech </pre><br>
+
+      Emisión&nbsp; : 29/12/2020 <br>
+      Señor(a)&nbsp;: Juan Luis Guerra Echeñiquie <br>
+      Rut&nbsp;: 77.106.553-8 <br>
+      Giro&nbsp;: Venta <br>
+
+      <table>
+        
+          <tr>
+            <td style=" border-bottom:1px solid black; border-top:1px solid black">Item</td>
+            <td style=" border-bottom:1px solid black; border-top:1px solid black">P.unitario</td>
+            <td style=" border-bottom:1px solid black; border-top:1px solid black">Cantidad</td>
+            <td style=" border-bottom:1px solid black; border-top:1px solid black">Total item</td>
+          </tr>
+        
+
+       
+          <tr>
+             <td>Cerveza pack 6 u</td>
+             <td>3000</td>
+             <td>2</td>
+             <td>6000</td>
+          </tr>
+
+          <tr>
+             <td>Vino tinto gato EXPORT</td>
+             <td>3.000</td>
+             <td>2</td>
+             <td>6.000</td>
+          </tr>
+
+
+          <tr >
+            
+            <td class="fintabla" style="border-bottom:1px solid black; border-top:1px solid black" colspan="3"><div style="text-align:right">Total&nbsp;:</div></td>
+            <td class="fintabla" style="border-bottom:1px solid black; border-top:1px solid black">9.000</td>
+          </tr>
+       
+      </table>
+      
+      <!-- <div style="text-align:right">
+        Total: 10.000
+      </div> -->
+
+      
+    </section>
+
+    </div>
+
+
+<!-- AQUI SE GENERA EL TIMBRE ELECTRONICO -------------------------------------------------------->
+        <div style='text-align: center;'>
+        <!-- insert your custom barcode setting your data in the GET parameter "data" -->
+      <img alt='Barcode Generator TEC-IT'
+       src='https://barcode.tec-it.com/barcode.ashx?data=g1AQX0sy8NJugX52k2hTJEZAE9Cuul6pqYBdFxj1N17umW7zG/hAavCALKByHzdYAfZ3LhGTXCai5zNxOo4lDQ==&code=PDF417&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&codepage=Default&qunit=Mm&quiet=0'/>
+      </div>
+      <div style='padding-top:8px; text-align:center; font-size:15px; font-family: Source Sans Pro, Arial, sans-serif;'>
+        <!-- back-linking to www.tec-it.com is required -->
+        <a href='https://www.tec-it.com' title='Barcode Software by TEC-IT' target='_blank'>
+          TEC-IT Barcode Generator<br/>
+          <!-- logos are optional -->
+          <center><pre>Timbre electronico de la caca del SII</pre></center>
+        </a>
+      </div>
+<!-- AQUI SE GENERA EL TIMBRE ELECTRONICO -------------------------------------------------------------->
+
+
+<!-- FIN DEL DISEÑO DE LA FACTURACION ELECTRONICA -->
+</div>
+
+
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+<!-- <button @click="printDiv('pdfFactura')"></button> -->
+<button type="button" class="btn btn-primary" 
+onclick="printJS({
+          printable: 'pdfFactura',
+          type:'html', 
+          style: 'pre{font-family: Sans Serif;font-size: 15px;width: 100%;white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;}'  
+         })">Imprimir</button>
+</div>
+</div>
+</div>
+</div>
+
+
     <div class="row my-4 mx-1">
       <div class="col-12">
         <b-card class="text-center transparencia">

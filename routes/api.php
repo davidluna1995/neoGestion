@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('periodico_ventas_grafico/{anio}', 'VentasController@periodico_ventas_grafico');
 
     Route::get('cambiar_tipo_precio/{tipo_precio}', 'VentasController@cambiar_tipo_precio');
+    Route::get('generar_un_xml','VentasController@generar_un_xml');
 
     //rutas cliente
     Route::post('guardar_cliente','ClientesController@guardar');
