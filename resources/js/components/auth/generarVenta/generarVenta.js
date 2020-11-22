@@ -1,11 +1,8 @@
 import Multiselect from 'vue-multiselect';
-import Autocomplete from 'vue2-autocomplete-js'
-
 
 export default {
   components: {
-    Multiselect,
-    Autocomplete
+    Multiselect
   },
     data() {
         return {
@@ -14,6 +11,7 @@ export default {
             view_buscando:false,
             lista_buscando:[],
             buscando_txt:'',
+
             buscadorProducto: '',
             productoSearch: '',
             idProducto: '0',
@@ -38,6 +36,13 @@ export default {
             montoEfectivoDebito: 0,
             total: 0,
             totalTemporal: 0,
+
+            chk_credito: false,
+            detalle_credito:'',
+            monto_credito:0,
+
+            confirm_compra:false,
+
 
             arregloCarro: [],
             cantidadStock: '',
@@ -126,12 +131,16 @@ export default {
             listarConf: [],
             logoNull: false,
             get_vuelto:0,
+
+            //datos para la factura
+            ted:'',
         }
 
 
     },
 
     created() {
+        
         console.log(document);
         setInterval(this.getNow, 1000);
     },
@@ -141,28 +150,46 @@ export default {
     methods: {
 
         buscando_personalizado(){
-            this.view_buscando = false;
-            this.lista_buscando = [];
-            if(this.buscando_txt.trim() == ''){
-              
-                this.view_buscando = false;
-                this.lista_buscando = [];
-
-                this.axios.get('api/users/autocomplete/none').then((response) => {
-                    this.view_buscando = false;
-                    console.log(response)
-                     this.lista_buscando = response.data;
-                });
-            }else{
-                this.axios.get('api/users/autocomplete/'+this.buscando_txt).then((response) => {
-                    this.view_buscando = true;
-                    console.log(response)
-                     this.lista_buscando = response.data;
-                });
-            }
+            	
+                        this.view_buscando = false;
+            	
+                        this.lista_buscando = [];
             
+                        if(this.buscando_txt.trim() == ''){
+            	
+                            this.view_buscando = false;
+            	
+                            this.lista_buscando = [];
+            	
+                            this.axios.get('api/users/autocomplete/none').then((response) => {
+            	
+                                this.view_buscando = false;
+            	
+                                console.log(response)
+           	
+                                 this.lista_buscando = response.data;
+            	
+                            });
+            	
+                        }else{
+            	
+                            this.axios.get('api/users/autocomplete/'+this.buscando_txt).then((response) => {
+            	
+                                this.view_buscando = true;
+            	
+                                console.log(response)
+            	
+                                 this.lista_buscando = response.data;
             
-        },
+                            });
+            	
+                        }
+            
+                        
+            
+                        
+            	
+                    },
 
 
         traer_clientes() {
@@ -350,10 +377,11 @@ export default {
         },
 
         registrar_venta() {
-
+            this.confirm_compra = true;
             if (this.cliente_id == null){
 
                 alert("Falta el cliente");
+                this.confirm_compra = false;
                  return false;
             }
             const data = {
@@ -364,6 +392,9 @@ export default {
                 'cliente_id': this.cliente_id.id,
                 'pago_efectivo': this.montoEfectivo,
                 'pago_debito': this.montoDebito,
+                'chk_credito': this.chk_credito,
+                'detalle_credito': this.detalle_credito,
+                'monto_credito': this.credito
                 // 'vuelto': (Number(this.montoEfectivo)+ Number(this.montoDebito)) - Number(this.total)
             }
 
@@ -373,6 +404,10 @@ export default {
                     this.errores3 = [];
                     // this.limpiarCarro();
                     this.correcto3 = response.data.mensaje;
+                    this.chk_credito = false;
+                    this.cliente_id = null;
+                    this.montoEfectivo = 0;
+                    this.montoDebito = 0;
                     this.showAlert3();
                     this.showModal();
                     this.ticketPrintDetalle = response.data.ticketDetalle;
@@ -380,14 +415,18 @@ export default {
                     this.ticketPrint = response.data.ticket;
                     this.get_vuelto = response.data.vuelto;
 
+                    this.confirm_compra = false;
+
                 }
 
                 if (response.data.estado == 'failed') {
                     this.showAlert6();
+                    this.confirm_compra = false;
                     this.errores6 = response.data.mensaje;
                 }
                 if (response.data.estado == 'failed_v') {
                     this.errores3 = response.data.mensaje;
+                    this.confirm_compra = false;
                     return false;
                 }
 
@@ -412,6 +451,7 @@ export default {
                 }
             })
         },
+
 
         renderChild(data) {
             return `
@@ -442,10 +482,17 @@ export default {
         },
 
         generar_un_xml(){
+            const esto = this;
+            alert("entrando..");
             this.axios.get('api/generar_un_xml').then((res)=>{
-
+                
+                
+                this.ted = res.data.xml;
+                console.log(this.ted);
             });
         },
+
+       
         printDiv(contenido) {
             
             // html2canvas(document.querySelector("#pdfFactura")).then(canvas => {

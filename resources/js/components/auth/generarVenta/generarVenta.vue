@@ -1,8 +1,9 @@
 <template>
   <div>
-    <button @click="generar_un_xml">Genera un xml factura</button>
+    <button v-if="false" @click="generar_un_xml">Genera un xml factura</button>
 
     <button
+    v-if="false"
       type="button"
       class="btn btn-primary"
       data-toggle="modal"
@@ -11,8 +12,14 @@
       Ver xml como una factura real
     </button>
 
+    <div v-if="false" class="card">
+      aqui se veria la img
+      <img width="700" height="400" :src="ted" alt="">
+    </div>
+
     <!-- Modal factura -->
     <div
+      v-if="false"
       class="modal fade"
       id="modalFactura"
       tabindex="-1"
@@ -157,7 +164,7 @@
                   width="90%"
                   height="120%"
                   alt="Barcode Generator TEC-IT"
-                  src="https://barcode.tec-it.com/barcode.ashx?data=g1AQX0sy8NJugX52k2hTJEZAE9Cuul6pqYBdFxj1N17umW7zG/hAavCALKByHzdYAfZ3LhGTXCai5zNxOo4lDQ==&code=PDF417&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&codepage=Default&qunit=Mm&quiet=0"
+                  :src="'https://barcode.tec-it.com/barcode.ashx?data='+ted+'&code=PDF417&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&codepage=Default&qunit=Mm&quiet=0'"
                 />
               </div>
               <div style="font-size: 1.2rem; font-family: sans-serif">
@@ -380,6 +387,9 @@
             </div>
             <!-- buscar por codigo -->
 
+            
+
+
             <!-- tipo de venta -->
             <div class="col-12 col-md-4 col-lg-4 text-right">
               <b-card>
@@ -415,6 +425,7 @@
                       size="sm"
                     ></b-form-checkbox-group>
                   </b-form-group>
+
                 </div>
 
                 <div
@@ -492,6 +503,19 @@
                       size="sm"
                     ></b-form-radio-group>
                   </b-form-group>
+
+
+                  <hr>
+
+                  <label> <input v-model="chk_credito" @click="monto_credito = 0;" type="checkbox"> Credito / Deuda (Pago pendiente) </label>
+                  
+                  <div v-if="chk_credito">
+                    <textarea v-model="detalle_credito" class="form-control" style="resize: none;" placeholder="Detalle de la deuda.." name="" id="" cols="30" rows="2"></textarea>
+                    <br>
+                    <input v-model="monto_credito" class="form-control form-control-sm" type="numeric" placeholder="Monto de la deuda..">
+                  </div>
+
+                  <hr>
                 </div>
 
                 <template v-slot:footer>
@@ -515,10 +539,10 @@
                         <label>$ 0</label>
                       </div>
                       <div v-if="formaPago == '1'">
-                        <label>$ {{ formatPrice(montoEfectivo) }}</label>
+                        <label>$ {{ formatPrice(Number(montoEfectivo) + Number(monto_credito) ) }}</label>
                       </div>
                       <div v-if="formaPago == '2'">
-                        <label>$ {{ formatPrice(montoDebito) }}</label>
+                        <label>$ {{ formatPrice(Number(montoDebito) + Number(monto_credito)) }}</label>
                       </div>
 
                       <div v-if="formaPago == '1,2'">
@@ -526,7 +550,7 @@
                           >$
                           {{
                             formatPrice(
-                              Number(montoEfectivo) + Number(montoDebito)
+                              Number(montoEfectivo) + Number(montoDebito) + Number(monto_credito)
                             )
                           }}</label
                         >
@@ -536,7 +560,7 @@
                           >$
                           {{
                             formatPrice(
-                              Number(montoEfectivo) + Number(montoDebito)
+                              Number(montoEfectivo) + Number(montoDebito) + Number(monto_credito)
                             )
                           }}</label
                         >
@@ -544,6 +568,13 @@
                       <div v-if="formaPago == '3'">
                         <label>$ {{ formatPrice(montoCredito) }}</label>
                       </div>
+
+                      <!-- <div v-if="chk_credito">
+                          <label>$ {{ formatPrice(
+                            Number(montoEfectivo) + Number(montoDebito) + Number(monto_credito)
+                            ) }}</label>
+                      </div> -->
+                      
                       <!-- <div v-if="formaPago == '1,2' || formaPago =='2,1'">
                         <label>({{montoEfectivo}} + {{montoDebito}})</label>
                       </div>-->
@@ -558,19 +589,21 @@
                       </div>
                       <div v-if="formaPago == '1'">
                         <label
+                          
                           >$
                           {{
                             formatPrice(Number(montoEfectivo) - Number(total))
-                          }}</label
-                        >
+                          }}</label> <label style="color:red" v-if="Number(montoEfectivo) - Number(total) < 0"><i class="fas fa-arrow-up"></i> deuda de cliente</label>
                       </div>
                       <div v-if="formaPago == '2'">
                         <label
                           >$
                           {{
                             formatPrice(Number(montoDebito) - Number(total))
-                          }}</label
-                        >
+                          }}</label>
+                          <label style="color:red" v-if="(Number(montoDebito) - Number(total)) < 0">
+                            <i class="fas fa-arrow-up"></i> deuda de cliente
+                          </label>
                       </div>
                       <div v-if="formaPago == '1,2'">
                         <label
@@ -581,8 +614,9 @@
                                 Number(montoDebito) -
                                 Number(total)
                             )
-                          }}</label
-                        >
+                          }}</label> <label style="color:red" v-if="(Number(montoEfectivo)+Number(montoDebito)-Number(total)) < 0">
+                            <i class="fas fa-arrow-up"></i> deuda de cliente
+                          </label>
                       </div>
                       <div v-if="formaPago == '2,1'">
                         <label
@@ -593,8 +627,10 @@
                                 Number(montoDebito) -
                                 Number(total)
                             )
-                          }}</label
-                        >
+                          }}</label>
+                          <label style="color:red" v-if="(Number(montoEfectivo)+Number(montoDebito)-Number(total)) < 0">
+                            <i class="fas fa-arrow-up"></i> deuda de cliente
+                          </label>
                       </div>
                       <!-- <div v-if="formaPago == '3'">
                         <label>$ {{formatPrice(montoCredito - total)}}</label>
@@ -609,6 +645,7 @@
                       <!-- BOTON VENTAS -->
                       <div>
                         <b-button
+                         :disabled="confirm_compra"
                           pill
                           block
                           size="sm"
@@ -624,6 +661,8 @@
                       <template>
                         <div>
                           <b-modal
+                            no-close-on-esc
+                            no-close-on-backdrop
                             class="modal-header-ventas"
                             id="modal-md"
                             size="md"
@@ -736,7 +775,7 @@
                                         <div>
                                           <label>
                                             <b>Vuelto:</b>
-                                            $ {{ formatPrice(get_vuelto) }}
+                                            $ {{ formatPrice(get_vuelto) }} <label v-if="get_vuelto < 0" for=""> Deuda de cliente</label>
                                           </label>
                                         </div>
                                       </td>
@@ -767,9 +806,9 @@
                                   onclick="printJS({
                                             printable: 'printVenta',
                                             type:'html', })"
-                                  @click="hideModal()"
-                                  >imprimir ticket</b-button
-                                >
+                                  
+                                  >imprimir ticket</b-button>
+                                  <!-- @click="hideModal()" -->
                               </div>
                             </div>
                           </b-modal>

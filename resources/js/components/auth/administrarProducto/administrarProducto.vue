@@ -298,8 +298,8 @@
                                   </div>
                                   <div class="col-10">
                                     <b-form-input
-                                      v-model="precioCompraUpd"
-                                      :placeholder="formatPrice(data.item.precio_compra)"
+                                      v-model="precio_1"
+                                      :placeholder="formatPrice(data.item.precio_1)"
                                     ></b-form-input>
                                   </div>
                                 </div>
@@ -308,7 +308,7 @@
                                 <b-button
                                   block
                                   variant="light"
-                                  @click="actualizar_dato(data.item.id,'precio_compra',precioCompraUpd)"
+                                  @click="actualizar_dato(data.item.id,'precio_1',precio_1)"
                                 >
                                   <i class="fas fa-edit text-success"></i>
                                 </b-button>
@@ -321,8 +321,8 @@
                                   </div>
                                   <div class="col-10">
                                     <b-form-input
-                                      v-model="precioVentaUpd"
-                                      :placeholder="formatPrice(data.item.precio_venta)"
+                                      v-model="precio_2"
+                                      :placeholder="formatPrice(data.item.precio_2)"
                                     ></b-form-input>
                                   </div>
                                 </div>
@@ -331,7 +331,7 @@
                                 <b-button
                                   block
                                   variant="light"
-                                  @click="actualizar_dato(data.item.id,'precio_venta',precioVentaUpd)"
+                                  @click="actualizar_dato(data.item.id,'precio_2',precio_2)"
                                 >
                                   <i class="fas fa-edit text-success"></i>
                                 </b-button>
