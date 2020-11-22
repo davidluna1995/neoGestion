@@ -505,7 +505,8 @@
                   </b-form-group>
 
 
-                  <hr>
+                  <div v-if="false">
+                    <hr>
 
                   <label> <input v-model="chk_credito" @click="monto_credito = 0;" type="checkbox"> Credito / Deuda (Pago pendiente) </label>
                   
@@ -516,6 +517,7 @@
                   </div>
 
                   <hr>
+                  </div>
                 </div>
 
                 <template v-slot:footer>
