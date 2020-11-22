@@ -116,7 +116,7 @@ class ProductoController extends Controller
         }
         
         return DB::select("SELECT id, concat(nombre,' - ',descripcion) as nombre, imagen, sku from producto
-        where concat(nombre,' ',descripcion) like '%$request->q%'");
+        where concat(nombre,' ',descripcion) like '%$request->q%' and activo = 'S'");
         //return $id;
     }
 
