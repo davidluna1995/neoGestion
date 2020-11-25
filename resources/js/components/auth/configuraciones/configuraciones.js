@@ -1,6 +1,9 @@
 export default {
     data() {
         return {
+            //
+            conf_ngreso_caja:false,
+
             nombre: '',
             email: '',
             password: '',
@@ -53,6 +56,24 @@ export default {
             dismissSecs: 3,
             dismissCountDown: 0,
 
+            //caja
+            nombre_caja:'',
+            detalle_caja:'',
+
+            get_cajas:[],
+            get_editar_caja:[],
+
+            caja_edit_nombre:'',
+            caja_edit_descripcion:'',
+
+            get_usuarios:[],
+            usuarios_en_caja:[],
+
+            asig_caja:'',
+            asig_usuario:'',
+            datos_de_caja:[],
+            btn_asignar:false,
+
         }
     },
     methods: {
@@ -62,6 +83,10 @@ export default {
         },
 
         // MODAL CREAR USUARIO
+
+        abrir_modal(ref){
+            this.$refs[''+ref+''].show();
+        },
         showModalCrearUsuario() {
             this.$refs['crearUsuario'].show();
         },
@@ -231,6 +256,103 @@ export default {
             })
         },
 
+        ingresar_caja(){
+            this.conf_ngreso_caja = true;
+            const data = { 'nombre': this.nombre_caja, 'descripcion': this.detalle_caja};
+            this.axios.post('api/ingresar_caja',data).then((res)=>{
+                console.log(res.data.estado);
+                if(res.data.estado == 'failed'){
+                    this.conf_ngreso_caja = false;
+                    alert(""+res.data.mensaje+"");
+                    return false;
+                }
+
+                if(res.data.estado == 'success'){
+                    alert(""+res.data.mensaje+"");
+                    this.conf_ngreso_caja = false;
+                    this.nombre_caja = '';
+                    this.detalle_caja = '';
+                    this.$refs['modal_caja'].hide();
+                }else{
+                    this.conf_ngreso_caja = true;
+                }
+            }).catch(function(error) {
+                // this.conf_ngreso_caja = true;
+                alert("Algo salio mal, vuelva a revisar sus datos");
+              });
+        },
+
+        listar_cajas(){
+            this.axios.get('api/traer_cajas').then((res) => {
+                if(res.data.estado == 'success'){
+                    this.get_cajas = res.data.tabla;
+                }
+            });
+        },
+        editar_caja(data){
+            this.get_editar_caja = [];
+            this.get_editar_caja = data;
+            this.caja_edit_nombre=data.nombre;
+            this.caja_edit_descripcion=data.descripcion;
+            this.$refs['modal_editar_caja'].show();
+
+
+        },
+
+        ver_usuarios_en_caja(data){
+            this.usuarios_en_caja = [];
+            this.datos_de_caja = data
+            this.axios.get('api/ver_usuarios_en_caja/'+data.id).then((res)=>{
+                if(res.data.estado == 'success'){
+                    this.usuarios_en_caja = res.data.users;
+                }
+            });
+
+            this.$refs['modal_usuarios_en_caja'].show();
+        },
+
+        editar_datos_caja(id){
+
+            const data = {
+                'id': id,
+                'nombre': this.caja_edit_nombre,
+                'descripcion': this.caja_edit_descripcion
+            }
+            this.axios.post("api/editar_caja", data).then((res) => {
+                if(res.data.estado == 'success'){
+                    alert(""+res.data.mensaje+"");
+                    this.listar_cajas();
+                    this.$refs['modal_editar_caja'].hide();
+
+                }else{
+                    alert("No se ha podido actualizar la información")
+                }
+            })
+        },
+        traer_usuarios(){
+           const pet = this.axios.get('api/traer_usuarios');
+           pet.then((res)=>{
+                this.get_usuarios = res.data;
+           });
+        }
+        ,
+        asignar_usuario_a_caja(){
+            this.btn_asignar = true;
+            const data = {
+                'caja_id': this.asig_caja,
+                'usuario_id' : this.asig_usuario
+            };
+            this.axios.post('api/asignar_usuario_a_caja', data).then((res)=>{
+                if(res.data.estado == 'success'){
+                    alert(res.data.mensaje);
+                    this.btn_asignar = false;
+                }
+                if(res.data.estado == 'failed'){
+                    alert(res.data.mensaje);
+                    this.btn_asignar = false;
+                }
+            });
+        },
         onFileChange(e) {
             this.logo = e.target.files || e.dataTransfer.files;
             console.log(this.logo[0]);

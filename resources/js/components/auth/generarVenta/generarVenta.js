@@ -143,6 +143,7 @@ export default {
         
         console.log(document);
         setInterval(this.getNow, 1000);
+        
     },
 
      
@@ -522,5 +523,7 @@ export default {
         this.traer_configuraciones();
 
         document.getElementById("inputBuscar").focus();
+
+        this.$refs['modal-caja'].show();
     },
 }

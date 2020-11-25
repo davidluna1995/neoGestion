@@ -5,6 +5,7 @@
         <b-card class="text-center tituloTabla transparencia mb-4">
           <b-card-header class="fondoCategoria mb-4">CONFIGURACIONES</b-card-header>
 
+          <center><h5>GESTION GENERAL <i class="fas fa-user-cog"></i></h5></center>
           <div class="row">
             <div class="col-6">
               <!-- <b-button
@@ -388,6 +389,239 @@
                   </b-modal>
                 </div>
               </template>
+            </div>
+          </div>
+          <hr>
+
+          <center><h5>GESTION DE CAJA <i class="fas fa-cash-register"></i></h5></center>
+
+          <div class="row">
+            <div class="col-4">
+              <b-button
+                size="xl"
+                id="show-btn"
+                class="my-2"
+                variant="success"
+                @click="abrir_modal('modal_caja')"
+              >Ingresar Caja</b-button>
+
+
+
+              <b-modal
+                    no-close-on-esc
+                    no-close-on-backdrop
+                    hide-footer
+                    centered
+                    class="modal-header-editar"
+                    id="modal-xl"
+                    size="md"
+                    ref="modal_caja"
+                  >
+                  <template v-slot:modal-title>
+                      <h5 class="text-center">Ingresar caja <i class="fas fa-cash-register"></i></h5>
+                  </template>
+
+                  <div>
+                    <label for="">Nombre de caja (Ej:"Caja uno, caja 1"):</label><br>
+                    <input v-model="nombre_caja" type="text" class="form-control" placeholder="Nombre de caja..">
+                    <br>
+                    <label for="">Descripcion de caja: (Ej: "Computadora marca lenovo para uso de caja..")</label>
+                    <textarea v-model="detalle_caja" style="rezise:none" placeholder="Descripción de caja.." class="form-control" name="" id="" cols="30" rows="10"></textarea>
+                    <br>
+                    <button  :disabled="conf_ngreso_caja" @click="ingresar_caja" class="btn btn-success"><i class="far fa-save"></i> Ingresar</button>
+                  </div>
+                  </b-modal>
+            </div>
+
+
+            <div class="col-4">
+              <b-button
+                size="xl"
+                id="show-btn"
+                class="my-2"
+                variant="success"
+                @click="listar_cajas();abrir_modal('modal_listar_caja')"
+              >Listar Caja</b-button>
+
+
+
+              <b-modal
+                    no-close-on-esc
+                    no-close-on-backdrop
+                    hide-footer
+                    centered
+                    class="modal-header-editar"
+                    id="modal-xl"
+                    size="xl"
+                    ref="modal_listar_caja"
+                  >
+                  <template v-slot:modal-title>
+                      <h5 class="text-center">Listar cajas <i class="fas fa-cash-register"></i></h5>
+                  </template>
+
+                  <div>
+                   <table class="table table-bordered">
+                       <tr>
+                           <td><b>Nombre</b></td>
+                           <td><b>Descripción</b></td>
+                           <td><b>Usuario creador</b></td>
+                           <td><b>Estado</b></td>
+                           <td colspan="2"><b>Opción</b></td>
+                       </tr>
+
+                       <tr v-for="c in get_cajas" :key="c.id">
+                           <td><i class="fas fa-cash-register"></i> {{ c.nombre }}</td>
+                           <td>{{ c.descripcion }}</td>
+                           <td>{{ c.name}}</td>
+                           <td v-if="c.activo=='Inactiva'" style="color:red">{{ c.activo}}</td>
+                           <td v-if="c.activo=='Activa'" style="color:green">{{ c.activo}}</td>
+                           <td>
+                               <button @click="ver_usuarios_en_caja(c)" class="btn btn-link btn-sm">Ver usuarios en esta caja</button>
+                           </td>
+                           <td>
+                               <button @click="editar_caja(c)" class="btn btn-link btn-sm">Editar</button>
+                           </td>
+                       </tr>
+                   </table>
+                  </div>
+                  </b-modal>
+
+
+                <!-- editar -->
+                <b-modal
+                    no-close-on-esc
+                    no-close-on-backdrop
+                    hide-footer
+                    centered
+                    class="modal-header-editar"
+                    id="modal-xl"
+                    size="md"
+                    ref="modal_editar_caja"
+                  >
+                  <template v-slot:modal-title>
+                      <h5 class="text-center">Editar caja <i class="fas fa-cash-register"></i></h5>
+                  </template>
+
+                    <div>
+                        <!-- <pre>{{ get_editar_caja  }}</pre> -->
+                        <label for="">Nombre:</label>
+                        <input class="form-control" v-model="caja_edit_nombre" type="text"><br>
+                        <label for="">Descripción:</label>
+                        <textarea style="resize:none" class="form-control" v-model="caja_edit_descripcion" name="" id="" cols="30" rows="10"></textarea>
+                        <!-- <textarea  style="resize:none" class="form-control" v-model="caja_edit_descripcion"></textarea> -->
+                        <br>
+                        <button @click="editar_datos_caja(get_editar_caja.id)" class="btn btn-success">Actualizar</button>
+
+                    </div>
+
+                </b-modal>
+                <!-- fin editar -->
+
+
+                <!-- ver_usuarios en caja -->
+                <b-modal
+                    no-close-on-esc
+                    no-close-on-backdrop
+                    hide-footer
+                    centered
+                    class="modal-header-editar"
+                    id="modal-xl"
+                    size="md"
+                    ref="modal_usuarios_en_caja"
+                  >
+                  <template v-slot:modal-title>
+                      <h5 class="text-center"><i class="fas fa-cash-register"></i> Ver usuarios en {{datos_de_caja.nombre}}</h5>
+                  </template>
+
+                    <div>
+                       <!-- ola que hace mijo
+                       <pre>{{ usuarios_en_caja }}</pre> -->
+
+                       <table class="table table-bordered">
+                           <tr>
+                               <td>Nombre</td>
+                               <td>Opción</td>
+                           </tr>
+
+                           <tr v-for="u in usuarios_en_caja" :key="u.id">
+                               <td><i class="fas fa-user"></i> {{ u.name }}</td>
+                               <td>
+                                   <button class="btn btn-link btn-danger" style="color:white">X</button>
+                               </td>
+                           </tr>
+                       </table>
+
+                    </div>
+
+                </b-modal>
+                <!-- ver_usuarios en caja -->
+
+            </div>
+
+
+
+            <div class="col-4">
+                 <b-button
+                size="xl"
+                id="show-btn"
+                class="my-2"
+                variant="success"
+
+                @click="listar_cajas();traer_usuarios();abrir_modal('modal_asignar_caja')"
+              >Asignar Caja</b-button>
+
+
+              <b-modal
+                    no-close-on-esc
+                    no-close-on-backdrop
+                    hide-footer
+                    centered
+                    class="modal-header-editar"
+                    id="modal-xl"
+                    size="sm"
+                    ref="modal_asignar_caja"
+                  >
+                  <template v-slot:modal-title>
+                      <h5 class="text-center">Asignar caja <i class="fas fa-cash-register"></i></h5>
+                  </template>
+
+                  <div>
+                      <label for=""><i class="fas fa-cash-register"></i> Cajas disponibles:</label>
+                      <select v-model="asig_caja" class="form-control" name="" id="">
+                          <option value="">--Seleccione--</option>
+                          <option v-for="c in get_cajas" :key="c.id" :value="c.id">{{c.nombre}}</option>
+                      </select>
+                      <hr>
+                      <label for=""><i class="fas fa-user"></i> Usuarios:</label>
+                        <select v-model="asig_usuario" class="form-control" name="" id="">
+                           <option value="">--Seleccione--</option>
+                           <option v-for="c in get_usuarios" :key="c.id" :value="c.id">{{c.name}}</option>
+                        </select>
+                        <br>
+                        <button :disabled="btn_asignar" @click="asignar_usuario_a_caja" class="btn btn-block btn-success">Asignar</button>
+
+                   <!-- <table class="table table-bordered">
+                       <tr>
+                           <td><b>Nombre</b></td>
+                           <td><b>Descripción</b></td>
+                           <td><b>Usuario creador</b></td>
+                           <td><b>Estado</b></td>
+                           <td><b>Opción</b></td>
+                       </tr>
+
+                       <tr v-for="c in get_cajas" :key="c.id">
+                           <td><i class="fas fa-cash-register"></i> {{ c.nombre }}</td>
+                           <td>{{ c.descripcion }}</td>
+                           <td>{{ c.name}}</td>
+                           <td v-if="c.activo=='Inactiva'" style="color:red">{{ c.activo}}</td>
+                           <td v-if="c.activo=='Activa'" style="color:green">{{ c.activo}}</td>
+                           <td>
+                               <button @click="editar_caja(c)" class="btn btn-link btn-sm">Editar</button>
+                           </td>
+                       </tr>
+                   </table> -->
+                  </div>
+                  </b-modal>
             </div>
           </div>
         </b-card>

@@ -24,7 +24,7 @@ class VentasController extends Controller
     protected function registro_venta(Request $datos)
     {
 
-       
+
 
         DB::beginTransaction();
         $venta = new Ventas();
@@ -36,7 +36,7 @@ class VentasController extends Controller
             $venta->venta_total = $datos->venta_total;
             $venta->pago_efectivo = !empty($datos->pago_efectivo) ?  $datos->pago_efectivo : '0';
             $venta->pago_debito = !empty($datos->pago_debito) ? $datos->pago_debito : '0';
-            
+
         }
 
         if ($datos->forma_pago_id == '1,undefined') {
@@ -45,7 +45,7 @@ class VentasController extends Controller
         } elseif ($datos->forma_pago_id == '2,undefined') {
             $venta->forma_pago_id = '2';
             $vuelto = (int)$datos->pago_debito - (int)$datos->venta_total;
-            
+
         }
         elseif ($datos->forma_pago_id == '1,2'){
             $venta->forma_pago_id = '1,2';
@@ -57,7 +57,7 @@ class VentasController extends Controller
         }
         elseif ($datos->forma_pago_id == '3,undefined') {
             $venta->forma_pago_id = '3';
-           
+
         } elseif ($datos->forma_pago_id == 'undefined,undefined') {
             return ['estado'=>'failed', 'mensaje'=>'seleccione una forma de pago.'];
         } else {
@@ -74,7 +74,7 @@ class VentasController extends Controller
         } else {
             $venta->cliente_id = $datos->cliente_id;
         }
-        
+
         if ($venta->save()) {
             $ingresarDetalle = $this->registro_detalle_venta($datos->carro, $venta->id);
 
@@ -128,7 +128,7 @@ class VentasController extends Controller
             }
         }
         $count = 0;
-        
+
         DB::beginTransaction();
         for ($i = 0; $i < count($carro); $i++) {
             $venta = new DetalleVenta;
@@ -154,7 +154,7 @@ class VentasController extends Controller
                 }
             }
         }
-            
+
         if (count($carro) == $count) {
             DB::commit();
             return true;
@@ -209,7 +209,7 @@ class VentasController extends Controller
                 $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
             }
         }
-        
+
         if (!$listar->isEmpty()) {
             return ['estado'=>'success' , 'producto' => $listar];
         } else {
@@ -255,22 +255,22 @@ class VentasController extends Controller
     protected function mas_vendidos()
     {
         $listar = DB::select(
-            " SELECT * from 
-            (select 
+            " SELECT * from
+            (select
              producto_id,
              producto.nombre
              from detalle_venta
              inner join ventas on ventas.id = detalle_venta.venta_id
-             inner join  producto on producto.id = detalle_venta.producto_id 
+             inner join  producto on producto.id = detalle_venta.producto_id
              group by producto_id, producto.nombre) producto
-             inner join 
-             (select producto_id, 
-             sum(cantidad) as cantidad_total, 
-             sum(venta_total) as venta_total 
+             inner join
+             (select producto_id,
+             sum(cantidad) as cantidad_total,
+             sum(venta_total) as venta_total
              from detalle_venta
              inner join ventas on ventas.id = detalle_venta.venta_id
              group by producto_id) venta
-             
+
              on producto.producto_id = venta.producto_id
              order by venta.venta_total desc
              limit 5"
@@ -306,8 +306,8 @@ class VentasController extends Controller
                                         "lower(producto.nombre) like lower('%$producto%') or
                                          lower(producto.sku) like lower('%$producto%')"
                                     )
-                                    
-                                    
+
+
                                     ->get();
 
         if (count($listar) > 0) {
@@ -352,22 +352,22 @@ class VentasController extends Controller
     protected function mas_vendidos_grafico()
     {
         $listar = DB::select(
-            " SELECT * from 
-            (select 
+            " SELECT * from
+            (select
              producto_id,
              producto.nombre
              from detalle_venta
              inner join ventas on ventas.id = detalle_venta.venta_id
              inner join  producto on producto.id = detalle_venta.producto_id
              group by producto_id, producto.nombre) producto
-             inner join 
-             (select producto_id, 
-             sum(cantidad) as cantidad_total, 
-             sum(venta_total) as venta_total 
+             inner join
+             (select producto_id,
+             sum(cantidad) as cantidad_total,
+             sum(venta_total) as venta_total
              from detalle_venta
              inner join ventas on ventas.id = detalle_venta.venta_id
              group by producto_id) venta
-             
+
              on producto.producto_id = venta.producto_id
              order by venta.venta_total desc
              limit 5"
@@ -423,12 +423,12 @@ class VentasController extends Controller
 
         $json_idVenta = [];
         $json_total = [];
-                            
+
         foreach ($listar as $key) {
             $json_idVenta[] = $key->idVenta;
             $json_total[] = $key->venta_total;
         }
-                            
+
         return [
             'labels' => $json_idVenta,
             'datasets' =>[
@@ -457,22 +457,22 @@ class VentasController extends Controller
     protected function menos_vendidos_grafico()
     {
         $listar = DB::select(
-            " SELECT * from 
-            (select 
+            " SELECT * from
+            (select
              producto_id,
              producto.nombre
              from detalle_venta
              inner join ventas on ventas.id = detalle_venta.venta_id
              inner join  producto on producto.id = detalle_venta.producto_id
              group by producto_id, producto.nombre) producto
-             inner join 
-             (select producto_id, 
-             sum(cantidad) as cantidad_total, 
-             sum(venta_total) as venta_total 
+             inner join
+             (select producto_id,
+             sum(cantidad) as cantidad_total,
+             sum(venta_total) as venta_total
              from detalle_venta
              inner join ventas on ventas.id = detalle_venta.venta_id
              group by producto_id) venta
-             
+
              on producto.producto_id = venta.producto_id
              order by venta.venta_total asc
              limit 5"
@@ -591,7 +591,7 @@ class VentasController extends Controller
         $val = [];
 
         foreach ($meses as $key) {
-            $moment = DB::select("SELECT sum(venta_total) venta_total from ventas where 
+            $moment = DB::select("SELECT sum(venta_total) venta_total from ventas where
             EXTRACT(MONTH FROM created_at) = $key
             and EXTRACT(year FROM created_at) = $anio");
 
@@ -661,7 +661,7 @@ class VentasController extends Controller
         // // zona horaria
         // date_default_timezone_set('America/Santiago');
 
-        
+
         // $config = [
         //     'firma' => [
         //         'file' => '/Users/alejandroesteban/Downloads/firma_digital_certificado.pfx',
@@ -669,7 +669,7 @@ class VentasController extends Controller
         //         'pass' => '1028',
         //     ],
         // ];
-        
+
         // // trabajar en ambiente de certificación
         // \sasco\LibreDTE\Sii::setAmbiente(\sasco\LibreDTE\Sii::CERTIFICACION);
 
@@ -683,11 +683,11 @@ class VentasController extends Controller
         }
 
         $obtener_rut_cliente = explode(' - ',$datos_venta['cliente']);
-     
+
 
         $rut_cliente = (string) $this->div_rut($datos_venta['cliente']);
-        
-        
+
+
         $detalle = [];
         $recorre_detalle = 0;
         foreach ($datos_venta['ticketDetalle'] as $key) {
@@ -729,7 +729,7 @@ class VentasController extends Controller
          return $factura;
 
 
-         
+
     //     $caratula = [
     //         //'RutEnvia' => '11222333-4', // se obtiene de la firma
     //         'RutReceptor' => '60803000-K',
@@ -747,8 +747,8 @@ class VentasController extends Controller
         $DTE = new \sasco\LibreDTE\Sii\Dte($factura);
         $DTE->timbrar($Folios);
         $DTE->firmar($Firma);
-       
-        
+
+
         // generar sobre con el envío del DTE y enviar al SII
         $EnvioDTE = new \sasco\LibreDTE\Sii\EnvioDte();
         $EnvioDTE->agregar($DTE);
@@ -771,11 +771,11 @@ class VentasController extends Controller
 
 
 
-    
 
-       
 
-        
+
+
+
     }
 
     public function cambiar_tipo_precio($precio){
@@ -1037,7 +1037,7 @@ class VentasController extends Controller
         $RSR = $timbre->DD->RSR[0]; // Run Seror
         $MNT = $timbre->DD->MNT[0]; // monto
         $IT1 = $timbre->DD->IT1[0]; // DESCONOCIDO
-        
+
         // DD->CAF->da
         $C_RE = preg_replace('/\s+/', '',$timbre->DD->CAF->DA->RE[0]); // Rur emisor
         $C_RS = preg_replace('/\s+/', '',$timbre->DD->CAF->DA->RS[0]); // Rason social
@@ -1047,31 +1047,31 @@ class VentasController extends Controller
         $C_RSAPK = $timbre->DD->CAF->DA->RSAPK; // E Y M
         $IDK = preg_replace('/\s+/', '',$timbre->DD->CAF->DA->IDK[0]); // DESCONOCIDO
         $FRMA = preg_replace('/\s+/', '',$timbre->DD->CAF->FRMA[0]); // FIRMA
-        
+
         $TSTED = $timbre->DD->TSTED[0]; // desconocido
         $FRMT = preg_replace('/\s+/', '',$timbre->FRMT[0]); // desconocido
 
-       
-         
+
+
          $string = '<TED version="1.0"><DD><RE>'.$RE.'</RE><TD>'.$TD.'</TD><F>'.$F.'</F><FE>'.$FE.'</FE><RR>'.$RR.'</RR><RSR>'.$RSR.'</RSR><MNT>'.$MNT.'</MNT><IT1>'.$MNT.'</IT1><CAF version="1.0"><DA><RE>'.$C_RE.'</RE><RS>'.$C_RS.'</RS><TD>39</TD><RNG><D>'.$C_RNG->D[0].'</D><H>'.$C_RNG->H[0].'</H></RNG><FA>'.$C_FA.'</FA><RSAPK><M>'.preg_replace('/\s+/', '',$C_RSAPK->M[0]).'</M><E>'.preg_replace('/\s+/', '',$C_RSAPK->E[0]).'</E></RSAPK><IDK>'.$IDK.'</IDK></DA><FRMA algoritmo="SHA1withRSA">'.trim($FRMA).'</FRMA></CAF><TSTED>'.trim($TSTED).'</TSTED></DD><FRMT algoritmo="SHA1withRSA">'.trim($FRMT).'</FRMT></TED>';
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
+
          // $string = '<TED version="1.0"><DD><RE>97975000-5</RE><TD>33</TD><F>60</F><FE>2003-10-13</FE><RR>77777777-7</RR><RSR>EMPRESA LTDA</RSR><MNT>119000</MNT><IT1>119000</IT1><CAF version="1.0"><DA><RE>97975000-5</RE><RS>RUT DE PRUEBA</RS><TD>39</TD><RNG><D>1</D><H>200</H></RNG><FA>2003-09-04</FA><RSAPK><M>0a4O6Kbx8Qj3K4iWSP4w7KneZYeJ+g/prihYtIEolKt3cykSxl1zO8vSXu397QhTmsX7SBEudTUx++2zDXBhZw==</M><E>Aw==</E></RSAPK><IDK>100</IDK></DA><FRMA algoritmo="SHA1withRSA">g1AQX0sy8NJugX52k2hTJEZAE9Cuul6pqYBdFxj1N17umW7zG/hAavCALKByHzdYAfZ3LhGTXCai5zNxOo4lDQ==</FRMA></CAF><TSTED>2003-10-13T09:33:20</TSTED></DD><FRMT algoritmo="SHA1withRSA">GbmDcS9e/jVC2LsLIe1iRV12Bf6lxsILtbQiCkh6mbjckFCJ7fj/kakFTS06Jo8iS4HXvJj3oYZuey53Krniew==</FRMT></TED>';
         // return $string;
             // $xml = simplexml_load_string($string);
 
 
             // <TED version="1.0">
-            // <DD>   
+            // <DD>
             // <RE>97975000-5</RE>
             // <TD>33</TD>
             // <F>60</F>
@@ -1097,11 +1097,11 @@ class VentasController extends Controller
             // LKByHzdYAfZ3LhGTXCai5zNxOo4lDQ==</FRMA>
             // </CAF>
             // </DD>
-            
-            // </TED>
-            
 
-      
+            // </TED>
+
+
+
 
         //Encode the data, returns a BarcodeData object
         // $pdf417 = new PDF417();
@@ -1112,7 +1112,7 @@ class VentasController extends Controller
         //     'scale' => 20,
         //     'ratio' => 10
         // ]);
-        
+
         // $img = $renderer->render($data);
 
         return response()->json([
@@ -1120,8 +1120,8 @@ class VentasController extends Controller
             'caratula' => $xml->SetDTE->Caratula,
             'dte' => $xml->SetDTE->DTE,
             // 'img' => $img->encoded,
-            'xml' => $string  
-        
+            'xml' => $string
+
         ]);
 
         // foreach ($xml->obra as $obra) {
@@ -1142,13 +1142,13 @@ class VentasController extends Controller
         $dv='';
         foreach ($revers_rut_client as $key) {
             if($i == 1){
-                
+
                 $dv = $key;
             }else{
-           
-                $rut= $key.$rut;                          
+
+                $rut= $key.$rut;
             }
-        
+
             $i++;
         }
         return $rut.'-'.$dv;

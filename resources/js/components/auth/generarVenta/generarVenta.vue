@@ -169,13 +169,13 @@
               </div>
               <div style="font-size: 1.2rem; font-family: sans-serif">
                 <!-- back-linking to www.tec-it.com is required -->
-      
+
                   <!-- logos are optional -->
                   <center>
                     Timbre electronico SII <br>
                     Verifique en www.sii.cl
                   </center>
-                
+
               </div>
               <!-- AQUI SE GENERA EL TIMBRE ELECTRONICO -------------------------------------------------------------->
 
@@ -196,8 +196,8 @@
               class="btn btn-primary"
               onclick="printJS({
           printable: 'pdfFactura',
-          type:'html', 
-          style: 'pre{font-family:sans-serif;width: 100%;white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;}'  
+          type:'html',
+          style: 'pre{font-family:sans-serif;width: 100%;white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;}'
          })"
             >
               Imprimir
@@ -206,6 +206,33 @@
         </div>
       </div>
     </div>
+
+
+
+    <!-- MODAL VENTAS  -->
+    <template>
+        <div>
+          <b-modal
+            no-close-on-esc
+            no-close-on-backdrop
+            class="modal-header-ventas"
+            id="modal-caja"
+            size="md"
+            :ref="'modal-caja'"
+            hide-footer
+            centered
+          >
+            <section>
+               Lorem ipsum dolor, sit amet consectetur adipisicing elit. Temporibus debitis accusamus rerum itaque, cupiditate pariatur nihil cumque incidunt esse quia amet alias sit. Eos veritatis eligendi provident doloribus, sunt consequuntur.
+            </section>
+          </b-modal>
+        </div>
+     </template>
+
+
+
+
+
 
     <div class="row my-4 mx-1">
       <div class="col-12">
@@ -387,7 +414,7 @@
             </div>
             <!-- buscar por codigo -->
 
-            
+
 
 
             <!-- tipo de venta -->
@@ -509,7 +536,7 @@
                     <hr>
 
                   <label> <input v-model="chk_credito" @click="monto_credito = 0;" type="checkbox"> Credito / Deuda (Pago pendiente) </label>
-                  
+
                   <div v-if="chk_credito">
                     <textarea v-model="detalle_credito" class="form-control" style="resize: none;" placeholder="Detalle de la deuda.." name="" id="" cols="30" rows="2"></textarea>
                     <br>
@@ -576,7 +603,7 @@
                             Number(montoEfectivo) + Number(montoDebito) + Number(monto_credito)
                             ) }}</label>
                       </div> -->
-                      
+
                       <!-- <div v-if="formaPago == '1,2' || formaPago =='2,1'">
                         <label>({{montoEfectivo}} + {{montoDebito}})</label>
                       </div>-->
@@ -591,7 +618,7 @@
                       </div>
                       <div v-if="formaPago == '1'">
                         <label
-                          
+
                           >$
                           {{
                             formatPrice(Number(montoEfectivo) - Number(total))
@@ -808,7 +835,7 @@
                                   onclick="printJS({
                                             printable: 'printVenta',
                                             type:'html', })"
-                                  
+
                                   >imprimir ticket</b-button>
                                   <!-- @click="hideModal()" -->
                               </div>
@@ -936,7 +963,7 @@
 
 /* / Tablets en horizonal y escritorios normales
    ------------------------------------------------------------------------- / */
-/* @media (min-width: 1024px) { 
+/* @media (min-width: 1024px) {
     .tamanio{
         max-width: 50%;
         max-height: 50%;
@@ -945,14 +972,14 @@
 
 /* / Escritorios muy anchos
    ------------------------------------------------------------------------- */
-/* @media (min-width: 1200px) { 
+/* @media (min-width: 1200px) {
     .tamanio{
         max-width: 150px;
         max-height: 150px;
     }
 } */
 
-/* 
+/*
   ##Device = Desktops
   ##Screen = 1281px to higher resolution desktops
 */
@@ -964,7 +991,7 @@
   }
 }
 
-/* 
+/*
   ##Device = Laptops, Desktops
   ##Screen = B/w 1025px to 1280px
 */

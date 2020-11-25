@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Configuraciones;
+use App\Caja;
+use App\CajaUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class ConfiguracionesController extends Controller
 {
@@ -22,7 +27,7 @@ class ConfiguracionesController extends Controller
             ]
         );
 
- 
+
         if ($validator->fails()) {
             return ['estado' => 'failed_v', 'mensaje' => $validator->errors()];
         }
@@ -54,9 +59,9 @@ class ConfiguracionesController extends Controller
 
 
                 if ($update->save()) {
-                    return ['estado'=>'success', 'mensaje'=>'Información guardada con éxito, por seguridad la sesión cerrará automaticamente.'];
+                    return ['estado' => 'success', 'mensaje' => 'Información guardada con éxito, por seguridad la sesión cerrará automaticamente.'];
                 } else {
-                    return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error, verifique esten correcto los campos.'];
+                    return ['estado' => 'failed', 'mensaje' => 'A ocurrido un error, verifique esten correcto los campos.'];
                 }
             } else {
                 $conf = new Configuraciones();
@@ -73,9 +78,9 @@ class ConfiguracionesController extends Controller
                 }
 
                 if ($conf->save()) {
-                    return ['estado'=>'success', 'mensaje'=>'Información guardada con éxito, por seguridad la sesión cerrará automaticamente.'];
+                    return ['estado' => 'success', 'mensaje' => 'Información guardada con éxito, por seguridad la sesión cerrará automaticamente.'];
                 } else {
-                    return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error, verifique esten correcto los campos.'];
+                    return ['estado' => 'failed', 'mensaje' => 'A ocurrido un error, verifique esten correcto los campos.'];
                 }
             }
         }
@@ -85,17 +90,17 @@ class ConfiguracionesController extends Controller
     public function traer_configuraciones()
     {
         $listar = Configuraciones::select([
-                                    'id',
-                                    'logo',
-                                    'empresa',
-                                    'direccion',
-                                ])
-                                    ->first();
+            'id',
+            'logo',
+            'empresa',
+            'direccion',
+        ])
+            ->first();
 
         if (!is_null($listar)) {
-            return ['estado'=>'success' , 'configuraciones' => $listar];
+            return ['estado' => 'success', 'configuraciones' => $listar];
         } else {
-            return ['estado'=>'failed', 'mensaje'=>'No existe informacion.'];
+            return ['estado' => 'failed', 'mensaje' => 'No existe informacion.'];
         }
     }
 
@@ -112,5 +117,176 @@ class ConfiguracionesController extends Controller
         } else {
             return ['estado' =>  'failed', 'mensaje' => 'Error al intentar guardar el archivo.'];
         }
+    }
+
+    public function ingresar_caja(Request $r)
+    {
+
+        try {
+            $caja = new Caja;
+            $caja->nombre = $r->nombre;
+            $caja->descripcion = $r->descripcion;
+            $caja->activo = 'N';
+            $caja->user_crea = Auth::user()->id;
+
+            if ($caja->save()) {
+                return [
+                    'estado' => 'success',
+                    'mensaje' => 'Caja ingresada con exito'
+                ];
+            }
+            return [
+                'estado' => 'failed',
+                'mensaje' => 'No se ha podido seguir con el proceso'
+            ];
+        } catch (QueryException $e) {
+            // DB::rollBack();
+            return [
+                'estado'  => 'failed',
+                'mensaje' => 'QEx: No se ha podido seguir con el proceso de guardado, intente nuevamente o verifique sus datos',
+                'error' => $e
+            ];
+        } catch (\Exception $e) {
+            // DB::rollBack();
+            return [
+                'estado'  => 'failed',
+                'mensaje' => 'Ex: No se ha podido seguir con el proceso de guardado, intente nuevamente o verifique sus datos',
+                'error' => $e
+            ];
+        }
+    }
+
+
+    public function traer_cajas(Request $r){
+
+        $tabla = DB::select("SELECT
+            c.id,
+            c.nombre,
+            c.descripcion,
+            case
+                when c.activo = 'N' then 'Inactiva'
+                when c.activo = 'S' then 'Activa'
+            end as activo,
+            name
+        from caja c
+        inner join users u on u.id = c.user_crea");
+
+            if(count($tabla) > 0){
+                return [
+                    'estado' => 'success',
+                    'tabla' => $tabla
+                ];
+            }else{
+                return [
+                    'estado' => 'failed',
+                    'tabla' => [],
+                ];
+            }
+
+    }
+
+
+
+    public function editar_caja(Request $r){
+
+        if(trim($r->nombre) == ''){
+            return ['estado'=>'failed', 'mensaje'=>'El nombre es obligatorio'];
+        }
+        if(is_null($r->descripcion)){
+            $r->descripcion = '';
+        }
+
+        $caja = Caja::find($r->id);
+        $caja->nombre = $r->nombre;
+        $caja->descripcion = $r->descripcion;
+
+        if($caja->save()){
+            return ['estado'=>'success','mensaje'=>'Datos actualizados'];
+        }
+        return ['estado'=>'failed','mensaje'=>'No se ha podido actualizar los datos'];
+    }
+
+
+    public function asignar_usuario_a_caja(Request $r){
+
+        try{
+                $verify = CajaUser::where([
+                            'caja_id' => $r->caja_id,
+                            'user_id' => $r->usuario_id,
+                            'activo' => 'S'
+                        ])->first();
+
+                if($verify){
+
+                    return ['estado'=>'failed', 'mensaje'=>'El usuario ya tiene asignada esta caja'];
+
+                }
+
+                $verify2 = CajaUser::where([
+                            'user_id' => $r->usuario_id,
+                            'activo' => 'S'
+                        ])->first();
+
+                if($verify2){
+                    return ['estado'=>'failed', 'mensaje'=>'El usuario ya tiene asignada una caja'];
+                }
+
+
+                    $cu = new CajaUser;
+                    $cu->caja_id = $r->caja_id;
+                    $cu->user_id = $r->usuario_id;
+                    $cu->activo = 'S';
+                    if($cu->save()){
+                        return ['estado'=>'success', 'mensaje'=>'Caja asignada!'];
+                    }
+                    return ['estado'=>'failed', 'mensaje'=>'No se ha podido continuar con el proceso'];
+
+        } catch (QueryException $e) {
+            // DB::rollBack();
+            return [
+                'estado'  => 'failed',
+                'mensaje' => 'QEx: No se ha podido seguir con el proceso de guardado, intente nuevamente o verifique sus datos',
+                'error' => $e
+            ];
+        } catch (\Exception $e) {
+            // DB::rollBack();
+            return [
+                'estado'  => 'failed',
+                'mensaje' => 'Ex: No se ha podido seguir con el proceso de guardado, intente nuevamente o verifique sus datos',
+                'error' => $e
+            ];
+        }
+
+
+    }
+
+    public function ver_usuarios_en_caja($caja_id){
+
+        return CajaUser::ver_usuarios_en_caja($caja_id);
+
+    }
+
+
+
+
+    public function codificar_xml(Request $r)
+    {
+        // dd($r->xml);
+        $codific = base64_encode($r->xml);
+        $test1 = str_replace(' ', '%20', $r->xml);
+        $test2 = (preg_replace('/\s+/', '', $r->xml));
+
+        $tes1_code = base64_encode($test1);
+        $tes1_decode = \base64_decode($tes1_code);
+
+        return [
+            $test1, $test2, $tes1_code, $tes1_decode
+        ];
+
+        return [
+            'caf_xml_normal' => $r->xml,
+            'caf_xml_codificado' => base64_encode($r->xml),
+            'caf_xml_sin_+_cod' => (preg_replace('/\s+/', '', $r->xml))
+        ];
     }
 }
