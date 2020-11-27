@@ -226,6 +226,9 @@
                       <h5 class="text-center">MENSAJE IMPORTANTE!!</h5>
             </template>
             <section>
+                <div v-if="estado_periodo == 'ACTIVO'" class="alert alert-primary" role="alert">
+                    <small>Si en la parte superior aparece un boton verde "Periodo activo", no es necesario abrir nuevamente una caja, puede cerrar este modal.</small>
+                </div>
               <div v-if="estado_periodo=='INACTIVO'">
                   <b>Iniciar nuevo periodo</b>
                   <br><br>
@@ -282,7 +285,7 @@
 
      <b-card class="text-center transparencia">
         <b-card class="largoCard">
-            <!-- {{ estado_caja }} -->
+            <!-- {{ modal estado_caja }} -->
             <button @click="cargar_datos_caja(nombre_caja.caja_id);abrir_modal('modal-cierre-caja-periodo');" v-if="estado_caja == 'ACTIVO'" class="btn btn-success btn-sm"><i class="fas fa-cash-register"></i> {{ nombre_caja.nombre+' '+estado_caja }}</button>
 
             <b-modal
@@ -324,6 +327,51 @@
 
                     </section>
             </b-modal>
+
+    <!-- {{ estado_periodo }} -->
+            <button @click="cargar_datos_periodo(nombre_caja.caja_id);abrir_modal('modal-cierre-periodo');" v-if="estado_periodo == 'ACTIVO'" class="btn btn-success btn-sm"><i class="fas fa-cash-register"></i> {{ 'Periodo activo' }}</button>
+
+            <b-modal
+                    no-close-on-esc
+                    no-close-on-backdrop
+                    class="modal-header-ventas"
+                    id="modal-cierre-periodo"
+                    size="xl"
+                    :ref="'modal-cierre-periodo'"
+                    hide-footer
+                    centered
+            >
+                    <template v-slot:modal-title>
+                      <h5 class="text-center">{{'Periodo activo'}}</h5>
+                    </template>
+
+                    <section>
+                        <div class="alert alert-dark" role="alert">
+                            El periodo debe cerrarse cuando ya no existan cajas activas en turno o jornada laboral
+                        </div>
+                        <center><b>Almacenado resumen de periodo</b></center>
+                        <!-- <pre>{{ get_datos_periodo }}</pre> -->
+                        <label style="color:#2C3E50" for="">Fecha y hora de apertura:</label>
+                        {{ get_datos_periodo.fecha_inicio }} <br>
+                        <label for="" style="color:#5D6D7E">La fecha y hora de cierre se capturan al cerrar periodo</label> <br>
+
+                        <label style="color:#2C3E50" for="">Monto total de apertura (suma de las cajas activas):</label>
+                            $ {{formatPrice(get_datos_periodo.monto_inicio)}} <br>
+
+                        <label style="color:#2C3E50" for="">Monto total de cierre (suma de las cajas activas):</label>
+                            $ {{formatPrice(get_datos_periodo.monto_cierre)}} <br>
+                            <label style="color:#2C3E50" for="">Usuario de apertura de periodo (Primera caja activa):</label>
+                            {{ get_datos_periodo.name }} <br>
+
+
+                        <hr>
+                        <button :disabled="btn_cerrar_periodo" @click="cerrar_periodo(get_datos_periodo.id)" class="btn btn-success btn-block">Cerrar periodo</button>
+
+                    </section>
+            </b-modal>
+
+
+
 
 
         </b-card>

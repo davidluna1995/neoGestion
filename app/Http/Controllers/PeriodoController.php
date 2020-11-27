@@ -150,7 +150,7 @@ class PeriodoController extends Controller
             }
         }
         else{
-            return ['estado'=>'failed', 'mensaje'=>'periodo no existe o no esta activo'];
+            return ['estado'=>'failed_periodo', 'mensaje'=>'periodo no existe o no esta activo', 'activo'=>'INACTIVO'];
         }
 
 
@@ -179,6 +179,66 @@ class PeriodoController extends Controller
         return ['estado'=>'failed', 'datos'=>[]];
 
         //fecha_termino
+    }
+
+    public function cargar_datos_periodo(){
+
+        //deberia traer al unico activo "S"
+        $p = PeriodoCaja::where('activo','S')->first();
+
+        if($p){
+                $periodo_actual = DB::select("SELECT
+                                        p.id,
+                                        TO_CHAR(p.fecha_inicio, 'dd/mm/yyyy HH24:MI') fecha_inicio,
+                                        TO_CHAR(p.fecha_cierre, 'dd/mm/yyyy HH24:MI') fecha_cierre,
+                                        p.monto_inicio,
+                                        p.monto_cierre,
+                                        case
+                                            when p.activo = 'S' then 'ACTIVA'
+                                            when p.activo = 'N' then 'INACTIVA'
+                                        END AS activo,
+                                        p.inicio_user_id,
+                                        u.name,
+                                        x.monto_inicio monto_inicio_recalculado,
+                                        x.monto_cierre monto_cierre_recalculado
+                                    from periodo_caja p
+                                    inner join users u on u.id = p.inicio_user_id
+                                    inner join (
+                                        select
+                                            periodo_caja_id,
+                                            sum(monto_inicio) monto_inicio,
+                                            sum(monto_cierre) monto_cierre
+                                        from registro_caja_vendedor where periodo_caja_id = $p->id
+                                    group by periodo_caja_id limit 1) x on x.periodo_caja_id = p.id
+                                    where p.activo = 'S'");
+
+
+
+            if($periodo_actual){
+                return ['estado'=>'success', 'almacenado_periodo'=>$periodo_actual[0], 'mensaje'=>'datos cargados'];
+            }
+            return ['estado'=>'failed', 'almacenado_periodo'=>[],'mensaje'=>'No hay periodo activo para cerrar'];
+        }else{
+            return ['estado'=>'failed', 'almacenado_periodo'=>[],'mensaje'=>'No hay periodo activo para cerrar'];
+        }
+    }
+
+    public function cerrar_periodo($periodo_id){
+        // dd($periodo_id);
+        date_default_timezone_set('America/Santiago');
+        $fecha =date("Y-m-d H:i:s");
+        $periodo = PeriodoCaja::find($periodo_id);
+
+        if($periodo){
+            $periodo->fecha_cierre = $fecha;
+            $periodo->activo = 'N'; //CERRAR ACIVIDAD
+            $periodo->cierre_user_id = Auth::user()->id;
+            if($periodo->save()){
+                return ['estado'=>'success', 'mensaje'=> 'Periodo cerrado correctamente'];
+            }
+            return ['estado'=>'failed', 'mensaje'=> 'No se ha podido cerrar el periodo'];
+        }
+        return ['estado'=>'failed', 'mensaje'=> 'No se ha encontrado el ID del periodo'];
     }
 
     public function captura_monto_cierre($r_c_v_id){

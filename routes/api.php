@@ -92,9 +92,11 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('abrir_periodo_caja','PeriodoController@abrir_periodo_caja');
     Route::post('abrir_solo_caja','PeriodoController@abrir_solo_caja');
     Route::get('cargar_datos_caja_y_o_periodo/{caja_id}','PeriodoController@cargar_datos_caja_y_o_periodo');
+    Route::get('cargar_datos_periodo','PeriodoController@cargar_datos_periodo');
     Route::get('captura_monto_cierre/{reg_caja_venta_id}','PeriodoController@captura_monto_cierre');
 
     Route::post('cerrar_solo_caja','PeriodoController@cerrar_solo_caja');
+    Route::get('cerrar_periodo/{periodo_caja_id}','PeriodoController@cerrar_periodo');
 
 
 

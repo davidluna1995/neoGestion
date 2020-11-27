@@ -158,6 +158,8 @@ export default {
             cierre_monto:0,
             btn_cerrar_caja:false,
             btn_abrir_caja:false,
+            btn_cerrar_periodo:false,
+            get_datos_periodo:[],
         }
 
 
@@ -599,11 +601,21 @@ export default {
                         this.btn_abrir_caja = false;
                         alert(res.data.mensaje);
                         this.$refs['modal-periodo-caja'].hide();
-                    }else{
+                        return false;
+                    }
+                    if(res.data.estado == 'failed_periodo'){
+                        this.estado_periodo = 'INACTIVO';
+                        alert(res.data.mensaje);
+                        this.btn_abrir_caja = false;
+                        this.$refs['modal-periodo-caja'].hide();
+                        return false;
+                    }
+                    else{
                         // this.estado_periodo = res.data.activo;
                         this.estado_caja = res.data.activo;
                         alert(res.data.mensaje);
                         this.btn_abrir_caja = false;
+                        return false;
                     }
                 });
             }
@@ -621,6 +633,16 @@ export default {
             });
         },
 
+        cargar_datos_periodo(){
+            this.axios.get('api/cargar_datos_periodo').then((res)=>{
+                if(res.data.estado == 'success'){
+                    this.get_datos_periodo = res.data.almacenado_periodo;
+                }else{
+                    this.get_datos_periodo = [];
+                    alert(res.data.mensaje);
+                }
+            });
+        },
         captura_monto_cierre(rcv){
             console.log(rcv.id);
             this.axios.get('api/captura_monto_cierre/'+rcv.id).then((res)=>{
@@ -645,6 +667,25 @@ export default {
 
             });
 
+        },
+
+        cerrar_periodo(id){
+            this.btn_cerrar_periodo = true;
+
+            this.axios.get('api/cerrar_periodo/'+id).then((res)=>{
+                if(res.data.estado == 'success'){
+                    this.btn_cerrar_periodo = false;
+                    this.estado_periodo = 'INACTIVO';
+                    this.$refs['modal-cierre-periodo'].hide();
+
+                    alert(res.data.mensaje); return false;
+                }
+                else{
+                    this.btn_cerrar_periodo = false;
+                    this.estado_periodo = 'ACTIVO';
+                    alert(res.data.mensaje); return false;
+                }
+            });
         },
 
         generar_un_xml(){
