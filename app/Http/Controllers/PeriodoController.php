@@ -102,10 +102,7 @@ class PeriodoController extends Controller
 
     public function abrir_solo_caja(Request $r){
 
-        return [
-            'estado' => 'failed',
-            'mensaje'=>'No existe una caja asignada para su usuario, ir a configuraciones', 'activo'=>'INACTIVO'
-        ];
+
 
         //verificamos si el usuario tiene una caja activa, por defecto recibimos aqui un cero
         if($r->caja_id['caja_id'] == "0"){
