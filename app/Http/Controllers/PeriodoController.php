@@ -223,8 +223,13 @@ class PeriodoController extends Controller
         }
     }
 
-    public function cerrar_periodo($periodo_id){
+    public function cerrar_periodo($periodo_id, $estado_caja){
         // dd($periodo_id);
+
+        if($estado_caja == 'ACTIVO'){
+            return ['estado'=>'failed', 'mensaje'=> 'Su caja aún esta en estado ACTIVO, debe cerrar'];
+        }
+
         date_default_timezone_set('America/Santiago');
         $fecha =date("Y-m-d H:i:s");
         $periodo = PeriodoCaja::find($periodo_id);

@@ -669,10 +669,10 @@ export default {
 
         },
 
-        cerrar_periodo(id){
+        cerrar_periodo(id, estado_caja){
             this.btn_cerrar_periodo = true;
 
-            this.axios.get('api/cerrar_periodo/'+id).then((res)=>{
+            this.axios.get('api/cerrar_periodo/'+id+'/'+estado_caja).then((res)=>{
                 if(res.data.estado == 'success'){
                     this.btn_cerrar_periodo = false;
                     this.estado_periodo = 'INACTIVO';

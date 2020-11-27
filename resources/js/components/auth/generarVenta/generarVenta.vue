@@ -365,7 +365,15 @@
 
 
                         <hr>
-                        <button :disabled="btn_cerrar_periodo" @click="cerrar_periodo(get_datos_periodo.id)" class="btn btn-success btn-block">Cerrar periodo</button>
+
+                        <div v-if="estado_caja == 'ACTIVO'">
+                             <button :disabled="true" @click="cerrar_periodo(get_datos_periodo.id, estado_caja)" class="btn btn-success btn-block">Cerrar periodo</button>
+                        </div>
+
+
+                        <div v-if="estado_caja == 'INACTIVO'">
+                             <button :disabled="false" @click="cerrar_periodo(get_datos_periodo.id, estado_caja)" class="btn btn-success btn-block">Cerrar periodo</button>
+                        </div>
 
                     </section>
             </b-modal>
