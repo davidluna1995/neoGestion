@@ -466,15 +466,17 @@
                            <td><b>Descripción</b></td>
                            <td><b>Usuario creador</b></td>
                            <td><b>Estado</b></td>
+                           <td><b>Usuario activo</b></td>
                            <td colspan="2"><b>Opción</b></td>
                        </tr>
 
                        <tr v-for="c in get_cajas" :key="c.id">
                            <td><i class="fas fa-cash-register"></i> {{ c.nombre }}</td>
                            <td>{{ c.descripcion }}</td>
-                           <td>{{ c.name}}</td>
-                           <td v-if="c.activo=='Inactiva'" style="color:red">{{ c.activo}}</td>
-                           <td v-if="c.activo=='Activa'" style="color:green">{{ c.activo}}</td>
+                           <td>{{ c.user_crea}}</td>
+                           <td v-if="c.activo=='INACTIVA'" style="color:red">{{ c.activo}}</td>
+                           <td v-if="c.activo=='ACTIVA'" style="color:green">{{ c.activo}}</td>
+                           <td>{{c.user_activo}}</td>
                            <td>
                                <button @click="ver_usuarios_en_caja(c)" class="btn btn-link btn-sm">Ver usuarios en esta caja</button>
                            </td>

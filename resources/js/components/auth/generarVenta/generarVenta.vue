@@ -209,26 +209,125 @@
 
 
 
-    <!-- MODAL VENTAS  -->
+    <!-- MODAL mensaje de caja o periodo  -->
     <template>
         <div>
           <b-modal
             no-close-on-esc
             no-close-on-backdrop
             class="modal-header-ventas"
-            id="modal-caja"
+            id="modal-periodo-caja"
             size="md"
-            :ref="'modal-caja'"
+            :ref="'modal-periodo-caja'"
             hide-footer
             centered
           >
+            <template v-slot:modal-title>
+                      <h5 class="text-center">MENSAJE IMPORTANTE!!</h5>
+            </template>
             <section>
-               Lorem ipsum dolor, sit amet consectetur adipisicing elit. Temporibus debitis accusamus rerum itaque, cupiditate pariatur nihil cumque incidunt esse quia amet alias sit. Eos veritatis eligendi provident doloribus, sunt consequuntur.
+              <div v-if="estado_periodo=='INACTIVO'">
+                  <b>Iniciar nuevo periodo</b>
+                  <br><br>
+                  <div class="row">
+                      <div class="col-md-6">
+                            <label for="">Fecha inicio:</label>
+                            <input v-model="fecha_inicio" class="form-control" type="date">
+                      </div>
+                      <div class="col-md-6">
+                            <label for="">Hora inicio:</label>
+                            <input v-model="hora_inicio" class="form-control" type="time">
+                      </div>
+                  </div>
+
+              </div>
+
+              <div v-if="estado_caja=='INACTIVO'">
+                   <b>Abrir caja</b>
+                   <br><br>
+                   <label for=""><i class="fas fa-cash-register"></i> {{ nombre_caja.nombre }}</label>
+                    <br>
+                    <div v-if="estado_periodo=='ACTIVO' && estado_caja == 'INACTIVO'">
+                        <div class="row">
+                            <div class="col-md-6">
+                                    <label for="">Fecha inicio:</label>
+                                    <input v-model="fecha_inicio" class="form-control" type="date">
+                            </div>
+                            <div class="col-md-6">
+                                    <label for="">Hora inicio:</label>
+                                    <input v-model="hora_inicio" class="form-control" type="time">
+                            </div>
+                        </div>
+                    </div>
+                   <br>
+                  <label for="">Monto de apertura:</label>
+                  <input v-model="apertura_monto" class="form-control" type="numeric" placeholder="Monto de apertura..">
+                <br>
+                <div v-if="(estado_periodo=='INACTIVO' && estado_caja=='INACTIVO')">
+                    <button @click="abrir_periodo_caja(fecha_inicio, hora_inicio, apertura_monto, nombre_caja )" class="btn btn-info btn-block"> Abrir periodo y caja</button>
+                </div>
+
+
+                <div v-if="estado_periodo=='ACTIVO' && estado_caja == 'INACTIVO'">
+                    <button :disabled="btn_abrir_caja" @click="abrir_solo_caja(fecha_inicio, hora_inicio, apertura_monto, nombre_caja )" class=" btn-info btn btn-block"> Abrir caja</button>
+                </div>
+
+              </div>
             </section>
           </b-modal>
         </div>
      </template>
+     <!-- MODAL mensaje de caja o periodo  -->
 
+
+     <b-card class="text-center transparencia">
+        <b-card class="largoCard">
+            <!-- {{ estado_caja }} -->
+            <button @click="cargar_datos_caja(nombre_caja.caja_id);abrir_modal('modal-cierre-caja-periodo');" v-if="estado_caja == 'ACTIVO'" class="btn btn-success btn-sm"><i class="fas fa-cash-register"></i> {{ nombre_caja.nombre+' '+estado_caja }}</button>
+
+            <b-modal
+                    no-close-on-esc
+                    no-close-on-backdrop
+                    class="modal-header-ventas"
+                    id="modal-cierre-caja-periodo"
+                    size="md"
+                    :ref="'modal-cierre-caja-periodo'"
+                    hide-footer
+                    centered
+            >
+                    <template v-slot:modal-title>
+                      <h5 class="text-center">{{nombre_caja.nombre}}</h5>
+                    </template>
+
+                    <section>
+                        <b>Cierre de caja:</b>
+                        <!-- <pre>{{ data_caja_periodo }}</pre> -->
+                        <br>
+                        <label for="">Estado:</label>{{ (data_caja_periodo.activo=='S')? 'ACTIVA' : 'INACTIVA' }} <br>
+
+                        <label for="">Fecha y hora de apertura:</label>
+                        {{ data_caja_periodo.fecha_inicio }} <br>
+                        <label for="">Monto apertura:</label>
+                        $ {{ formatPrice(data_caja_periodo.monto_inicio) }} <br>
+                        <label for="">Monto de cierre:</label>
+                        <label ><b>$ {{ formatPrice(capta_monto.suma_venta_total) }}</b></label> <br>
+                        <label for="">Monto total debito:</label>
+                        <label>$ {{ formatPrice(capta_monto.suma_pago_debito_total) }}</label> <br>
+                        <label for="">Monto total efectivo - vuelto:</label>
+                        <label for="">$ {{ formatPrice(capta_monto.suma_efectivo) }}</label> <br>
+
+
+
+                        <label style="color:red" for="">La fecha y hora de cierre se capturan al cerrar la caja y/o periodo</label><br>
+                        <!-- <button @click="captura_monto_cierre(data_caja_periodo)" class="btn btn-link btn-sm">Capturar monto de cierre</button> <br> -->
+                        <button :disabled="btn_cerrar_caja" @click="cerrar_solo_caja(capta_monto.suma_venta_total, nombre_caja, data_caja_periodo)" class="btn btn-success btn-block">Cerrar caja</button>
+
+                    </section>
+            </b-modal>
+
+
+        </b-card>
+     </b-card>
 
 
 

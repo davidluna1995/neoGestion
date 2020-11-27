@@ -7,6 +7,8 @@ use App\Ventas;
 use App\Producto;
 use Carbon\Carbon;
 use App\DetalleVenta;
+use App\PeriodoCaja;
+use App\RegistroCajaVendedor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -24,11 +26,28 @@ class VentasController extends Controller
     protected function registro_venta(Request $datos)
     {
 
+       $verify_caja_activa = RegistroCajaVendedor::where([
+                                'activo' => 'S',
+                                'user_id' => Auth::user()->id
+                            ])->first();
+
+        if($verify_caja_activa){
+                $reg = $verify_caja_activa;
+                $r_c_v_id = $reg->id;
+        }else{
+            $r_c_v_id = 0;
+        }
+
+        if( $r_c_v_id == 0){
+            return ['estado'=>'failed', 'mensaje'=>'La caja no esta activa'];
+        }
+
 
 
         DB::beginTransaction();
         $venta = new Ventas();
         $venta->user_id = Auth::user()->id;
+        $venta->registro_caja_vendedor_id = $r_c_v_id;
 
         if ($datos->venta_total == '0') {
             return ['estado'=>'failed', 'mensaje'=>'ingrese minimo un producto al carro.'];
@@ -42,18 +61,21 @@ class VentasController extends Controller
         if ($datos->forma_pago_id == '1,undefined') {
             $venta->forma_pago_id = '1';
             $vuelto = (int)$datos->pago_efectivo - (int)$datos->venta_total;
+            $venta->vuelto = $vuelto;
         } elseif ($datos->forma_pago_id == '2,undefined') {
             $venta->forma_pago_id = '2';
             $vuelto = (int)$datos->pago_debito - (int)$datos->venta_total;
-
+            $venta->vuelto = $vuelto;
         }
         elseif ($datos->forma_pago_id == '1,2'){
             $venta->forma_pago_id = '1,2';
             $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
+            $venta->vuelto = $vuelto;
         }
         elseif ($datos->forma_pago_id == '2,1'){
             $venta->forma_pago_id = '2,1';
             $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
+            $venta->vuelto = $vuelto;
         }
         elseif ($datos->forma_pago_id == '3,undefined') {
             $venta->forma_pago_id = '3';
@@ -653,6 +675,53 @@ class VentasController extends Controller
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function ambiente(Array $datos_venta){
         // activar todos los errores
         // ini_set('display_errors', true);
@@ -765,14 +834,6 @@ class VentasController extends Controller
         // si hubo algún error se muestra
         foreach (\sasco\LibreDTE\Log::readAll() as $log)
             echo $log,"\n";
-
-
-
-
-
-
-
-
 
 
 

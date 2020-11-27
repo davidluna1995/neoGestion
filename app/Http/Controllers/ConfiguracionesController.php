@@ -159,17 +159,41 @@ class ConfiguracionesController extends Controller
 
     public function traer_cajas(Request $r){
 
-        $tabla = DB::select("SELECT
-            c.id,
-            c.nombre,
-            c.descripcion,
-            case
-                when c.activo = 'N' then 'Inactiva'
-                when c.activo = 'S' then 'Activa'
-            end as activo,
-            name
-        from caja c
-        inner join users u on u.id = c.user_crea");
+        // $tabla = DB::select("SELECT
+        //     c.id,
+        //     c.nombre,
+        //     c.descripcion,
+        //     case
+        //         when c.activo = 'N' then 'Inactiva'
+        //         when c.activo = 'S' then 'Activa'
+        //     end as activo,
+        //     name
+        // from caja c
+        // inner join users u on u.id = c.user_crea");
+
+        $tabla = DB::select("SELECT * from
+        (
+            select
+                c.id, -- id de la caja
+                c.nombre,
+                c.descripcion,
+                to_char(reg.fecha_inicio, 'DD/MM/YYYY HH24:MI') fecha_inicio_r_c_v,
+                to_char(reg.fecha_cierre, 'DD/MM/YYYY HH24:MI') fecha_cierre_r_c_v,
+                reg.monto_inicio monto_inicio_r_c_v,
+                reg.user_id user_activo_id,
+                u.name user_activo,
+                uc.id user_crea_id,
+                uc.name user_crea,
+                case
+                    when reg.activo = 'S' then 'ACTIVA'
+                    when reg.activo IS NULL then  'INACTIVA'
+                end as activo
+            from caja c
+        left join registro_caja_vendedor reg on c.id = reg.caja_id and reg.activo = 'S'
+        left join users u on u.id = reg.user_id
+        left join users uc on uc.id = c.user_crea
+
+        order by c.id asc) x");
 
             if(count($tabla) > 0){
                 return [

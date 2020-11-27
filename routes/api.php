@@ -86,7 +86,23 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('ver_usuarios_en_caja/{caja_id}', 'ConfiguracionesController@ver_usuarios_en_caja');
     Route::post('asignar_usuario_a_caja', 'ConfiguracionesController@asignar_usuario_a_caja');
 
+
+    // PERIODO DE CAJA Y CAJAS
+    Route::get('verifica_existe_periodo','PeriodoController@verifica_existe_periodo');
+    Route::post('abrir_periodo_caja','PeriodoController@abrir_periodo_caja');
+    Route::post('abrir_solo_caja','PeriodoController@abrir_solo_caja');
+    Route::get('cargar_datos_caja_y_o_periodo/{caja_id}','PeriodoController@cargar_datos_caja_y_o_periodo');
+    Route::get('captura_monto_cierre/{reg_caja_venta_id}','PeriodoController@captura_monto_cierre');
+
+    Route::post('cerrar_solo_caja','PeriodoController@cerrar_solo_caja');
+
+
+
+
+
 });
 
 
 Route::post('codificar_xml', 'ConfiguracionesController@codificar_xml');
+
+Route::post('ejemplo_erik','EjemploDteController@ejemploDte');

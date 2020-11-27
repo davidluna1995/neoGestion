@@ -134,62 +134,86 @@ export default {
 
             //datos para la factura
             ted:'',
+
+
+            //PERIODO Y CAJAS
+
+            estado_periodo:'',
+            estado_caja:'',
+            nombre_caja:'',
+            // FIN PERIODO Y CAJAS
+
+            //variables para abrir periodo y caja
+            fecha_inicio: '',
+            hora_inicio: '',
+            apertura_monto: 0,
+            //fin variables para abrir periodo y caja
+
+            //variables para cerrar periodo y o caja
+            data_caja_periodo:[],
+            capta_monto:{},
+
+            // fecha_cierre:'',
+            // hora_cierre:'',
+            cierre_monto:0,
+            btn_cerrar_caja:false,
+            btn_abrir_caja:false,
         }
 
 
     },
 
     created() {
-        
+
         console.log(document);
         setInterval(this.getNow, 1000);
-        
+
     },
 
-     
+
 
     methods: {
 
         buscando_personalizado(){
-            	
+
                         this.view_buscando = false;
-            	
+
                         this.lista_buscando = [];
-            
+
                         if(this.buscando_txt.trim() == ''){
-            	
+
                             this.view_buscando = false;
-            	
+
                             this.lista_buscando = [];
-            	
+
                             this.axios.get('api/users/autocomplete/none').then((response) => {
-            	
+
                                 this.view_buscando = false;
-            	
+
                                 console.log(response)
-           	
+
                                  this.lista_buscando = response.data;
-            	
+
                             });
-            	
+
                         }else{
-            	
+
                             this.axios.get('api/users/autocomplete/'+this.buscando_txt).then((response) => {
-            	
+
                                 this.view_buscando = true;
-            	
+
                                 console.log(response)
-            	
+
                                  this.lista_buscando = response.data;
-            
+
                             });
-            	
+
                         }
-            
-                        
-            
-                        
-            	
+
+
+
+
+
                     },
 
 
@@ -197,7 +221,7 @@ export default {
             this.axios.get('api/listar_clientes').then((response) => {
               this.listar_clientes = response.data.cuerpo;
                     })
-      
+
           },
 
         buscadorClientes({ nombres,apellidos,rut }) {
@@ -205,6 +229,9 @@ export default {
           },
 
         // MODAL VENTAS
+        abrir_modal(ref){
+            this.$refs[""+ref+""].show();
+        },
         showModal() {
             this.$refs['ventasModal'].show();
         },
@@ -295,21 +322,21 @@ export default {
             if (existe == true) {
                 this.listarCarro = [];
                console.log("inout");
-               
+
                 this.arregloCarro.map(function(item, index) {
-                   
+
                     if(item.sku == sku){
                         const input = document.getElementsByName("input_cantidad");
                         const input_posicion = input[index];
                         item.cantidad_ls = Number(item.cantidad_ls) + 1;
                         input_posicion.value = item.cantidad_ls;
                         console.log('item: ',index, item.cantidad_ls)
-                        
+
                            input_posicion.click();
                         //    console.log(this.ingresar_cantidad_carro(index, item.cantidad_ls));
                     }
                 });
-                
+
 
                 this.showAlert5();
                 // console.table(this.arregloCarro)
@@ -335,7 +362,7 @@ export default {
         },
 
         ingresar_cantidad_carro(index, valor) {
-             
+
             //  console.log($event.target.value);
             this.arregloCarro[index].cantidad_ls = valor;
             console.log('carga:',this.arregloCarro[index].cantidad_ls)
@@ -378,6 +405,13 @@ export default {
         },
 
         registrar_venta() {
+
+            if(this.estado_caja=='INACTIVO'){
+                this.$refs['modal-periodo-caja'].show();
+                return false;
+            }
+
+
             this.confirm_compra = true;
             if (this.cliente_id == null){
 
@@ -465,16 +499,16 @@ export default {
                     <span>${data.nombre}</span>
                     </div>
                 </div>
-             </div> 
+             </div>
             `
         },
 
         getData(sku) {
-            
+
              this.buscadorProducto = sku;
              this.traer_producto();
-            
-            
+
+
         },
 
         redirect_user($id){
@@ -482,20 +516,152 @@ export default {
             this.$router.push({name: 'User', params: {id:$id }});
         },
 
+
+        verifica_existe_periodo(){
+            var per = false;
+            var caj = false;
+            this.axios.get('api/verifica_existe_periodo').then((res)=>{
+
+                this.nombre_caja = res.data.data_caja;
+                this.estado_periodo = res.data.periodo.estado;
+                this.estado_caja = res.data.caja.estado;
+
+                if(res.data.periodo.estado == 'INACTIVO'){
+                    per = true;
+                    // this.estado_periodo = res.data.periodo.estado;
+
+                }
+
+                if(res.data.caja.estado == 'INACTIVO'){
+                    caj = true;
+                    // this.estado_caja = res.data.caja.estado;
+                }
+
+                if(per == true || caj == true){ // si alguno viene INACTIVO se abre modal de alerta
+                    this.$refs['modal-periodo-caja'].show();
+                }
+            });
+        },
+
+        abrir_periodo_caja(fecha, hora, monto, caja){
+            if(fecha == '' || hora == '' || (monto == 0 || monto == '')){
+                alert("Faltam campos por llenar, el monto no puede ser tampoco '0'");
+                return false;
+            }else{
+                const data = {
+                    fecha_inicio: fecha,
+                    hora_inicio: hora,
+                    monto_inicio: monto,
+                    caja_id: caja
+                }
+
+                this.axios.post("api/abrir_periodo_caja", data).then((res) => {
+                    if(res.data.estado == 'success'){
+                        this.estado_periodo = 'ACTIVO';
+                        this.estado_caja = 'ACTIVO';
+                        alert(res.data.mensaje);
+                        this.$refs['modal-periodo-caja'].hide();
+                    }
+                    if(res.data.estado == 'failed_inactivo'){
+                        this.estado_periodo = 'INACTIVO';
+                        this.estado_caja = 'INACTIVO';
+                        alert(res.data.mensaje);
+                    }
+                    if(res.data.estado == 'failed_activo'){
+                        this.estado_periodo = 'ACTIVO';
+                        this.estado_caja = 'ACTIVO';
+                        alert(res.data.mensaje);
+                        this.$refs['modal-periodo-caja'].hide();
+                    }
+                });
+            }
+
+        },
+
+        abrir_solo_caja(fecha, hora, monto, caja){
+            if(fecha == '' || hora == '' || (monto == 0 || monto == '')){
+                alert("Faltam campos por llenar, el monto no puede ser tampoco '0'");
+                return false;
+            }else{
+
+                this.btn_abrir_caja = true;
+                const data = {
+                    fecha_inicio: fecha,
+                    hora_inicio: hora,
+                    monto_inicio: monto,
+                    caja_id: caja
+                }
+
+                this.axios.post("api/abrir_solo_caja", data).then((res) => {
+                    if(res.data.estado == 'success'){
+                        // this.estado_periodo = 'ACTIVO';
+                        this.estado_caja = 'ACTIVO';
+                        this.btn_abrir_caja = false;
+                        alert(res.data.mensaje);
+                        this.$refs['modal-periodo-caja'].hide();
+                    }else{
+                        // this.estado_periodo = res.data.activo;
+                        this.estado_caja = res.data.activo;
+                        alert(res.data.mensaje);
+                        this.btn_abrir_caja = false;
+                    }
+                });
+            }
+        },
+
+        cargar_datos_caja(caja_id){
+            // console.table(caja_id);
+            this.axios.get("api/cargar_datos_caja_y_o_periodo/"+caja_id).then((res)=>{
+                if(res.data.estado=='success'){
+                    this.data_caja_periodo = res.data.datos;
+                    this.captura_monto_cierre(this.data_caja_periodo);
+                }else{
+                    this.data_caja_periodo = res.data.datos; // []
+                }
+            });
+        },
+
+        captura_monto_cierre(rcv){
+            console.log(rcv.id);
+            this.axios.get('api/captura_monto_cierre/'+rcv.id).then((res)=>{
+                    this.capta_monto = res.data;
+            });
+        },
+
+        cerrar_solo_caja(monto_cierre, caja, rcv){
+            this.btn_cerrar_caja=true;
+            this.axios.post('api/cerrar_solo_caja',{'monto_cierre':monto_cierre, 'caja':caja, 'rcv_id':rcv.id}
+            ).then((res) => {
+                if(res.data.estado == 'success'){
+                    this.estado_caja = 'INACTIVO';
+                    this.btn_cerrar_caja=false;
+                    alert(res.data.mensaje);
+                    this.$refs['modal-cierre-caja-periodo'].hide();
+
+                }else{
+                    this.btn_cerrar_caja=false;
+                    alert(res.data.mensaje);
+                }
+
+            });
+
+        },
+
         generar_un_xml(){
             const esto = this;
             alert("entrando..");
             this.axios.get('api/generar_un_xml').then((res)=>{
-                
-                
+
+
                 this.ted = res.data.xml;
                 console.log(this.ted);
             });
         },
 
-       
+
+
         printDiv(contenido) {
-            
+
             // html2canvas(document.querySelector("#pdfFactura")).then(canvas => {
             //     document.body.appendChild(canvas)
             // });
@@ -524,6 +690,7 @@ export default {
 
         document.getElementById("inputBuscar").focus();
 
-        this.$refs['modal-caja'].show();
+        this.verifica_existe_periodo();
+
     },
 }
