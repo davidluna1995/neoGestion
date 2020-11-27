@@ -96,9 +96,14 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('captura_monto_cierre/{reg_caja_venta_id}','PeriodoController@captura_monto_cierre');
 
     Route::post('cerrar_solo_caja','PeriodoController@cerrar_solo_caja');
-    Route::get('cerrar_periodo/{periodo_caja_id}','PeriodoController@cerrar_periodo');
+    Route::get('cerrar_periodo/{periodo_caja_id}/{estado_caja}','PeriodoController@cerrar_periodo');
 
 
+
+
+    //mis ventas reportes de todo
+    Route::post('mis_ventas', 'PeriodoController@mis_ventas');
+    Route::get('mis_ventas_id/{r_c_v_id}/{mi_monto_inicio}', 'PeriodoController@mis_ventas_id');
 
 
 

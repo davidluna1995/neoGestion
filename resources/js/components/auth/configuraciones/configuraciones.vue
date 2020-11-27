@@ -460,7 +460,8 @@
                   </template>
 
                   <div>
-                   <table class="table table-bordered">
+                   <div class="table-responsive">
+                       <table class="table table-bordered">
                        <tr>
                            <td><b>Nombre</b></td>
                            <td><b>Descripción</b></td>
@@ -485,6 +486,7 @@
                            </td>
                        </tr>
                    </table>
+                   </div>
                   </div>
                   </b-modal>
 

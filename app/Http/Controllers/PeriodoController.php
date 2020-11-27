@@ -302,4 +302,68 @@ class PeriodoController extends Controller
         }
         return ['estado' => 'failed', 'mensaje'=> 'No se puede continuar'];
     }
+
+
+    function mis_ventas(Request $r){
+        // dd($r);
+        $user = Auth::user()->id;
+        $desde = $r->fecha_d.' '.$r->hora_d;
+        $hasta = $r->fecha_h.' '.$r->hora_h;
+
+        $tabla = DB::select("SELECT
+                    reg.id registro_caja_vendedor_id,
+                    to_char(reg.fecha_inicio, 'dd/mm/yyyy HH24:MI') mi_fecha_inicio,
+                    to_char(reg.fecha_cierre, 'dd/mm/yyyy HH24:MI') mi_fecha_cierre,
+                    reg.monto_inicio mi_monto_inicio,
+                    reg.monto_cierre mi_monto_cierre,
+                    to_char(p.fecha_inicio, 'dd/mm/yyyy HH24:MI') periodo_fecha_inicio,
+                    to_char(p.fecha_cierre, 'dd/mm/yyyy HH24:MI') periodo_fecha_cierre,
+                    p.monto_inicio periodo_monto_inicio,
+                    p.monto_cierre periodo_monto_cierre,
+                    c.nombre
+
+                from registro_caja_vendedor reg
+                inner join periodo_caja p on p.id = reg.periodo_caja_id
+                inner join caja c on c.id = reg.caja_id
+                where user_id = $user
+                and
+                    (to_char(reg.fecha_inicio,'yyyy-mm-dd HH24:MI') >= '$desde'
+                    and to_char(reg.fecha_inicio, 'yyyy-mm-dd HH24:MI') <= '$hasta')");
+
+        return $tabla;
+    }
+
+    public function mis_ventas_id($r_c_v_id, $mi_monto_inicio){
+
+        $tabla = DB::select("SELECT
+                                v.id,
+                                venta_total,
+                                case
+                                    when tipo_entrega_id = 1 then 'Inmediata'
+                                    when tipo_entrega_id = 2 then 'Por Despachar'
+                                end as entrega,
+                                concat(c.nombres, ' ', c.apellidos) cliente,
+                                pago_efectivo,
+                                pago_debito,
+                                vuelto
+
+                            from ventas v
+                            inner join cliente c on c.id = v.cliente_id
+                            where registro_caja_vendedor_id = $r_c_v_id");
+
+
+        $s_a = (int)$mi_monto_inicio;
+        $tomar = true;
+        for ($i=0; $i < count($tabla); $i++) {
+            if ($tomar == true) {
+                $tabla[$i]->saldo_actual_raw = $s_a + $tabla[$i]->venta_total;
+                $tomar = false;
+
+            }else{
+                $tabla[$i]->saldo_actual_raw = $tabla[$i-1]->saldo_actual_raw  + $tabla[$i]->venta_total;
+            }
+        }
+        return response()->json($tabla);
+
+    }
 }

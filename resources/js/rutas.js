@@ -13,6 +13,7 @@ import perfilComponent from './components/auth/perfil/perfil.vue';
 import configuracionesComponent from './components/auth/configuraciones/configuraciones.vue';
 import recuperarPasswordComponent from './components/recuperarPassword.vue';
 import resetearPasswordComponent from './components/resetearPassword.vue';
+import MisVentasComponent from './components/auth/reportesVentas/mis_ventas.vue';
 
 
 
@@ -48,7 +49,7 @@ const routes = [
 
       // {
       //   path: '/404',
-        
+
       //   name: '',
       //   redirect: { path: '/home' },
       //   hidden: true
@@ -118,6 +119,11 @@ const routes = [
         component: perfilComponent
       },
       {
+        name: 'mis_ventas',
+        path: '/mis_ventas',
+        component: MisVentasComponent
+      },
+      {
         name: 'configuraciones',
         path: '/configuraciones',
         component: configuracionesComponent
@@ -135,7 +141,7 @@ const routes = [
       //   hidden: true,
       //   redirect: { path: '/index' }
       // }
-      
+
     ]
   },
 
@@ -150,7 +156,7 @@ const routes = [
     path: '*',
     hidden: true,
     redirect: { path: '/' }
-} 
+}
 
 ];
 

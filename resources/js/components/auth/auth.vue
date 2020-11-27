@@ -54,6 +54,9 @@
             <b-dropdown-item @click="url('perfil')">
               <i class="fas fa-user"></i> Perfil
             </b-dropdown-item>
+            <b-dropdown-item @click="url('mis_ventas')">
+              <i class="fas fa-user"></i> Mis ventas
+            </b-dropdown-item>
             <b-dropdown-item @click="url('configuraciones')">
               <i class="fas fa-cog"></i> Configuracion
             </b-dropdown-item>
@@ -115,12 +118,12 @@ export default {
           numero_send = 1;
         }
         this.axios.get("api/cambiar_tipo_precio/"+numero_send).then((res)=>{
-         
+
           if(res.data.estado == 'success'){
             alert("Usando ahora precio "+numero_send);
             this.usuario = res.data.user;
           }
-            
+
         });
 
     }
