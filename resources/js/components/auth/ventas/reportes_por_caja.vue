@@ -2,10 +2,10 @@
   <div v-if="usuario.rol==admin">
     <div class="container-fluid mt-4">
 
-        <b-card class="text-center transparencia">
+        <b-card class="text-center tituloTabla transparencia mb-4">
         <b-card-header class="fondoProductoAdm">REPORTES POR CAJAS</b-card-header>
 
-          <b-container class="fondoTotal col-12">
+          <b-container class="fondoTotal  col-12">
             <div class="row justify-content-center">
                 <div class="col-md-10">
                     <div class="row my-2">
@@ -19,7 +19,7 @@
                     </div>
                    <div class="row">
                        <div class="col-md-4">
-                           <label for="">Desde:</label>
+                           <label >Desde:</label>
                            <input v-model="fecha_d" class="form-control my-2 form-control-sm" type="date" name="" id="">
                            <input v-model="hora_d" class="form-control my-2 form-control-sm" type="time" name="" id="">
                        </div>
@@ -52,7 +52,7 @@
                 <div class="table-responsive">
                     <table id="tabla_caja" class="table">
 
-                        <tr style="background:black; color:white">
+                        <tr style="background:rgb(52, 58, 64); color:white">
                             <td><b>ID caja registro</b></td>
                             <td><b>Caja</b></td>
                             <td><b>Vendedor</b></td>
@@ -68,11 +68,11 @@
 
                         </tr>
                         <tr v-for="t in tabla" :key="t.id">
-                            <td>
+                            <td style="background:rgb(52, 58, 64); color:white">
                                 <!-- <button type="button" class="btn btn-outline-dark">
                                 {{ t.registro_caja_vendedor_id }}</button> -->
 
-                                <b-button class="btn-sm" @click="cargar_ventas(t);abrir_modal('modal-ventas')" variant="outline-dark" v-b-tooltip.hover.rightbottom
+                                <b-button class="btn-sm" @click="cargar_ventas(t);abrir_modal('modal-ventas')" variant="outline-light" v-b-tooltip.hover.rightbottom
                                 title="ID caja registro: utilizado para ver las ventas asociadas a este ID">
                                     {{ t.registro_caja_vendedor_id }}
                                 </b-button>
@@ -110,19 +110,20 @@
                             <!-- TABLA DE LAS VENTAS -->
                             <!-- <pre>{{tabla_venta}}</pre> -->
                             <div class="table-responsive">
-                                    <div class="d-flex justify-content-center">
-                                        <button class="btn btn-outline-success btn-sm" @click="exportar_tabla('tabla_data')"><i class="fas fa-file-csv fa-4x"></i></button>
-                                    </div>
+                                    <!-- <div class="d-flex justify-content-center"> -->
+                                        <!-- <button class="btn btn-outline-success btn-sm" @click="exportar_tabla('tabla_data')"><i class="fas fa-file-csv fa-4x"></i></button> -->
+                                    <!-- </div> -->
                                     <br>
                                 <table id="tabla_data" class="table">
-                                    <tr class="text-center" style="background:#34495E;">
-                                        <td><p style="color:white" >Monto apertura</p></td>
-                                        <td><p style="color:white" >Monto cierre</p></td>
-                                        <td><p style="color:white" >Efectivo real</p></td>
-                                        <td><p style="color:white" >Debito</p></td>
-                                        <td><p style="color:white" >Vuelto</p></td>
+                                    <tr class="text-center" style="background:rgb(52, 58, 64); color:white">
+                                        <td><b style="color:white" >Monto apertura</b></td>
+                                        <td><b style="color:white" >Monto cierre</b></td>
+                                        <td><b style="color:white" >Efectivo real</b></td>
+                                        <td><b style="color:white" >Debito</b></td>
+                                        <td><b style="color:white" >Vuelto</b></td>
+                                        <td colspan="2"><b style="color:white"> Opción</b> </td>
                                     </tr>
-                                 <tr class="text-center" style="background:#34495E;">
+                                 <tr class="text-center">
 
                                     <td style="background:white;">$ {{ formatPrice(v_monto_apertura) }}</td>
 
@@ -133,14 +134,15 @@
                                     <td style="background:white;">$ {{ formatPrice(cabeza_venta.debito) }}</td>
 
                                     <td style="background:white;">$ {{ formatPrice(cabeza_venta.vuelto) }}</td>
+                                    <td style="background:white;">  <button class="btn btn-outline-success btn-sm" @click="exportar_tabla('tabla_data')"><i class="fas fa-file-csv"></i>Exportar a excel</button></td>
                                 </tr>
-                                <tr class="text-center" style="background:#34495E;">
+                                <tr class="text-center" style="background:rgb(52, 58, 64); color:white">
 
-                                    <td colspan="5" style="background:white;">&nbsp;</td>
+                                    <td colspan="7" style="background:white;">&nbsp;</td>
 
 
                                 </tr>
-                                <tr class="text-center" style="background:#34495E;">
+                                <tr class="text-center" style="background:rgb(52, 58, 64); color:white">
                                     <td><b style="color:white">ID Venta</b></td>
                                     <td><b style="color:white">Cliente</b></td>
                                     <td><b style="color:white">Tipo entrega</b></td>
@@ -157,7 +159,7 @@
 
                                 </tr>
                                 <tr class="text-center" v-for="(t) in tabla_venta" :key="t.id">
-                                    <td>
+                                    <td style="background:rgb(52, 58, 64); color:white">
 
                                         <!-- <b-button class="btn-sm" @click="cargar_ventas(t);abrir_modal('modal-ventas')" variant="outline-dark" v-b-tooltip.hover
                                         title="ID caja registro: utilizado para ver las ventas asociadas a este ID"> -->

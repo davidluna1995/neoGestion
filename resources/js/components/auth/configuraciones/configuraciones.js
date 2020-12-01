@@ -96,7 +96,7 @@ export default {
         // MODAL BLOQUEAR USUARIO
         showModalBloquearUsuario() {
             this.$refs['bloquearUsuario'].show();
-            this.traer_usuarios();
+            this.tabla_usuarios();
         },
         hideModalBloquearUsuario() {
             this.$refs['bloquearUsuario'].hide();
@@ -173,7 +173,7 @@ export default {
                 })
         },
 
-        traer_usuarios() {
+        tabla_usuarios() {
             this.axios.get('api/traer_usuarios').then((response) => {
                 this.listarUsuarios = response.data;
                 // console.log(this.listarUsuarios);

@@ -36,19 +36,19 @@
 
 
             <div class="col-12 col-md-4 col-lg-3" >
-                        <b>DESDE:</b>
+                        <label>Desde:</label>
                         <b-form-input size="sm" type="date" v-model="desde" v-on:keyup.enter="traer_ventas()"></b-form-input>
                         <input v-model="hora_d" class="form-control form-control-sm my-2" type="time" value="00:00">
             </div>
 
             <div class="col-12 col-md-4 col-lg-3">
-                        <b>HASTA:</b>
+                        <label>Hasta:</label>
                         <b-form-input size="sm" type="date" v-model="hasta" v-on:keyup.enter="traer_ventas()"></b-form-input>
                         <input v-model="hora_h" class="form-control form-control-sm my-2" value="23:59" type="time" >
             </div>
 
             <div class="col-12 col-md-4 col-lg-3">
-                        <b>OPCIONES:</b>
+                        <label>Opciones:</label>
                         <b-button size="sm" block variant="success" @click="traer_ventas()">Filtrar</b-button>
                         <b-button size="sm" block variant="success" @click="limpiar()">Reiniciar</b-button>
             </div>

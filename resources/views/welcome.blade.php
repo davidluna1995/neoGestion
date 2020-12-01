@@ -30,5 +30,5 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
         <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
-        <script src="{{ mix('v/11/public/js/app.js') }}" type="text/javascript"></script>
+        <script src="{{ mix('v/12/public/js/app.js') }}" type="text/javascript"></script>
 </html>
