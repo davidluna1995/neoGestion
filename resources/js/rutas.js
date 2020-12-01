@@ -6,7 +6,7 @@ import IndexComponent from './components/auth/inicio/inicio.vue';
 import CategoriasComponent from './components/auth/categorias/categorias.vue';
 import AgregarProductoComponent from './components/auth/agregarProducto/agregarProducto.vue';
 import AdministrarProductoComponent from './components/auth/administrarProducto/administrarProducto.vue';
-import VentasComponent from './components/auth/ventas/ventas.vue';
+import reportes_por_caja from './components/auth/ventas/reportes_por_caja.vue';
 import generarVentaComponent from './components/auth/generarVenta/generarVenta.vue';
 import reportesVentasComponent from './components/auth/reportesVentas/reportesVentas.vue';
 import perfilComponent from './components/auth/perfil/perfil.vue';
@@ -99,9 +99,9 @@ const routes = [
         component: AdministrarProductoComponent
       },
       {
-        name: 'ventas',
-        path: '/ventas',
-        component: VentasComponent
+        name: 'reportes_por_caja',
+        path: '/reportes_por_caja',
+        component: reportes_por_caja
       },
       {
         name: 'generarVenta',

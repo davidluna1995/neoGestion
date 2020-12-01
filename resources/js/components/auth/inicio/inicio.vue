@@ -112,17 +112,17 @@
     </div>
 
 
-    
+
 
     <div class="row m-4">
       <div class="col-12 col-md-12 col-lg-6">
-        
+
          <b-card class="text-center tituloTabla transparencia">
               <b-card-header class="fondoCategoria mb-4">Cronologia en ventas</b-card-header>
               <template>
                 <select class="form-control" v-model="select_anio"  @change="periodico_ventas_grafico">
                     <option v-for="(a,i) in anios" :key="i"  :selected="a.activo"  :value="a.anio">{{a.anio}}</option>
-                   
+
                 </select>
                 <div class="small">
                   <LineChar :chart-data="periodico_ventas" :options="{legend: {
@@ -162,7 +162,7 @@
               <template v-slot:cell(cantidad)="data">{{ formatPrice(data.item.cantidad_total) }}</template>
               <template v-slot:cell(totalVendido)="data">
                 <span class="green">$</span>
-                {{ formatPrice(data.item.venta_total) }}
+                {{ formatPrice(data.item.precio) }}
               </template>
             </b-table>
           </div>
@@ -170,7 +170,7 @@
 
         <!--GRAFICO  -->
 
-      
+
 
         <div class="row">
           <div class="col-12 col-lg-6 mb-4">
@@ -199,7 +199,7 @@
         </div>
         <!--GRAFICO  -->
 
-          
+
       </div>
 
       <div class="col-12 col-md-12 col-lg-6">
@@ -233,7 +233,7 @@
                 <div class="row">
                   <div class="col-12">
                     <b-button
-                      
+
                       size="sm"
                       id="show-btn"
                       class="my-2"

@@ -1,8 +1,10 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid mt-4">
 
         <b-card class="text-center transparencia">
+        <b-card-header class="fondoProductoAdm">LISTA DE PRODUCTOS</b-card-header>
 
+          <b-container class="fondoTotal col-12">
             <div class="row justify-content-center">
                 <div class="col-md-10">
                    <div class="row">
@@ -30,24 +32,24 @@
 
                 </div>
             </div>
-
+          </b-container>
 
         </b-card>
 
         <b-card class="text-center transparencia my-2" v-if="view_tabla">
-
+                <center><h5>MIS CAJAS</h5></center>
                 <!-- <pre>{{tabla}}</pre> -->
                 <div class="table-responsive">
                     <table class="table">
 
-                        <tr class="table-dark">
+                        <tr style="background:black; color:white">
                             <td><b>ID caja registro</b></td>
                             <td><b>Caja</b></td>
                             <td><b>Fecha apertura</b></td>
                             <td><b>fecha cierre</b></td>
                             <td><b>Monto apertura</b></td>
                             <td><b>Monto cierre</b></td>
-                            <td><b>Monto final de caja</b></td>
+                            <!-- <td><b>Monto final de caja</b></td> -->
                             <!-- <td></td>
                             <td></td>
                             <td></td>
@@ -69,7 +71,7 @@
                             <td>{{ t.mi_fecha_cierre }}</td>
                             <td>$ {{ formatPrice(t.mi_monto_inicio) }}</td>
                             <td>$ {{ formatPrice(t.mi_monto_cierre) }}</td>
-                            <td><label style="color:#52BE80" for="">$ {{ formatPrice(t.mi_monto_cierre + t.mi_monto_inicio) }}</label></td>
+                            <!-- <td><label style="color:#52BE80" for="">$ {{ formatPrice(t.mi_monto_cierre + t.mi_monto_inicio) }}</label></td> -->
                         </tr>
                     </table>
                 </div>
@@ -96,12 +98,37 @@
                             <!-- TABLA DE LAS VENTAS -->
                             <!-- <pre>{{tabla_venta}}</pre> -->
                             <div class="table-responsive">
-                                <table class="table">
-                                 <tr style="background:#34495E;">
-                                    <th colspan="6"><p style="color:white" class="text-right">Monto apertura</p></th>
-                                    <td style="background:white;">{{ v_monto_apertura }}</td>
+                                    <div class="d-flex justify-content-center">
+                                        <button class="btn btn-outline-success btn-sm" @click="exportar_tabla"><i class="fas fa-file-csv fa-4x"></i></button>
+                                    </div>
+                                    <br>
+                                <table id="tabla_data" class="table">
+                                    <tr class="text-center" style="background:#34495E;">
+                                        <td><p style="color:white" >Monto apertura</p></td>
+                                        <td><p style="color:white" >Monto cierre</p></td>
+                                        <td><p style="color:white" >Efectivo real</p></td>
+                                        <td><p style="color:white" >Debito</p></td>
+                                        <td><p style="color:white" >Vuelto</p></td>
+                                    </tr>
+                                 <tr class="text-center" style="background:#34495E;">
+
+                                    <td style="background:white;">$ {{ formatPrice(v_monto_apertura) }}</td>
+
+                                    <td style="background:white;">$ {{formatPrice(v_monto_cierre)}}</td>
+
+                                    <td style="background:white;">$ {{ formatPrice(cabeza_venta.efectivo_real) }}</td>
+
+                                    <td style="background:white;">$ {{ formatPrice(cabeza_venta.debito) }}</td>
+
+                                    <td style="background:white;">$ {{ formatPrice(cabeza_venta.vuelto) }}</td>
                                 </tr>
-                                <tr style="background:#34495E;">
+                                <tr class="text-center" style="background:#34495E;">
+
+                                    <td colspan="5" style="background:white;">&nbsp;</td>
+
+
+                                </tr>
+                                <tr class="text-center" style="background:#34495E;">
                                     <td><b style="color:white">ID Venta</b></td>
                                     <td><b style="color:white">Cliente</b></td>
                                     <td><b style="color:white">Tipo entrega</b></td>
@@ -109,7 +136,7 @@
                                     <td><b style="color:white">Pago debito</b></td>
                                     <td><b style="color:white">Vuelto</b></td>
                                     <td><b style="color:white">Venta total</b></td>
-                                    <td><b style="color:white">Monto actual</b></td>
+                                    <!-- <td><b style="color:white">Monto actual</b></td> -->
 
                                     <!-- <td></td>
                                     <td></td>
@@ -117,32 +144,34 @@
                                     <td></td> -->
 
                                 </tr>
-                                <tr v-for="(t) in tabla_venta" :key="t.id">
+                                <tr class="text-center" v-for="(t) in tabla_venta" :key="t.id">
                                     <td>
 
-                                        <b-button class="btn-sm" @click="cargar_ventas(t);abrir_modal('modal-ventas')" variant="outline-dark" v-b-tooltip.hover
-                                        title="ID caja registro: utilizado para ver las ventas asociadas a este ID">
+                                        <!-- <b-button class="btn-sm" @click="cargar_ventas(t);abrir_modal('modal-ventas')" variant="outline-dark" v-b-tooltip.hover
+                                        title="ID caja registro: utilizado para ver las ventas asociadas a este ID"> -->
                                             <!-- {{ t.id }} -->
                                             {{ t.id }}
-                                        </b-button>
+                                        <!-- </b-button> -->
                                     </td>
                                     <td>{{ t.cliente }}</td>
                                     <td>{{ t.entrega }}</td>
-                                    <td>{{ t.pago_efectivo }}</td>
-                                    <td>{{ t.pago_debito }}</td>
-                                    <td>{{ t.vuelto }}</td>
-                                    <td>{{ t.venta_total }}</td>
-                                    <td>{{ t.saldo_actual_raw }}</td>
+                                    <td>$ {{ formatPrice(t.pago_efectivo) }}</td>
+                                    <td>$ {{ formatPrice(t.pago_debito) }}</td>
+                                    <td>$ {{ formatPrice(t.vuelto) }}</td>
+                                    <td>$ {{ formatPrice(t.venta_total) }}</td>
+                                    <!-- <td>{{ t.saldo_actual_raw }}</td> -->
                                 </tr>
                             </table>
                             </div>
                     </section>
-                </b-modal>
+        </b-modal>
 
   </div>
 </template>
 
 <script>
+
+import XLSX from 'xlsx';
 
 export default {
     components:{
@@ -152,16 +181,18 @@ export default {
         return{
             fecha_d:'',
             fecha_h:'',
-            hora_d:'',
-            hora_h:'',
+            hora_d:'00:00',
+            hora_h:'23:59',
             tabla:[],
             view_tabla:false,
 
             tabla_venta:[],
+            cabeza_venta:[],
             registro_caja_vendedor:'',
             v_desde:'',
             v_hasta:'',
-            v_monto_apertura:''
+            v_monto_apertura:0,
+            v_monto_cierre:0
         }
     },
 
@@ -178,8 +209,12 @@ export default {
                 'hora_h': this.hora_h
             }
             this.axios.post('api/mis_ventas', data).then((res)=>{
-                this.tabla = res.data;
-                this.view_tabla = true;
+                if(res.data.estado == 'success'){
+                    this.tabla = res.data.tabla;
+                    this.view_tabla = true;
+                }else{
+                    this.view_tabla = false;
+                }
             });
         },
 
@@ -189,18 +224,46 @@ export default {
             this.v_desde =$t.mi_fecha_inicio;
             this.v_hasta =$t.mi_fecha_cierre;
             this.v_monto_apertura = $t.mi_monto_inicio;
+            this.v_monto_cierre = $t.mi_monto_cierre;
             this.axios.get('api/mis_ventas_id/'+$t.registro_caja_vendedor_id+'/'+$t.mi_monto_inicio).then((res)=>{
-                this.tabla_venta = res.data;
+                this.tabla_venta = res.data.tabla;
+                this.cabeza_venta = res.data.cabeza;
             });
         },
         formatPrice(value) {
             let val = (value / 1).toFixed(0).replace('.', ',')
-            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        },
+
+        exportar_tabla: function(){
+
+            var wb = XLSX.utils.book_new();
+            wb.SheetNames.push("Test sheet1");
+
+            // var ws_data = [['hola','mundo','como tas']];
+
+            var ws = XLSX.utils.table_to_sheet(document.getElementById('tabla_data'))
+            wb.Sheets["Test sheet1"] = ws;
+
+
+            // var ws2 = XLSX.utils.table_to_sheet(document.getElementById('printVenta'))
+            // wb.SheetNames.push("Test sheet2");
+            // wb.Sheets["Test sheet2"] = ws2;
+
+
+
+            XLSX.writeFile(wb, `test.xlsx`,{ flag: 'w+' })
+
         },
     }
 }
 </script>
 
 <style>
-
+    .fondoProductoAdm{
+        background: #fc4a1a;  /* fallback for old browsers */
+        background: -webkit-linear-gradient(to right, #f7b733, #fc4a1a);  /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #f7b733, #fc4a1a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        color: azure;
+    }
 </style>

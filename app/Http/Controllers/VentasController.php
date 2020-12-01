@@ -277,7 +277,7 @@ class VentasController extends Controller
     protected function mas_vendidos()
     {
         $listar = DB::select(
-            " SELECT * from
+            "SELECT * from
             (select
              producto_id,
              producto.nombre
@@ -288,10 +288,11 @@ class VentasController extends Controller
              inner join
              (select producto_id,
              sum(cantidad) as cantidad_total,
-             sum(venta_total) as venta_total
+             sum(precio) as venta_total ,
+			 sum(cantidad * precio) precio
              from detalle_venta
              inner join ventas on ventas.id = detalle_venta.venta_id
-             group by producto_id) venta
+			 group by producto_id) venta
 
              on producto.producto_id = venta.producto_id
              order by venta.venta_total desc
@@ -537,6 +538,7 @@ class VentasController extends Controller
 
     protected function reporte_ventas($desde = '', $hasta = '')
     {
+
         if (isset($desde) && isset($hasta)) {
             $listar = Ventas::select([
                 'ventas.id as idVenta',
@@ -546,24 +548,49 @@ class VentasController extends Controller
                 'cliente.nombres',
                 'cliente.apellidos',
                 'ventas.pago_efectivo',
-                'ventas.pago_debito'
+                'ventas.pago_debito',
+                'ventas.vuelto',
+                // DB::raw('coalesce(credito_deuda.monto_credito, 0) as monto_credito')
             ])
                 ->join('users', 'users.id', 'ventas.user_id')
                 ->join('cliente', 'cliente.id', 'ventas.cliente_id')
-                ->whereBetween('ventas.created_at', [$desde.' 00:00:00', $hasta.' 23:59:59'])
+                // ->leftJoin('credito_deuda', 'credito_deuda.venta_id','ventas.id')
+                ->whereBetween('ventas.created_at', [$desde, $hasta])
                 ->orderby('ventas.id', 'desc')
                 ->get();
 
+
+
             $suma_ventas = 0;
+            $suma_credito = 0;
+            $suma_vuelto = 0;
+            $efectivo_real = 0; //efectivo - vuelto
+            $debito = 0; //aqui no vamos a permitir vueltos cuando se pague unicamente con debito
             if (count($listar) > 0) {
                 foreach ($listar as $key) {
                     setlocale(LC_TIME, 'es_CL.UTF-8');
                     $key->creado = Carbon::parse($key->creado)->formatLocalized('%d de %B del %Y %H:%M:%S');
                     $suma_ventas += $key->venta_total;
+                    $suma_credito += $key->monto_credito;
+                    $suma_vuelto += $key->vuelto;
+                    $efectivo_real += ($key->pago_efectivo - $key->vuelto);
+                    $debito += $key->pago_debito;
                 }
             }
             if (!$listar->isEmpty()) {
-                return ['estado'=>'success' , 'ventas' => $listar, 'total'=>$suma_ventas];
+                $dd = date('d/m/Y H:i', strtotime($desde));
+                $hh = date('d/m/Y H:i', strtotime($hasta));
+                return [
+                        'estado'=>'success' ,
+                        'ventas' => $listar,
+                        'total'=>$suma_ventas,
+                        'deuda'=>$suma_credito,
+                        'vuelto'=>$suma_vuelto,
+                        'efectivo_real' => $efectivo_real,
+                        'debito' => $debito,
+                        'fecha'=> 'Resumen desde '.$dd.' hrs -  hasta '.$hh.' hrs'
+
+                    ];
             } else {
                 return ['estado'=>'failed', 'mensaje'=>'No existen ventas en el rango de fecha seleccionado.'];
             }

@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4">
+  <div class="mt-4" v-if="usuario.rol==admin">
     <!-- <div class="col-12 col-lg-12">
         <b-card class="text-center transparencia mb-4">
           <b-alert show variant="warning">
@@ -32,39 +32,67 @@
       <b-card class="text-center tituloTabla transparencia mb-4">
         <b-card-header class="fondoCategoria mb-4">REPORTE DE VENTAS</b-card-header>
 
-        <div class="row">
-          <div class="col-12 col-md-3 col-lg-3 text-left mb-4">
-            <b>DESDE:</b>
-            <b-form-input type="date" v-model="desde" v-on:keyup.enter="traer_ventas()"></b-form-input>
-          </div>
+        <div class="row justify-content-center">
 
-          <div class="col-12 col-md-3 col-lg-3 text-left mb-4">
-            <b>HASTA:</b>
-            <b-form-input type="date" v-model="hasta" v-on:keyup.enter="traer_ventas()"></b-form-input>
-          </div>
 
-          <div class="col-12 col-md-2 col-lg-2 mt-4">
-            <b-button block variant="success" @click="traer_ventas()">Filtrar</b-button>
-          </div>
+            <div class="col-12 col-md-4 col-lg-3" >
+                        <b>DESDE:</b>
+                        <b-form-input size="sm" type="date" v-model="desde" v-on:keyup.enter="traer_ventas()"></b-form-input>
+                        <input v-model="hora_d" class="form-control form-control-sm my-2" type="time" value="00:00">
+            </div>
 
-          <div class="col-12 col-md-2 col-lg-2 mt-4">
-            <b-button block variant="success" @click="limpiar()">Reiniciar</b-button>
-          </div>
+            <div class="col-12 col-md-4 col-lg-3">
+                        <b>HASTA:</b>
+                        <b-form-input size="sm" type="date" v-model="hasta" v-on:keyup.enter="traer_ventas()"></b-form-input>
+                        <input v-model="hora_h" class="form-control form-control-sm my-2" value="23:59" type="time" >
+            </div>
 
-          <div class="col-12 col-md-2 col-lg-2 mt-4">
-            <b-button block variant="success" v-print="printVenta">Imprimir Ventas</b-button>
-          </div>
+            <div class="col-12 col-md-4 col-lg-3">
+                        <b>OPCIONES:</b>
+                        <b-button size="sm" block variant="success" @click="traer_ventas()">Filtrar</b-button>
+                        <b-button size="sm" block variant="success" @click="limpiar()">Reiniciar</b-button>
+            </div>
+
+
+
+                    <!-- <div class="col-12 col-md-2 col-lg-2 mt-4">
+                        <b-button block variant="success" v-print="printVenta">Imprimir Ventas</b-button>
+                    </div> -->
+
+
         </div>
           <br>
          <div v-if="filtro">
           <div class="row justify-content-center">
-            <div class="col-md-5">
-              <table class="table table-bordered">
-                <tr>
-                  <th style="background:#343a40; color:white">Resumen venta total</th>
-                  <td><span class="green">$</span> {{ formatPrice(suma_ventas) }}</td>
-                </tr>
-              </table>
+            <div class="col-md-11">
+
+
+
+                <div class="table-responsive">
+                    <table id="cabeza" class="table table-bordered">
+                    <tr>
+                        <td colspan="12" style="background:#343a40; color:white">{{resumen_titulo}}</td>
+                    </tr>
+                    <tr>
+                    <th style="background:#343a40; color:white">venta total</th>
+                    <td><span class="green">$</span> {{ formatPrice(suma_ventas) }}</td>
+                    <th style="background:#343a40; color:white">efectivo real</th>
+                    <td>$ {{formatPrice(efectivo_real)}}</td>
+                    <th style="background:#343a40; color:white">Debito</th>
+                    <td>$ {{formatPrice(debito)}}</td>
+                    <!-- <th style="background:#343a40; color:white">Credito </th>
+                    <td>$ {{ formatPrice(credito) }}</td> -->
+                    <th style="background:#343a40; color:white">Vuelto </th>
+                    <td>$ {{ formatPrice(vuelto) }}</td>
+                    </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-1">
+                 <button class="btn btn-outline-success  btn-sm my-4" @click="exportar_tabla(listarReporteVentas)">
+                     <i class="fas fa-file-csv fa-3x"></i>
+                     </button>
             </div>
           </div>
 
@@ -95,7 +123,19 @@
                   <template v-slot:cell(creado)="data">{{data.item.nombreUsuarioVenta}}</template>
                   <template v-slot:cell(cliente)="data">{{data.item.nombres+' '+data.item.apellidos}}</template>
                    <template v-slot:cell(tipo_pago)="data"><small>{{ 'Efectivo: '+formatPrice((data.item.pago_efectivo)?data.item.pago_efectivo : 0) }} <br>
-                                                       {{ 'Debito: '+formatPrice((data.item.pago_debito)?data.item.pago_debito : 0)}}   </small>       
+                                                       {{ 'Debito: '+formatPrice((data.item.pago_debito)?data.item.pago_debito : 0)}}   </small>
+                   </template>
+                   <!-- <template v-slot:cell(deuda_credito)="data">
+                       <label style="color:red" v-if="((data.item.monto_credito)?data.item.monto_credito : 0)>0">
+                           $ {{ formatPrice((data.item.monto_credito)?data.item.monto_credito : 0) }}
+                        </label>
+                       <label style="color:black" v-if="((data.item.monto_credito)?data.item.monto_credito : 0)==0">
+                          $ {{ formatPrice((data.item.monto_credito)?data.item.monto_credito : 0) }}
+                        </label>
+                   </template> -->
+                   <template v-slot:cell(vuelto)="data">
+                       <label style="color:red" v-if="((data.item.vuelto)?data.item.vuelto : 0) > 0"> $ {{ formatPrice((data.item.vuelto)?data.item.vuelto : 0) }}</label>
+                       <label style="color:black" v-if="((data.item.vuelto)?data.item.vuelto : 0) == 0"> $ {{ formatPrice((data.item.vuelto)?data.item.vuelto : 0) }}</label>
                    </template>
                   <template v-slot:cell(detalle)="data">
                     <!-- EDITAR PRODUCTOS -->

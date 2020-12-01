@@ -304,7 +304,7 @@ class PeriodoController extends Controller
     }
 
 
-    function mis_ventas(Request $r){
+    public function mis_ventas(Request $r){
         // dd($r);
         $user = Auth::user()->id;
         $desde = $r->fecha_d.' '.$r->hora_d;
@@ -328,10 +328,29 @@ class PeriodoController extends Controller
                 where user_id = $user
                 and
                     (to_char(reg.fecha_inicio,'yyyy-mm-dd HH24:MI') >= '$desde'
-                    and to_char(reg.fecha_inicio, 'yyyy-mm-dd HH24:MI') <= '$hasta')");
+                    and to_char(reg.fecha_inicio, 'yyyy-mm-dd HH24:MI') <= '$hasta')
+                order by reg.fecha_cierre desc
+                    ");
 
-        return $tabla;
+        if(count($tabla) > 0 ){
+
+
+
+            return [
+                'estado' => 'success',
+                'tabla' => $tabla,
+
+            ];
+        }else{
+            return [
+                'estado' => 'failed',
+                'tabla' => [],
+
+            ];
+        }
     }
+
+
 
     public function mis_ventas_id($r_c_v_id, $mi_monto_inicio){
 
@@ -354,7 +373,15 @@ class PeriodoController extends Controller
 
         $s_a = (int)$mi_monto_inicio;
         $tomar = true;
+        $efectivo_real = 0;
+        $debito = 0;
+        $vuelto = 0;
         for ($i=0; $i < count($tabla); $i++) {
+
+            $efectivo_real += ($tabla[$i]->pago_efectivo - $tabla[$i]->vuelto);
+            $debito += $tabla[$i]->pago_debito;
+            $vuelto += $tabla[$i]->vuelto;
+
             if ($tomar == true) {
                 $tabla[$i]->saldo_actual_raw = $s_a + $tabla[$i]->venta_total;
                 $tomar = false;
@@ -363,7 +390,83 @@ class PeriodoController extends Controller
                 $tabla[$i]->saldo_actual_raw = $tabla[$i-1]->saldo_actual_raw  + $tabla[$i]->venta_total;
             }
         }
-        return response()->json($tabla);
+        return response()->json([
+                                'tabla'=>$tabla,
+                                'cabeza'=>[
+                                    'efectivo_real' => $efectivo_real,
+                                    'debito' => $debito,
+                                    'vuelto' => $vuelto
+                                ]
+                                ]);
 
+    }
+
+    public function reporte_por_cajas(Request $r){
+
+        $user = Auth::user()->id;
+        $desde = $r->fecha_d.' '.$r->hora_d;
+        $hasta = $r->fecha_h.' '.$r->hora_h;
+        $caja = $r->caja;
+
+        if($caja == '0'){
+            $qcaja ="1=1";
+        }else{
+
+            $qcaja = "c.id = $caja";
+        }
+
+        $tabla = DB::select("SELECT
+                    reg.id registro_caja_vendedor_id,
+                    to_char(reg.fecha_inicio, 'dd/mm/yyyy HH24:MI') mi_fecha_inicio,
+                    to_char(reg.fecha_cierre, 'dd/mm/yyyy HH24:MI') mi_fecha_cierre,
+                    reg.monto_inicio mi_monto_inicio,
+                    reg.monto_cierre mi_monto_cierre,
+                    to_char(p.fecha_inicio, 'dd/mm/yyyy HH24:MI') periodo_fecha_inicio,
+                    to_char(p.fecha_cierre, 'dd/mm/yyyy HH24:MI') periodo_fecha_cierre,
+                    p.monto_inicio periodo_monto_inicio,
+                    p.monto_cierre periodo_monto_cierre,
+                    c.nombre,
+                    u.name vendedor
+
+                from registro_caja_vendedor reg
+                inner join periodo_caja p on p.id = reg.periodo_caja_id
+                inner join caja c on c.id = reg.caja_id
+                inner join users u on u.id = reg.user_id
+                -- where user_id = $user
+                where $qcaja
+                and
+                    (to_char(reg.fecha_inicio,'yyyy-mm-dd HH24:MI') >= '$desde'
+                    and to_char(reg.fecha_inicio, 'yyyy-mm-dd HH24:MI') <= '$hasta')
+
+                order by reg.fecha_cierre desc
+                ");
+
+        if(count($tabla) > 0 ){
+
+
+
+            return [
+                'estado' => 'success',
+                'tabla' => $tabla,
+
+            ];
+        }else{
+            return [
+                'estado' => 'failed',
+                'tabla' => [],
+
+            ];
+        }
+    }
+
+    public function all_cajas(){
+
+        $caja = Caja::all();
+        if($caja){
+            return [
+                'estado' => 'success',
+                'caja' => $caja
+            ];
+        }
     }
 }
