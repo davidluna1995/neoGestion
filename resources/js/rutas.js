@@ -7,6 +7,7 @@ import CategoriasComponent from './components/auth/categorias/categorias.vue';
 import AgregarProductoComponent from './components/auth/agregarProducto/agregarProducto.vue';
 import AdministrarProductoComponent from './components/auth/administrarProducto/administrarProducto.vue';
 import reportes_por_caja from './components/auth/ventas/reportes_por_caja.vue';
+import reportes_por_periodo from './components/auth/ventas/reportes_por_periodo.vue'
 import generarVentaComponent from './components/auth/generarVenta/generarVenta.vue';
 import reportesVentasComponent from './components/auth/reportesVentas/reportesVentas.vue';
 import perfilComponent from './components/auth/perfil/perfil.vue';
@@ -102,6 +103,11 @@ const routes = [
         name: 'reportes_por_caja',
         path: '/reportes_por_caja',
         component: reportes_por_caja
+      },
+      {
+        name: 'reportes_por_periodo',
+        path: '/reportes_por_periodo',
+        component: reportes_por_periodo
       },
       {
         name: 'generarVenta',

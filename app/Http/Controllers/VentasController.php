@@ -317,21 +317,30 @@ class VentasController extends Controller
             $tipo_precio = 'precio_2';
         }
 
-        $listar = Producto::select([
-                                    'producto.id',
-                                    'producto.sku',
-                                    'producto.nombre',
-                                    'producto.cantidad',
-                                    'producto.'.$tipo_precio.' as precio',
-                                    ])
-                                    ->where('producto.activo','S')
-                                    ->whereRaw(
-                                        "lower(producto.nombre) like lower('%$producto%') or
-                                         lower(producto.sku) like lower('%$producto%')"
-                                    )
+        // $listar = Producto::select([
+        //                             'producto.id',
+        //                             'producto.sku',
+        //                             'producto.nombre',
+        //                             'producto.cantidad',
+        //                             'producto.'.$tipo_precio.' as precio',
+        //                             ])
+        //                             ->where('producto.activo','S')
+        //                             ->whereRaw(
+        //                                 "lower(producto.nombre) like lower('%$producto%') or
+        //                                  lower(producto.sku) like lower('%$producto%')"
+        //                             )
 
 
-                                    ->get();
+        //                             ->get();
+
+        $listar = DB::select("SELECT producto.id,
+                producto.sku,
+                producto.nombre,
+                producto.cantidad,
+                producto.$tipo_precio as precio
+        from producto where producto.activo = 'S' and (
+        lower(producto.nombre) like lower('$producto') or
+        lower(producto.sku) like lower('$producto') and producto.deleted_at is null)");
 
         if (count($listar) > 0) {
             foreach ($listar as $key) {

@@ -27,9 +27,12 @@
             </b-dropdown-item>
           </b-nav-item-dropdown>
 
-          <b-nav-item-dropdown v-if="usuario.rol==admin" text="Ventas">
+          <b-nav-item-dropdown v-if="usuario.rol==admin" text="Reportes">
+            <b-dropdown-item @click="url('reportes_por_periodo')">
+              <i class="far fa-calendar-alt"></i> Reportes por periodo
+            </b-dropdown-item>
             <b-dropdown-item @click="url('reportes_por_caja')">
-              <i class="fas fa-search-dollar"></i> Reportes por cajas
+              <i class="fas fa-cash-register"></i> Reportes por cajas
             </b-dropdown-item>
             <b-dropdown-item @click="url('reportesVentas')">
               <i class="fas fa-paste"></i> Reporte de Ventas

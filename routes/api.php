@@ -106,6 +106,10 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('mis_ventas_id/{r_c_v_id}/{mi_monto_inicio}', 'PeriodoController@mis_ventas_id');
 
     Route::post('reporte_cajas','PeriodoController@reporte_por_cajas');
+    Route::post('reporte_periodo','PeriodoController@reporte_periodo');
+
+    Route::get('cajas_periodo/{periodo_id}', 'PeriodoController@cajas_periodo');
+
 
 
 

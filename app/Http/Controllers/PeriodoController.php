@@ -459,6 +459,78 @@ class PeriodoController extends Controller
         }
     }
 
+    public function reporte_periodo(Request $r){
+
+        $desde = $r->fecha_d.' '.$r->hora_d;
+        $hasta = $r->fecha_h.' '.$r->hora_h;
+
+        $tabla = DB::select("SELECT
+                            id periodo_id,
+                            case
+                                when activo = 'N' then 'PERIODO CERRADO'
+                                when activo = 'S' then 'PERIODO ACTIVO'
+                                end as estado,
+                            activo,
+
+                            to_char(fecha_inicio, 'dd/mm/yyyy HH24:MI') fecha_inicio,
+                            to_char(fecha_cierre, 'dd/mm/yyyy HH24:MI') fecha_cierre,
+                            monto_inicio,
+                            monto_cierre
+                        from periodo_caja
+                         where (to_char(fecha_inicio,'yyyy-mm-dd HH24:MI') >= '$desde'
+                        and to_char(fecha_inicio, 'yyyy-mm-dd HH24:MI') <= '$hasta')
+
+                order by fecha_cierre desc
+                    ");
+
+        if(count($tabla) > 0 ){
+
+
+
+            return [
+                'estado' => 'success',
+                'tabla' => $tabla,
+
+            ];
+        }else{
+            return [
+                'estado' => 'failed',
+                'tabla' => [],
+
+            ];
+        }
+
+
+    }
+
+    public function cajas_periodo($periodo_id){
+
+
+        $table = DB::select("SELECT
+                    reg.id registro_caja_id,
+                    c.nombre,
+                    u.name vendedor,
+                    to_char(reg.fecha_inicio,'dd/mm/yyyy HH24:MI') fecha_inicio,
+                    to_char(reg.fecha_cierre,'dd/mm/yyyy HH24:MI') fecha_cierre,
+                    reg.monto_inicio,
+                    reg.monto_cierre
+                from registro_caja_vendedor reg
+                inner join caja c on c.id = reg.caja_id
+                inner join users u on u.id = reg.user_id
+                where periodo_caja_id = $periodo_id
+                order by reg.fecha_cierre desc");
+
+        if(count($table) > 0){
+            return [
+                'estado'=>'success',
+                'tabla'=>$table
+            ];
+        }
+        return [
+            'estado' => 'failed'
+        ];
+    }
+
     public function all_cajas(){
 
         $caja = Caja::all();

@@ -23,7 +23,7 @@
                                     <label for="">Opciones:</label>
                                     <button @click="traer_caja_vendedor" class="btn btn-sm btn-success btn-block my-2">Filtrar</button>
 
-                                    <button class="btn btn-info btn-block btn-sm my-2">Reload</button>
+                                    <button @click="fecha_d=''; fecha_h='';tabla=[]; view_tabla=false;" class="btn btn-info btn-block btn-sm my-2">Reload</button>
 
 
                        </div>
