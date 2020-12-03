@@ -30,8 +30,8 @@ export default {
             efectivo: false,
             debito: false,
             credito: false,
-            montoEfectivo: 0,
-            montoDebito: 0,
+            montoEfectivo: '',
+            montoDebito: '',
             montoCredito: 0,
             montoEfectivoDebito: 0,
             total: 0,
@@ -294,6 +294,10 @@ export default {
                         this.listarCarro = response.data.producto[0];
                         this.agregar(this.buscadorProducto);
                         this.buscadorProducto = '';
+                        this.buscando_txt = '';
+                        this.lista_buscando = [];
+                        this.view_buscando = false;
+                        console.log(this.view_buscando);
                         this.btn_buscar_producto = true;
                     } else {
 
@@ -386,7 +390,7 @@ export default {
             localStorage.removeItem('Carro');
             this.arregloCarro = [];
             this.total = 0;
-            this.montoDebito = 0;
+            this.montoDebito = '';
             this.montoCredito = 0;
             this.montoEfectivoDebito = 0;
             this.efectivo = false;
@@ -434,6 +438,8 @@ export default {
                 'monto_credito': this.credito
                 // 'vuelto': (Number(this.montoEfectivo)+ Number(this.montoDebito)) - Number(this.total)
             }
+            // console.log(this.formaPago);
+            // return false;
 
             this.axios.post('api/registro_venta', data).then((response) => {
                 if (response.data.estado == 'success') {
@@ -443,8 +449,8 @@ export default {
                     this.correcto3 = response.data.mensaje;
                     this.chk_credito = false;
                     this.cliente_id = null;
-                    this.montoEfectivo = 0;
-                    this.montoDebito = 0;
+                    this.montoEfectivo = '';
+                    this.montoDebito = '';
                     this.showAlert3();
                     this.showModal();
                     this.ticketPrintDetalle = response.data.ticketDetalle;

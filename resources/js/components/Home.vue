@@ -28,7 +28,13 @@
                       placeholder="******"
                     />
                   </div>
-                  <button type="submit" class="btn btn-primary btn-lg" @click="login()">Ingresar</button>
+                  <button :disabled="load_login" type="submit" class="btn btn-primary btn-lg" @click="login()">
+                      Ingresar
+                      <div v-if="load_login" class="spinner-border text-dark spinner-border-sm" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+
+                  </button>
                 </div>
                 <!-- <a @click="url('recuperarPassword')"><em style="cursor:pointer;" class="float-left">Olvido su contraseña</em></a> -->
               </div>
@@ -74,20 +80,24 @@ export default {
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+
+      load_login: false
     };
   },
   methods: {
     login() {
+        this.load_login = true;
       var app = this;
       this.$auth.login({
         params: {
           email: app.email,
           password: app.password
         },
-        success: function() {},
+        success: function() {this.load_login = false;},
 
         error: function() {
+            this.load_login = false;
           alert("Error, Correo y/o contraseña incorrecto.");
           this.password = "";
         },

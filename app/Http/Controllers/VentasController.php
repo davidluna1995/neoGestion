@@ -60,20 +60,32 @@ class VentasController extends Controller
 
         if ($datos->forma_pago_id == '1,undefined') {
             $venta->forma_pago_id = '1';
+            if($datos->pago_efectivo == 0 || trim($datos->pago_efectivo)==''){
+                return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo.'];
+            }
             $vuelto = (int)$datos->pago_efectivo - (int)$datos->venta_total;
             $venta->vuelto = $vuelto;
         } elseif ($datos->forma_pago_id == '2,undefined') {
             $venta->forma_pago_id = '2';
+            if($datos->pago_debito == 0 || trim($datos->pago_debito)==''){
+                return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo.'];
+            }
             $vuelto = (int)$datos->pago_debito - (int)$datos->venta_total;
             $venta->vuelto = $vuelto;
         }
         elseif ($datos->forma_pago_id == '1,2'){
             $venta->forma_pago_id = '1,2';
+            if($datos->pago_debito == 0 || trim($datos->pago_debito)=='' || $datos->pago_efectivo == 0 || trim($datos->pago_efectivo)=='' ){
+                return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo y/o debito.'];
+            }
             $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
             $venta->vuelto = $vuelto;
         }
         elseif ($datos->forma_pago_id == '2,1'){
             $venta->forma_pago_id = '2,1';
+            if($datos->pago_debito == 0 || trim($datos->pago_debito)=='' || $datos->pago_efectivo == 0 || trim($datos->pago_efectivo)=='' ){
+                return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo y/o debito.'];
+            }
             $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
             $venta->vuelto = $vuelto;
         }
