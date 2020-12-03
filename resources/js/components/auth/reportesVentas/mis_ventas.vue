@@ -21,9 +21,9 @@
 
                        <div class="col-md-4 ">
                                     <label for="">Opciones:</label>
-                                    <button @click="traer_caja_vendedor" class="btn btn-sm btn-success btn-block my-2">Filtrar</button>
+                                    <button :disabled="btn_filro" @click="traer_caja_vendedor" class="btn btn-sm btn-success btn-block my-2">Filtrar</button>
 
-                                    <button @click="fecha_d=''; fecha_h='';tabla=[]; view_tabla=false;" class="btn btn-info btn-block btn-sm my-2">Reload</button>
+                                    <button @click="fecha_d=''; fecha_h='';tabla=[]; view_tabla=false;" class="btn btn-info btn-block btn-sm my-2">Limpiar</button>
 
 
                        </div>
@@ -194,7 +194,8 @@ export default {
             v_desde:'',
             v_hasta:'',
             v_monto_apertura:0,
-            v_monto_cierre:0
+            v_monto_cierre:0,
+            btn_filro:false,
         }
     },
 
@@ -204,18 +205,29 @@ export default {
             this.$refs[""+ref+""].show();
         },
         traer_caja_vendedor(){
+            this.btn_filro = true;
+
+            if(this.fecha_d == '' || this.fecha_h == '' || this.hora_d=='' || this.hora_h=='' ){
+                alert("Faltan campos por llenar");
+                this.btn_filro = false;
+                return false;
+            }
             const data = {
                 'fecha_d': this.fecha_d,
                 'fecha_h': this.fecha_h,
                 'hora_d': this.hora_d,
                 'hora_h': this.hora_h
             }
+
             this.axios.post('api/mis_ventas', data).then((res)=>{
                 if(res.data.estado == 'success'){
                     this.tabla = res.data.tabla;
+                    this.btn_filro = false;
                     this.view_tabla = true;
                 }else{
+                    alert("No hay datos que mostrar");
                     this.view_tabla = false;
+                    this.btn_filro = false;
                 }
             });
         },

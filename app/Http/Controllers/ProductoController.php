@@ -48,6 +48,10 @@ class ProductoController extends Controller
     {
         $validarDatos = $this->validar_producto($datos);
 
+        if($datos->stock == 'N'){
+            $datos->cantidad = null;
+        }
+
         if ($validarDatos['estado'] == 'success') {
             $producto = new Producto();
             $producto->user_id = Auth::user()->id;

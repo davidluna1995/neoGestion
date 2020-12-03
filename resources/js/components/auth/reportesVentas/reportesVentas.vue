@@ -49,7 +49,7 @@
 
             <div class="col-12 col-md-4 col-lg-3">
                         <label>Opciones:</label>
-                        <b-button size="sm" block variant="success" @click="traer_ventas()">Filtrar</b-button>
+                        <b-button :disabled="btn_filtrar" size="sm" block variant="success" @click="traer_ventas()">Filtrar</b-button>
                         <b-button size="sm" block variant="success" @click="limpiar()">Reiniciar</b-button>
             </div>
 
@@ -193,7 +193,7 @@
                             </div>
 
                             <div class="row justify-content-center bordeFooter">
-                              <div class="col-4">
+                              <!-- <div class="col-4">
                                 <b-button
                                   class="my-2"
                                   block
@@ -201,7 +201,7 @@
                                   variant="success"
                                   v-print="printDetalle"
                                 >Imprimir Detalle</b-button>
-                              </div>
+                              </div> -->
                               <div class="col-4">
                                 <b-button
                                   class="my-2"

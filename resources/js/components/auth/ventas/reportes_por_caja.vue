@@ -31,7 +31,7 @@
 
                        <div class="col-md-4 ">
                                     <label for="">Opciones:</label>
-                                    <button @click="traer_caja_reporte" class="btn btn-sm btn-success btn-block my-2">Filtrar</button>
+                                    <button :disabled="btn_filtrar" @click="traer_caja_reporte" class="btn btn-sm btn-success btn-block my-2">Filtrar</button>
 
                                     <button v-if="view_tabla" @click="exportar_tabla('tabla_caja')" class="btn btn-outline-success btn-block btn-sm my-2"><i class="fas fa-file-csv"></i> Exportar a excel</button>
 

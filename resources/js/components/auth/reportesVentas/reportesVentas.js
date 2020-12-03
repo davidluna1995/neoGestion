@@ -31,6 +31,7 @@ export default {
             resumen_titulo:'',
             efectivo_real:0,
             debito:0,
+            btn_filtrar:false,
 
             // CABEZERA DE LA TABLA VENTAS
             reporteVentasFieldsAdm: [
@@ -161,12 +162,14 @@ export default {
         },
 
         traer_ventas() {
+            this.btn_filtrar = true;
             if(this.usuario.rol != this.admin){
                 return false;
             }
             this.filtro = false;
-            if (this.desde == '' && this.hasta == '' && this.hora_d =='' && this.hora_h=='') {
+            if (this.desde == '' || this.hasta == '' || this.hora_d =='' || this.hora_h=='') {
                 this.filtro = false;
+                this.btn_filtrar = false;
                 alert("seleccione un rango de fechas.");
                 return false;
             } else {
@@ -181,9 +184,11 @@ export default {
                         this.filtro = true;
                         this.efectivo_real = response.data.efectivo_real;
                         this.debito = response.data.debito;
+                        this.btn_filtrar = false;
                     }
                     if (response.data.estado == 'failed') {
                         this.filtro = false;
+                        this.btn_filtrar = false;
                         alert(response.data.mensaje);
                     }
                 })

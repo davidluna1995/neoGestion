@@ -27,7 +27,8 @@ import XLSX from 'xlsx';
                     v_monto_apertura:0,
                     v_monto_cierre:0,
 
-                    caja:'0'
+                    caja:'0',
+                    btn_filtrar:false,
                 }
             },
 
@@ -42,6 +43,13 @@ import XLSX from 'xlsx';
                     });
                 },
                 traer_caja_reporte(){
+                    this.btn_filtrar = true;
+                    if(this.fecha_d=='' || this.fecha_h=='' || this.hora_d=='' || this.hora_h==''){
+                        this.btn_filtrar = false;
+                        alert('Faltan campos por llenar')
+                        return false;
+                    }
+
                     const data = {
                         'fecha_d': this.fecha_d,
                         'fecha_h': this.fecha_h,
@@ -53,7 +61,10 @@ import XLSX from 'xlsx';
                         if(res.data.estado == 'success'){
                             this.tabla = res.data.tabla;
                             this.view_tabla = true;
+                            this.btn_filtrar = false;
                         }else{
+                            alert("No existen cajas en el rango de fecha seleccionado.")
+                            this.btn_filtrar = false;
                             this.view_tabla = false;
                         }
                     });

@@ -31,7 +31,7 @@
 
                        <div class="col-md-4 ">
                                     <label for="">Opciones:</label>
-                                    <button @click="traer_caja_reporte" class="btn btn-sm btn-success btn-block my-2">Filtrar</button>
+                                    <button :disabled="btn_filtrar" @click="traer_caja_reporte" class="btn btn-sm btn-success btn-block my-2">Filtrar</button>
 
                                     <button v-if="view_tabla" @click="exportar_tabla('tabla_caja')" class="btn btn-outline-success btn-block btn-sm my-2"><i class="fas fa-file-csv"></i> Exportar a excel</button>
 
@@ -216,7 +216,8 @@ import XLSX from 'xlsx';
                     v_monto_apertura:0,
                     v_monto_cierre:0,
 
-                    caja:'0'
+                    caja:'0',
+                    btn_filtrar:false,
                 }
             },
 
@@ -231,6 +232,14 @@ import XLSX from 'xlsx';
                     });
                 },
                 traer_caja_reporte(){
+                    this.btn_filtrar = true;
+
+                    if(this.fecha_d == '' || this.fecha_h == '' || this.hora_d =='' || this.hora_h==''){
+
+                        alert("Faltan campos por llenar")
+                        this.btn_filtrar = false;
+                        return false;
+                    }
                     const data = {
                         'fecha_d': this.fecha_d,
                         'fecha_h': this.fecha_h,
@@ -241,9 +250,12 @@ import XLSX from 'xlsx';
                     this.axios.post('api/reporte_periodo', data).then((res)=>{
                         if(res.data.estado == 'success'){
                             this.tabla = res.data.tabla;
+                            this.btn_filtrar = false;
                             this.view_tabla = true;
                         }else{
+                            this.btn_filtrar = false;
                             this.view_tabla = false;
+                            alert("No existen periodos en el rango de fecha seleccionado.")
                         }
                     });
                 },
