@@ -110,6 +110,10 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 
     Route::get('cajas_periodo/{periodo_id}', 'PeriodoController@cajas_periodo');
 
+    //comprobante
+
+    Route::get('comprobante/{venta_id}','VentasController@comprobante');
+
 
 
 

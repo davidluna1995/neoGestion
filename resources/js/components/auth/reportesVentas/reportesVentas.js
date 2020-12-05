@@ -43,7 +43,8 @@ export default {
                 { key: 'tipo_pago', label:'Tipo de pago' },
                 // { key: 'deuda_credito', label:'Credito' },
                 { key: 'vuelto', label:'Vuelto' },
-                { key: 'detalle', label: '' },
+                { key: 'detalle', label: 'Detalle' },
+                { key: 'comprobante', label: 'Comprobante' },
 
 
             ],
@@ -79,7 +80,15 @@ export default {
                   nombre: 'gmq',
                   ocupacion: ':shrug:'
                 }
-            ]
+            ],
+
+
+            //variables del comprobante//--------
+            logoNull:false,
+            listarConf:[],
+            ticketPrint:[],
+            ticketPrintDetalle:[],
+            load_comprobante:false
         }
     },
     methods: {
@@ -113,7 +122,7 @@ export default {
             wb.Sheets["Test sheet1"] = ws;
 
 
-            var ws2 = XLSX.utils.table_to_sheet(document.getElementById('printVenta'))
+            var ws2 = XLSX.utils.table_to_sheet(document.getElementById('tabla_excel'))
             wb.SheetNames.push("Test sheet2");
             wb.Sheets["Test sheet2"] = ws2;
 
@@ -152,6 +161,25 @@ export default {
         },
 
         // MODAL EDITAR
+        abrir_venta(ref, venta_id){
+            this.load_comprobante = true;
+            this.axios.get('api/comprobante/'+venta_id).then((res)=>{
+
+                if(res.data.estado == 'success'){
+                    this.listarConf = res.data.configuraciones;
+                    this.ticketPrint = res.data.venta;
+                    this.ticketPrintDetalle = res.data.venta_detalle
+                    this.$refs[""+ref+""].show();
+                    this.load_comprobante = false;
+                }else{
+                    this.load_comprobante = false;
+                    alert("No es posible seguir con el proceso");
+                }
+
+
+            });
+
+        },
         showModalDetalleVenta(id, idVenta) {
             this.$refs['reporte' + id].show();
             this.traer_detalle_ventas(idVenta);

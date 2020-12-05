@@ -1,8 +1,9 @@
 import Multiselect from 'vue-multiselect';
-
+import comprobantes from './comprobantes';
 export default {
   components: {
-    Multiselect
+    Multiselect,
+    comprobantes
   },
     data() {
         return {
@@ -160,6 +161,15 @@ export default {
             btn_abrir_caja:false,
             btn_cerrar_periodo:false,
             get_datos_periodo:[],
+
+            local_storage_venta:(localStorage.getItem('venta_id')) ? localStorage.getItem('venta_id') :'',
+
+
+            listarConf:{},
+            ticketPrint:{},
+            ticketPrintDetalle:{},
+            traer_ul_venta:false
+
         }
 
 
@@ -435,7 +445,9 @@ export default {
                 'pago_debito': this.montoDebito,
                 'chk_credito': this.chk_credito,
                 'detalle_credito': this.detalle_credito,
-                'monto_credito': this.credito
+                'monto_credito': this.credito,
+                //este campo es nuevo
+                'tipo_venta_id' : 1 //voucher simple
                 // 'vuelto': (Number(this.montoEfectivo)+ Number(this.montoDebito)) - Number(this.total)
             }
             // console.log(this.formaPago);
@@ -443,6 +455,8 @@ export default {
 
             this.axios.post('api/registro_venta', data).then((response) => {
                 if (response.data.estado == 'success') {
+                    //limpiamos cada vez que se genera una venta el ID venta
+                    localStorage.removeItem('venta_id');
                     this.producto_id = '';
                     this.errores3 = [];
                     // this.limpiarCarro();
@@ -459,6 +473,9 @@ export default {
                     this.get_vuelto = response.data.vuelto;
 
                     this.confirm_compra = false;
+                    //guardamos la ID de la venta en local Storage, por cada venta se ira actualizando
+                    localStorage.setItem('venta_id', this.ticketPrint[0].idVenta);
+                    this.local_storage_venta = localStorage.getItem('venta_id');
 
                 }
 
@@ -702,6 +719,22 @@ export default {
 
                 this.ted = res.data.xml;
                 console.log(this.ted);
+            });
+        },
+
+        //ultima venta del comprobante :1
+        abrir_ultima_venta(component, venta_id){
+            this.traer_ul_venta = true;
+            this.axios.get('api/comprobante/'+venta_id).then((res)=>{
+                if(res.data.estado == 'success'){
+                    this.listarConf = res.data.configuraciones;
+                    this.ticketPrint = res.data.venta;
+                    this.ticketPrintDetalle = res.data.venta_detalle;
+                    this.traer_ul_venta = false;
+                    this.$refs[""+component+""].show();
+                }else{
+                    this.traer_ul_venta = false;
+                }
             });
         },
 
