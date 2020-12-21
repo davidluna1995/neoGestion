@@ -212,6 +212,7 @@ export default {
             formData.append('logo', this.logo[0]);
             formData.append('empresa', this.empresa);
             formData.append('direccion', this.direccion);
+            formData.append('rut',  document.getElementById('rut').value);
 
             this.axios.post('api/registro_configuraciones', formData, {
                 headers: {
@@ -352,6 +353,28 @@ export default {
                     this.btn_asignar = false;
                 }
             });
+        },
+
+        formatear_rut(){
+            const $rut = document.getElementById('rut').value
+            switch ($rut.length) {
+                case 9: //xx.xxx.xxx-x
+                    console.log("estan xx.xxx.xxx-x")
+
+                    document.getElementById('rut').value = $rut.replace( /^(\d{2})(\d{3})(\d{3})(\w{1})$/, '$1.$2.$3-$4');
+
+                break;
+                case 8: //x.xxx.xxx-x
+                    console.log("estan x.xxx.xxx-x");
+
+                    document.getElementById('rut').value = $rut.replace( /^(\d{1})(\d{3})(\d{3})(\w{1})$/, '$1.$2.$3-$4');
+
+                break;
+
+                default:
+                    break;
+            }
+
         },
         onFileChange(e) {
             this.logo = e.target.files || e.dataTransfer.files;

@@ -26,7 +26,7 @@ export default {
             hora_d:'00:00',
             suma_ventas:0,
             vuelto:0,
-            // credito:0,
+            credito:0,
             filtro:false,
             resumen_titulo:'',
             efectivo_real:0,
@@ -41,7 +41,7 @@ export default {
                 { key: 'creado', label: 'Creado Por' },
                 { key: 'cliente', label: 'Cliente' },
                 { key: 'tipo_pago', label:'Tipo de pago' },
-                // { key: 'deuda_credito', label:'Credito' },
+                { key: 'credito', label:'Credito' },
                 { key: 'vuelto', label:'Vuelto' },
                 { key: 'detalle', label: 'Detalle' },
                 { key: 'comprobante', label: 'Comprobante' },
@@ -212,6 +212,7 @@ export default {
                         this.filtro = true;
                         this.efectivo_real = response.data.efectivo_real;
                         this.debito = response.data.debito;
+                        this.credito = response.data.credito;
                         this.btn_filtrar = false;
                     }
                     if (response.data.estado == 'failed') {

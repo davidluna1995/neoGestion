@@ -16,7 +16,7 @@ import recuperarPasswordComponent from './components/recuperarPassword.vue';
 import resetearPasswordComponent from './components/resetearPassword.vue';
 import MisVentasComponent from './components/auth/reportesVentas/mis_ventas.vue';
 
-
+import facturacion_electronica from './components/auth/generarVenta/dte_33/generar_dte_33.vue'
 
 import ClientesComponent from './components/auth/clientes/clientes.vue';
 
@@ -113,6 +113,11 @@ const routes = [
         name: 'generarVenta',
         path: '/generarVenta',
         component: generarVentaComponent
+      },
+      {
+        name: 'facturacion_electronica',
+        path: '/facturacion_electronica',
+        component: facturacion_electronica
       },
       {
         name: 'reportesVentas',

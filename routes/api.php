@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     //rutas cliente
     Route::post('guardar_cliente','ClientesController@guardar');
     Route::get('listar_clientes','ClientesController@listar_clientes');
+    Route::get('listar_cliente/{rut}','ClientesController@listar_cliente_rut');
     Route::post('actualizar_cliente','ClientesController@actualizar_cliente');
     Route::get('inhabilitar_cliente/{cliente}','ClientesController@inhabilitar_cliente');
     Route::get('select_clientes','ClientesController@select_clientes');
@@ -114,6 +115,10 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 
     Route::get('comprobante/{venta_id}','VentasController@comprobante');
 
+
+    //FACTURA ELECTRONICA
+
+    Route::post('ver_antes_dte_33','DteController@ver_antes_dte_33');
 
 
 

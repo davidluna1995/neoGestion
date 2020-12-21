@@ -26,7 +26,8 @@ class VentasController extends Controller
 {
     protected function registro_venta(Request $datos)
     {
-
+        // dd($datos->all());
+       $vuelto=0;
        $verify_caja_activa = RegistroCajaVendedor::where([
                                 'activo' => 'S',
                                 'user_id' => Auth::user()->id
@@ -60,44 +61,80 @@ class VentasController extends Controller
 
         }
 
-        if ($datos->forma_pago_id == '1,undefined') {
-            $venta->forma_pago_id = '1';
-            if($datos->pago_efectivo == 0 || trim($datos->pago_efectivo)==''){
-                return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo.'];
+        //validar si fuera forma de pago CONTADO
+        if($datos->sii_forma_pago == 'CONTADO'){
+
+            if ($datos->forma_pago_id == '1,undefined') {
+                $venta->forma_pago_id = '1';
+                if($datos->pago_efectivo == 0 || trim($datos->pago_efectivo)==''){
+                    return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo.'];
+                }
+                $vuelto = (int)$datos->pago_efectivo - (int)$datos->venta_total;
+
+                if($vuelto < 0){
+                    return ['estado' => 'failed', 'mensaje' => 'La deuda del cliente es '.abs($vuelto).', '];
+                }
+                $venta->vuelto = $vuelto;
+            } elseif ($datos->forma_pago_id == '2,undefined') {
+                $venta->forma_pago_id = '2';
+                if($datos->pago_debito == 0 || trim($datos->pago_debito)==''){
+                    return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo.'];
+                }
+                $vuelto = (int)$datos->pago_debito - (int)$datos->venta_total;
+                if($vuelto < 0){
+                    return ['estado' => 'failed', 'mensaje' => 'La deuda del cliente es '.abs($vuelto).', '];
+                }
+                $venta->vuelto = $vuelto;
             }
-            $vuelto = (int)$datos->pago_efectivo - (int)$datos->venta_total;
-            $venta->vuelto = $vuelto;
-        } elseif ($datos->forma_pago_id == '2,undefined') {
-            $venta->forma_pago_id = '2';
-            if($datos->pago_debito == 0 || trim($datos->pago_debito)==''){
-                return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo.'];
+            elseif ($datos->forma_pago_id == '1,2'){
+                $venta->forma_pago_id = '1,2';
+                if($datos->pago_debito == 0 || trim($datos->pago_debito)=='' || $datos->pago_efectivo == 0 || trim($datos->pago_efectivo)=='' ){
+                    return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo y/o debito.'];
+                }
+                $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
+                if($vuelto < 0){
+                    return ['estado' => 'failed', 'mensaje' => 'La deuda del cliente es '.abs($vuelto).', '];
+                }
+                $venta->vuelto = $vuelto;
             }
-            $vuelto = (int)$datos->pago_debito - (int)$datos->venta_total;
-            $venta->vuelto = $vuelto;
+            elseif ($datos->forma_pago_id == '2,1'){
+                $venta->forma_pago_id = '2,1';
+                if($datos->pago_debito == 0 || trim($datos->pago_debito)=='' || $datos->pago_efectivo == 0 || trim($datos->pago_efectivo)=='' ){
+                    return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo y/o debito.'];
+                }
+                $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
+                if($vuelto < 0){
+                    return ['estado' => 'failed', 'mensaje' => 'La deuda del cliente es '.abs($vuelto).', '];
+                }
+                $venta->vuelto = $vuelto;
+            }
+            elseif ($datos->forma_pago_id == '3,undefined') {
+                $venta->forma_pago_id = '3';
+
+            } elseif ($datos->forma_pago_id == 'undefined,undefined') {
+                return ['estado'=>'failed', 'mensaje'=>'seleccione una forma de pago.'];
+            } else {
+                $venta->forma_pago_id = $datos->forma_pago_id;
+            }
+
         }
-        elseif ($datos->forma_pago_id == '1,2'){
-            $venta->forma_pago_id = '1,2';
-            if($datos->pago_debito == 0 || trim($datos->pago_debito)=='' || $datos->pago_efectivo == 0 || trim($datos->pago_efectivo)=='' ){
-                return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo y/o debito.'];
+
+        if($datos->sii_forma_pago == 'CREDITO'){
+
+            //verificar que abono debito o efectivo no sean nulos
+            if($datos->pago_efectivo == null || $datos->pago_debito == null){
+                return ['estado'=>'failed', 'mensaje'=>'Abono efectivo o Abono debito sin valores, al menos ingrese un 0'];
             }
-            $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
-            $venta->vuelto = $vuelto;
-        }
-        elseif ($datos->forma_pago_id == '2,1'){
-            $venta->forma_pago_id = '2,1';
-            if($datos->pago_debito == 0 || trim($datos->pago_debito)=='' || $datos->pago_efectivo == 0 || trim($datos->pago_efectivo)=='' ){
-                return ['estado'=>'failed', 'mensaje'=>'ingrese el monto en efectivo y/o debito.'];
+
+            $deuda = $datos->venta_total - ($datos->pago_efectivo + $datos->pago_debito);
+            //pago_credito no es el pago como tal, es la deuda ;)
+            if($deuda < 0){
+                return ['estado'=>'failed', 'mensaje'=>'El monto de la deuda no puede estar en negativo'];
             }
-            $vuelto = ((int)$datos->pago_efectivo + (int)$datos->pago_debito) - (int)$datos->venta_total;
-            $venta->vuelto = $vuelto;
-        }
-        elseif ($datos->forma_pago_id == '3,undefined') {
+            $venta->pago_credito = $deuda;
+            $venta->detalle_credito = $datos->detalle_credito;
             $venta->forma_pago_id = '3';
 
-        } elseif ($datos->forma_pago_id == 'undefined,undefined') {
-            return ['estado'=>'failed', 'mensaje'=>'seleccione una forma de pago.'];
-        } else {
-            $venta->forma_pago_id = $datos->forma_pago_id;
         }
 
         if ($datos->tipo_entrega_id == []) {
@@ -359,6 +396,11 @@ class VentasController extends Controller
         if (count($listar) > 0) {
             foreach ($listar as $key) {
                 $key->cantidad_ls = 1;
+                $key->unidad = 'c/u'; // unidad por defecto, el user la puede cambiar
+                $key->afecto = "true"; //true: si, false:no , true por defecto
+                $key->tipo_impuesto_adicional = 0;//ninguno por defecto al ingresar
+                $key->monto_impuesto_adicional = 0;//ninguno por defecto al ingresar
+                $key->descuento = 0;
             }
             return ['estado'=>'success' , 'producto' => $listar];
         } else {
@@ -568,17 +610,22 @@ class VentasController extends Controller
                 'ventas.created_at as creado',
                 'ventas.venta_total',
                 'users.name as nombreUsuarioVenta',
-                'cliente.nombres',
-                'cliente.apellidos',
                 'ventas.pago_efectivo',
                 'ventas.pago_debito',
                 'ventas.vuelto',
-                // DB::raw('coalesce(credito_deuda.monto_credito, 0) as monto_credito')
+                'ventas.pago_credito',
+                DB::raw("
+                    case
+                        when cliente.tipo_cliente = 'PERSONA' then concat(cliente.nombres,' ',cliente.apellidos)
+                        when cliente.tipo_cliente = 'EMPRESA' then cliente.razon_social
+                    end as cliente
+                ")
             ])
                 ->join('users', 'users.id', 'ventas.user_id')
                 ->join('cliente', 'cliente.id', 'ventas.cliente_id')
                 // ->leftJoin('credito_deuda', 'credito_deuda.venta_id','ventas.id')
                 ->whereBetween('ventas.created_at', [$desde, $hasta])
+                // ->where('ventas.activo','S')
                 ->orderby('ventas.id', 'desc')
                 ->get();
 
@@ -588,6 +635,7 @@ class VentasController extends Controller
             $suma_credito = 0;
             $suma_vuelto = 0;
             $efectivo_real = 0; //efectivo - vuelto
+            $credito = 0;
             $debito = 0; //aqui no vamos a permitir vueltos cuando se pague unicamente con debito
             if (count($listar) > 0) {
                 foreach ($listar as $key) {
@@ -598,6 +646,7 @@ class VentasController extends Controller
                     $suma_vuelto += $key->vuelto;
                     $efectivo_real += ($key->pago_efectivo - $key->vuelto);
                     $debito += $key->pago_debito;
+                    $credito += $key->pago_credito;
                 }
             }
             if (!$listar->isEmpty()) {
@@ -611,6 +660,7 @@ class VentasController extends Controller
                         'vuelto'=>$suma_vuelto,
                         'efectivo_real' => $efectivo_real,
                         'debito' => $debito,
+                        'credito' => $credito,
                         'fecha'=> 'Resumen desde '.$dd.' hrs -  hasta '.$hh.' hrs'
 
                     ];

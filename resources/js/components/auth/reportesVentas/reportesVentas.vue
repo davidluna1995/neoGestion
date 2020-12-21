@@ -80,8 +80,8 @@
                     <td>$ {{formatPrice(efectivo_real)}}</td>
                     <th style="background:#343a40; color:white">Debito</th>
                     <td>$ {{formatPrice(debito)}}</td>
-                    <!-- <th style="background:#343a40; color:white">Credito </th>
-                    <td>$ {{ formatPrice(credito) }}</td> -->
+                    <th style="background:#343a40; color:white">Credito </th>
+                    <td>$ {{ formatPrice(credito) }}</td>
                     <th style="background:#343a40; color:white">Vuelto </th>
                     <td>$ {{ formatPrice(vuelto) }}</td>
                     </tr>
@@ -121,9 +121,12 @@
 
                   <template v-slot:cell(fecha)="data">{{data.item.creado}}</template>
                   <template v-slot:cell(creado)="data">{{data.item.nombreUsuarioVenta}}</template>
-                  <template v-slot:cell(cliente)="data">{{data.item.nombres+' '+data.item.apellidos}}</template>
+                  <template v-slot:cell(cliente)="data">{{data.item.cliente}}</template>
                    <template v-slot:cell(tipo_pago)="data"><small>{{ 'Efectivo: '+formatPrice((data.item.pago_efectivo)?data.item.pago_efectivo : 0) }} <br>
                                                        {{ 'Debito: '+formatPrice((data.item.pago_debito)?data.item.pago_debito : 0)}}   </small>
+                   </template>
+                   <template v-slot:cell(credito)="data">
+                       {{ formatPrice((data.item.pago_credito)?data.item.pago_credito : 0) }} <br>
                    </template>
                    <!-- <template v-slot:cell(deuda_credito)="data">
                        <label style="color:red" v-if="((data.item.monto_credito)?data.item.monto_credito : 0)>0">

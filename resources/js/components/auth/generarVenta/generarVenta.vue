@@ -597,8 +597,18 @@
                   </div>
                 </b-form-group>
 
+                <br>
+                      <label>Forma de pago:</label>
+
+                      <select v-model="sii_forma_pago" @change="formaPago=[]; montoEfectivo=''; montoDebito=''" name="" id="" class="form-control form-control-sm">
+                           <option value="">--SELECCIONE--</option>
+                          <option value="CONTADO">Contado</option>
+                          <option value="CREDITO">Crédito</option>
+                          <!-- <option value="SIN COSTO">Sin costo</option> -->
+                      </select>
+
                 <div>
-                  <b-form-group label="Forma de pago">
+                  <b-form-group v-if="sii_forma_pago == 'CONTADO'" label="Tipo de pago">
                     <b-form-checkbox-group
                       v-model="formaPago"
                       :options="formaPagoOpcion"
@@ -609,7 +619,52 @@
                     ></b-form-checkbox-group>
                   </b-form-group>
 
+                  <div v-if="sii_forma_pago == 'CREDITO'">
+                      <br>
+                        <textarea v-model="detalle_credito" class="form-control" style="resize: none;" placeholder="Detalle de la deuda(opcional).." name="" id="" cols="30" rows="2"></textarea>
+                        <br>
+                        <!-- <input v-model="monto_credito" class="form-control form-control-sm" type="numeric" placeholder="Monto de la deuda.."> -->
+
+                        <!-- pegar aca -->
+
+                        <!-- CREDITO CON EFECTIVO -->
+                        <b-input-group>
+                            <b-form-input
+                                size="sm"
+                                type="number"
+                                placeholder="Abonar en efectivo"
+                                v-model="montoEfectivo"
+                                >{{ formatPrice() }}</b-form-input
+                            >
+                            <b-input-group-append>
+                                <b-button size="sm" text="Button" disabled
+                                >Efectivo</b-button
+                                >
+                            </b-input-group-append>
+                            </b-input-group>
+
+                            <!-- CREDITO CON DEBITO -->
+                             <b-form-group >
+                                <b-input-group>
+                                <b-form-input
+                                    size="sm"
+                                    type="number"
+                                    placeholder="Abonar en debito"
+                                    v-model="montoDebito"
+                                ></b-form-input>
+                                <b-input-group-append>
+                                    <b-button size="sm" text="Button" disabled
+                                    >T.Debito</b-button
+                                    >
+                                </b-input-group-append>
+                                </b-input-group>
+                            </b-form-group>
+                        <!-- <input v-model="montoDebito" class="form-control form-control-sm" type="numeric" placeholder="Abono en debito"> -->
+                    </div>
+
                 </div>
+
+
 
                 <div
                   v-if="
@@ -708,7 +763,7 @@
                   <label>
                     <b>Detalle de Venta</b>
                   </label>
-                  <div class="row">
+                  <div v-if="sii_forma_pago == 'CONTADO'" class="row">
                     <div class="col-8">
                       <label>Total a Pagar</label>
                     </div>
@@ -821,6 +876,36 @@
                         <label>$ {{formatPrice(montoCredito - total)}}</label>
                       </div> -->
                     </div>
+                  </div>
+
+
+                   <div v-if="sii_forma_pago == 'CREDITO'" class="row">
+                    <div class="col-8">
+                      <label>Total a Pagar</label>
+                    </div>
+                    <div class="col-4">
+                      <label>$ {{ formatPrice(total) }}</label>
+                    </div>
+
+                    <div class="col-8">
+                      <label>Cliente Paga</label>
+                    </div>
+                    <div class="col-4">
+                      <div>
+                        <label>$ {{ formatPrice(Number(montoEfectivo) + Number(montoDebito) ) }}</label>
+                      </div>
+                    </div>
+
+
+                    <div class="col-8">
+                      <label>Deuda (credito)</label>
+                    </div>
+                    <div class="col-4">
+                      <div>
+                        <label>$ {{ formatPrice(Number(total) - (Number(montoEfectivo) + Number(montoDebito)) ) }}</label>
+                      </div>
+                    </div>
+
                   </div>
                   <!-- detalle venta -->
 

@@ -38,9 +38,16 @@
               <i class="fas fa-paste"></i> Reporte de Ventas
             </b-dropdown-item>
           </b-nav-item-dropdown>
-          <b-nav-item @click="url('generarVenta')">
-            <i class="fas fa-cart-plus"></i> Generar Venta POS
-          </b-nav-item>
+          <b-nav-item-dropdown  text="Generar venta">
+
+                <b-dropdown-item @click="url('generarVenta')">
+                <i class="fas fa-cart-plus"></i> Voucher
+                </b-dropdown-item>
+
+                <b-dropdown-item @click="url('facturacion_electronica')">
+                <i class="fas fa-cart-plus"></i> Facturación electrónica
+                </b-dropdown-item>
+          </b-nav-item-dropdown>
 
           <b-nav-item >
             <button type="button" @click="cambiar_tipo_precio(usuario.tipo_precio)" class="btn btn-secondary btn-sm">Usando precio {{ usuario.tipo_precio }}  de venta</button>

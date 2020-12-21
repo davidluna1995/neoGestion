@@ -33,56 +33,153 @@ class ConfiguracionesController extends Controller
         }
         return ['estado' => 'success', 'mensaje' => 'success'];
     }
+    function valida_rut($rut)
+    {
+        try{
+            $rut = preg_replace('/[^k0-9]/i', '', $rut);
+            $dv  = substr($rut, -1);
+            $numero = substr($rut, 0, strlen($rut)-1);
+            $i = 2;
+            $suma = 0;
+            foreach(array_reverse(str_split($numero)) as $v)
+            {
+                if($i==8)
+                    $i = 2;
+                $suma += $v * $i;
+                ++$i;
+            }
+            $dvr = 11 - ($suma % 11);
+
+            if($dvr == 11)
+                $dvr = 0;
+            if($dvr == 10)
+                $dvr = 'K';
+            if($dvr == strtoupper($dv))
+                return true;
+            else
+                return false;
+        }
+        catch(\Exception $e){
+            return false;
+        }
+    }
+
+    // public function registro_configuraciones(Request $datos)
+    // {
+    //     $validarDatos = $this->validar_configuraciones($datos);
+    //     if ($validarDatos['estado'] == 'success') {
+    //         $traer = $this->traer_configuraciones();
+    //         if ($traer['estado'] == 'success') {
+
+    //             $ruta = substr($traer['configuraciones']->logo, 8);
+    //             $borrar = Storage::delete($ruta);
+
+    //             $update = Configuraciones::find($traer['configuraciones']->id);
+
+    //             $update->empresa = $datos->empresa;
+    //             $update->direccion = $datos->direccion;
+    //             if ($datos->logo != 'undefined') {
+    //                 $guardarArchivo = $this->guardarArchivo($datos->logo, 'ArchivosConfiguracion/');
+    //                 if ($guardarArchivo['estado'] == "success") {
+    //                     $update->logo = $guardarArchivo['archivo'];
+    //                 } else {
+    //                     return $guardarArchivo;
+    //                 }
+    //             }
+
+
+    //             if ($update->save()) {
+    //                 return ['estado' => 'success', 'mensaje' => 'Información guardada con éxito, por seguridad la sesión cerrará automaticamente.'];
+    //             } else {
+    //                 return ['estado' => 'failed', 'mensaje' => 'A ocurrido un error, verifique esten correcto los campos.'];
+    //             }
+    //         } else {
+    //             $conf = new Configuraciones();
+    //             $conf->empresa = $datos->empresa;
+    //             $conf->direccion = $datos->direccion;
+
+    //             if ($datos->logo != 'undefined') {
+    //                 $guardarArchivo = $this->guardarArchivo($datos->logo, 'ArchivosConfiguracion/');
+    //                 if ($guardarArchivo['estado'] == "success") {
+    //                     $conf->logo = $guardarArchivo['archivo'];
+    //                 } else {
+    //                     return $guardarArchivo;
+    //                 }
+    //             }
+
+    //             if ($conf->save()) {
+    //                 return ['estado' => 'success', 'mensaje' => 'Información guardada con éxito, por seguridad la sesión cerrará automaticamente.'];
+    //             } else {
+    //                 return ['estado' => 'failed', 'mensaje' => 'A ocurrido un error, verifique esten correcto los campos.'];
+    //             }
+    //         }
+    //     }
+    //     return $validarDatos;
+    // }
 
     public function registro_configuraciones(Request $datos)
     {
+
+
         $validarDatos = $this->validar_configuraciones($datos);
         if ($validarDatos['estado'] == 'success') {
-            $traer = $this->traer_configuraciones();
-            if ($traer['estado'] == 'success') {
 
-                $ruta = substr($traer['configuraciones']->logo, 8);
-                $borrar = Storage::delete($ruta);
+            if($this->valida_rut($datos->rut)){
+                $traer = $this->traer_configuraciones();
+                if ($traer['estado'] == 'success') {
 
-                $update = Configuraciones::find($traer['configuraciones']->id);
+                    $ruta = substr($traer['configuraciones']->logo, 8);
+                    $borrar = Storage::delete($ruta);
 
-                $update->empresa = $datos->empresa;
-                $update->direccion = $datos->direccion;
-                if ($datos->logo != 'undefined') {
-                    $guardarArchivo = $this->guardarArchivo($datos->logo, 'ArchivosConfiguracion/');
-                    if ($guardarArchivo['estado'] == "success") {
-                        $update->logo = $guardarArchivo['archivo'];
+                    $update = Configuraciones::find($traer['configuraciones']->id);
+
+                    $update->empresa = $datos->empresa;
+                    $update->direccion = $datos->direccion;
+                    $update->rut = $datos->rut;
+
+
+                    $update->rut = $datos->rut;
+
+                    if ($datos->logo != 'undefined') {
+                        $guardarArchivo = $this->guardarArchivo($datos->logo, 'ArchivosConfiguracion/');
+                        if ($guardarArchivo['estado'] == "success") {
+                            $update->logo = $guardarArchivo['archivo'];
+                        } else {
+                            return $guardarArchivo;
+                        }
+                    }
+
+
+                    if ($update->save()) {
+                        return ['estado'=>'success', 'mensaje'=>'Información guardada con éxito, por seguridad la sesión cerrará automaticamente.'];
                     } else {
-                        return $guardarArchivo;
+                        return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error, verifique esten correcto los campos.'];
+                    }
+                } else {
+                    $conf = new Configuraciones();
+                    $conf->empresa = $datos->empresa;
+                    $conf->direccion = $datos->direccion;
+                    $conf->rut = $datos->rut;
+                    if ($datos->logo != 'undefined') {
+                        $guardarArchivo = $this->guardarArchivo($datos->logo, 'ArchivosConfiguracion/');
+                        if ($guardarArchivo['estado'] == "success") {
+                            $conf->logo = $guardarArchivo['archivo'];
+                        } else {
+                            return $guardarArchivo;
+                        }
+                    }
+
+                    if ($conf->save()) {
+                        return ['estado'=>'success', 'mensaje'=>'Información guardada con éxito, por seguridad la sesión cerrará automaticamente.'];
+                    } else {
+                        return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error, verifique esten correcto los campos.'];
                     }
                 }
-
-
-                if ($update->save()) {
-                    return ['estado' => 'success', 'mensaje' => 'Información guardada con éxito, por seguridad la sesión cerrará automaticamente.'];
-                } else {
-                    return ['estado' => 'failed', 'mensaje' => 'A ocurrido un error, verifique esten correcto los campos.'];
-                }
-            } else {
-                $conf = new Configuraciones();
-                $conf->empresa = $datos->empresa;
-                $conf->direccion = $datos->direccion;
-
-                if ($datos->logo != 'undefined') {
-                    $guardarArchivo = $this->guardarArchivo($datos->logo, 'ArchivosConfiguracion/');
-                    if ($guardarArchivo['estado'] == "success") {
-                        $conf->logo = $guardarArchivo['archivo'];
-                    } else {
-                        return $guardarArchivo;
-                    }
-                }
-
-                if ($conf->save()) {
-                    return ['estado' => 'success', 'mensaje' => 'Información guardada con éxito, por seguridad la sesión cerrará automaticamente.'];
-                } else {
-                    return ['estado' => 'failed', 'mensaje' => 'A ocurrido un error, verifique esten correcto los campos.'];
-                }
+            }else{
+                return ['estado'=>'failed', 'mensaje'=>'rut no valido'];
             }
+
+
         }
         return $validarDatos;
     }

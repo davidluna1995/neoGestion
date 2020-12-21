@@ -168,7 +168,8 @@ export default {
             listarConf:{},
             ticketPrint:{},
             ticketPrintDetalle:{},
-            traer_ul_venta:false
+            traer_ul_venta:false,
+            sii_forma_pago:'',
 
         }
 
@@ -236,8 +237,8 @@ export default {
 
           },
 
-        buscadorClientes({ nombres,apellidos,rut }) {
-            return `${nombres} ${apellidos} - ${rut}`
+        buscadorClientes({ cliente,rut }) {
+            return `${cliente} - ${rut}`
           },
 
         // MODAL VENTAS
@@ -435,9 +436,64 @@ export default {
                 this.confirm_compra = false;
                  return false;
             }
+
+            if(this.sii_forma_pago.trim()==''){
+                alert("Falta forma de pago de la factura");
+                this.confirm_compra = false;
+                 return false;
+            }
+            // si se selecciono "contado" pero el tipo de pago no se ha seleccionado nada entonces validar
+            if(this.sii_forma_pago.trim() =='CONTADO' && this.formaPago.length == 0){
+                this.confirm_compra = false;
+                alert("No ha seleccionado un tipo de pago")
+                return false;
+            }
+
+
+
+            // o si aparte de estar en contado hay algun tipo de pago seleccionado, entonces ver cual esta activo para asi validar
+            if(this.sii_forma_pago.trim() =='CONTADO' && this.formaPago.length == 1){
+                console.log(this.formaPago);
+                //si esta seleccionado solo efectivo, entonces
+                if(this.formaPago[0] == '1'){
+                    // console.log("seleccionaste solo efectivo");
+                    if(this.montoEfectivo.trim() =='' || this.montoEfectivo <= 0){
+
+                        alert("El monto efectivo debe existir o ser mayor a cero")
+                        this.confirm_compra = false;
+                        return false
+                    }
+                }
+
+                //si esta seleccionado solo debito, entonces
+                if(this.formaPago[0] == '2'){
+                    // console.log("seleccionaste solo debito");
+                    if(this.montoDebito.trim() =='' || this.montoDebito <= 0){
+                        alert("El monto debito debe existir o ser mayor a cero")
+                        this.confirm_compra = false;
+                        return false
+                    }
+                }
+
+            }
+
+            // o si aparte de estar en contado pero "ambos" tipos seleccionado
+            if(this.sii_forma_pago.trim() =='CONTADO' && this.formaPago.length == 2){
+                //si esta seleccionado  efectivo y debito entonces
+                if((this.montoEfectivo.trim() =='' || this.montoEfectivo <= 0)
+                || (this.montoDebito.trim() =='' || this.montoDebito <= 0)){
+
+                    // console.log("seleccionaste ambos");
+                    alert("Efectivo y debito deben existir o ser mayor a cero")
+                    this.confirm_compra = false;
+                    return false
+                }
+
+            }
             const data = {
                 'carro': this.arregloCarro,
                 'venta_total': this.total,
+                'sii_forma_pago': this.sii_forma_pago,
                 'forma_pago_id': this.formaPago[0] + ',' + this.formaPago[1],
                 'tipo_entrega_id': this.entrega,
                 'cliente_id': this.cliente_id.id,
@@ -465,6 +521,8 @@ export default {
                     this.cliente_id = null;
                     this.montoEfectivo = '';
                     this.montoDebito = '';
+                    this.sii_forma_pago = '';
+                    this.detalle_credito = '';
                     this.showAlert3();
                     this.showModal();
                     this.ticketPrintDetalle = response.data.ticketDetalle;
