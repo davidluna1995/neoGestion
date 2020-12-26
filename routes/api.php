@@ -119,6 +119,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     //FACTURA ELECTRONICA
 
     Route::post('ver_antes_dte_33','DteController@ver_antes_dte_33');
+    Route::post('emitir_dte_33','DteController@emitir_dte_33');
 
 
 

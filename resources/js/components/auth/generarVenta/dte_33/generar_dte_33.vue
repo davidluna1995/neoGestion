@@ -132,7 +132,7 @@
                           border-bottom: 1px solid black;
                           border-top: 1px solid black;
                         "
-                        colspan="3"
+                        colspan="4"
                       >
                         <div style="text-align: right">TOTAL NETO&nbsp;:</div>
                       </td>
@@ -143,7 +143,31 @@
                           border-top: 1px solid black;
                         "
                       >
-                       $ {{formatPrice(pre_factura.venta_total)}}
+                      $ {{ formatPrice(total) }}
+                       <!-- $ {{formatPrice(pre_factura.venta_total)}} -->
+                      </td>
+
+                    </tr>
+                    <tr>
+                         <td
+                        class="fintabla"
+                        style="
+                          border-bottom: 1px solid black;
+                          border-top: 1px solid black;
+                        "
+                        colspan="4"
+                      >
+                        <div style="text-align: right">IMP. ESPECIFICO&nbsp;:</div>
+                      </td>
+                      <td
+                        class="fintabla"
+                        style="
+                          border-bottom: 1px solid black;
+                          border-top: 1px solid black;
+                        "
+                      >
+                      $ {{ formatPrice(impuesto_especifico) }}
+                       <!-- $ {{formatPrice(pre_factura.venta_total)}} -->
                       </td>
                     </tr>
 
@@ -154,7 +178,7 @@
                           border-bottom: 1px solid black;
                           border-top: 1px solid black;
                         "
-                        colspan="3"
+                        colspan="4"
                       >
                         <div style="text-align: right">I.V.A 19%&nbsp;:</div>
                       </td>
@@ -165,7 +189,8 @@
                           border-top: 1px solid black;
                         "
                       >
-                        $ {{ formatPrice(((pre_factura.venta_total * 119) / 100) - pre_factura.venta_total  ) }}
+                        <!-- $ {{ formatPrice(((pre_factura.venta_total * 119) / 100) - pre_factura.venta_total  ) }} -->
+                        $ {{ formatPrice(((suma_solo_ivas * 119)/100) - suma_solo_ivas )}}
                       </td>
                     </tr>
 
@@ -176,7 +201,7 @@
                           border-bottom: 1px solid black;
                           border-top: 1px solid black;
                         "
-                        colspan="3"
+                        colspan="4"
                       >
                         <div style="text-align: right">MONTO BRUTO&nbsp;:</div>
                       </td>
@@ -187,7 +212,8 @@
                           border-top: 1px solid black;
                         "
                       >
-                       $ {{formatPrice((pre_factura.venta_total * 119) / 100)}}
+                       <!-- $ {{formatPrice((pre_factura.venta_total * 119) / 100)}} -->
+                       $ {{ formatPrice( total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas )  )}}
                       </td>
                     </tr>
                   </table>
@@ -225,13 +251,7 @@
 
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
+
             <!-- <button @click="printDiv('pdfFactura')"></button> -->
             <button
               type="button"
@@ -243,6 +263,24 @@
          })"
             >
               Imprimir
+            </button>
+
+
+            <button
+              type="button"
+              class="btn btn-success"
+              @click="emitir_dte33(
+                  pre_factura,
+                  /*total neto*/ total,
+                  /*IMP. ESPECIFICO*/  impuesto_especifico,
+                  /*I.V.A 19% :*/(((suma_solo_ivas * 119)/100) - suma_solo_ivas),
+                  /*MONTO BRUTO*/ ( total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas )  ),
+                  /*(no visible en factura, 'vuelto')*/ Math.round(Number(montoEfectivo) + Number(montoDebito) - (total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))),
+                  /*credito*/ ((Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) )) )
+
+              )"
+            >
+              Emitir Dte
             </button>
           </div>
 
@@ -270,7 +308,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <label for="">Rut de la empresa o cliente:</label>
-                        <b-input-group>
+                         <b-input-group>
                             <input class="form-control form-control-sm" id="rut" @blur="formatear_rut" placeholder="Buscar rut.." type="text">
                             <!-- :disabled="btn_buscar_rut" -->
                             <b-input-group-append>
@@ -285,12 +323,12 @@
                                     <i class="fas fa-search"></i>
                                 </b-button>
                             </b-input-group-append>
-                            </b-input-group>
+                        </b-input-group>
                         </div>
                     </div>
-
+                    <br>
                     <div class="row" v-if="ver_cliente">
-                        <br><br>
+
                         <div class="col-md-6">
                              <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend">
@@ -453,16 +491,49 @@
                 </div>
                   </b-form-group>
 
-                  <label v-if="sii_forma_pago == 'CREDITO'">
-
-                       <input v-model="chk_credito" @click="monto_credito = 0;" type="checkbox"> Credito / Deuda (Pago pendiente)
-                       <br>
-                       <div v-if="chk_credito">
-                        <textarea v-model="detalle_credito" class="form-control" style="resize: none;" placeholder="Detalle de la deuda.." name="" id="" cols="30" rows="2"></textarea>
+                  <div v-if="sii_forma_pago == 'CREDITO'">
+                      <br>
+                        <textarea v-model="detalle_credito" class="form-control" style="resize: none;" placeholder="Detalle de la deuda(opcional).." name="" id="" cols="30" rows="2"></textarea>
                         <br>
-                        <input v-model="monto_credito" class="form-control form-control-sm" type="numeric" placeholder="Monto de la deuda..">
-                    </div>
-                 </label>
+                        <!-- <input v-model="monto_credito" class="form-control form-control-sm" type="numeric" placeholder="Monto de la deuda.."> -->
+
+                        <!-- pegar aca -->
+
+                        <!-- CREDITO CON EFECTIVO -->
+                        <b-input-group>
+                            <b-input-group-append>
+                                <b-button size="sm" text="Button" disabled
+                                >Efectivo</b-button
+                                >
+                            </b-input-group-append>
+                            <b-form-input
+                                size="sm"
+                                type="number"
+                                placeholder="Abonar en efectivo"
+                                v-model="montoEfectivo"
+                                ></b-form-input
+                            >
+
+                            </b-input-group>
+                            <br>
+                            <!-- CREDITO CON DEBITO -->
+                              <b-input-group>
+                            <b-input-group-append>
+                                <b-button size="sm" text="Button" disabled
+                                >Debito</b-button
+                                >
+                            </b-input-group-append>
+                            <b-form-input
+                                size="sm"
+                                type="number"
+                                placeholder="Abonar en debito"
+                                v-model="montoDebito"
+                                >{{ formatPrice() }}</b-form-input
+                            >
+
+                            </b-input-group>
+                        <!-- <input v-model="montoDebito" class="form-control form-control-sm" type="numeric" placeholder="Abono en debito"> -->
+                  </div>
                 </div>
                 </div>
                 </div>
@@ -503,13 +574,13 @@
                       <label>Impuesto especifico</label>
                     </div>
                     <div class="col-4">
-                      <label><input v-model="impuesto_especifico" class="form-control form-control-sm" type="numeric"></label>
+                      <label>$ {{ formatPrice(impuesto_especifico) }}</label>
                     </div>
                     <div class="col-8">
                         <label for="">(I.V.A 19%)</label>
                     </div>
                     <div class="col-4">
-                        <label>${{ formatPrice(((suma_solo_ivas * 119)/100) - suma_solo_ivas )}}</label>
+                        <label>$ {{ formatPrice(((suma_solo_ivas * 119)/100) - suma_solo_ivas )}}</label>
 
                     </div>
                     <div class="col-8">
@@ -518,7 +589,7 @@
                     <div class="col-4">
 
 
-                      <label><b>${{ formatPrice(((total * 119)/100) + Number(impuesto_especifico) ) }}</b></label>
+                      <label><b>$ {{ formatPrice( total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas )  )}}</b></label>
 
                     </div>
 
@@ -536,16 +607,43 @@
 
                     </div>
 
-                    <div class="col-8">
+
+                    <div class="col-8" v-if="sii_forma_pago == 'CREDITO'">
+                       <label for="">Deuda (credito)</label>
+
+                    </div>
+
+                     <div class="col-4">
+
+                      <div v-if="sii_forma_pago == 'CREDITO'">
+
+                        <label>$ {{
+
+
+
+                             formatPrice((Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) )) )
+
+                             }}
+                        </label>
+                      </div>
+
+                      <!-- <div v-if="formaPago == '3'">
+                        <label>$ {{formatPrice(montoCredito - total)}}</label>
+                      </div> -->
+                    </div>
+
+
+                    <div class="col-8" v-if="sii_forma_pago == 'CONTADO'">
                       <label>Vuelto</label>
                     </div>
                     <div class="col-4">
 
-                      <div>
+                      <div v-if="sii_forma_pago == 'CONTADO'">
 
                         <label>$ {{
                             (Number(montoEfectivo) + Number(montoDebito))?
-                             formatPrice( ((Number(montoEfectivo) + Number(montoDebito)) - Math.trunc(((total * 119)/100) + Number(impuesto_especifico)  ) ))
+                             /*formatPrice( ((Number(montoEfectivo) + Number(montoDebito)) - Math.trunc(((total * 119)/100) + Number(impuesto_especifico)  ) ))*/
+                             formatPrice(Math.round(Number(montoEfectivo) + Number(montoDebito) - (total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))) )
                              :
                              0
                              }}
@@ -564,7 +662,7 @@
                     <div class="col-12">
                       <!-- BOTON VENTAS -->
                       <div>
-                        <b-button
+                        <!-- <b-button
                          :disabled="confirm_compra"
                           pill
                           block
@@ -573,12 +671,12 @@
                           class="my-2"
                           variant="success"
                           @click="registrar_venta(mostrar_cliente)"
-                          >Confirmar Compra</b-button>
+                          >Confirmar Compra</b-button> -->
                         <!-- @click="showModal();" -->
 
                         <button :disabled="traer_ul_venta" @click="abrir_ultima_venta('comprobante',local_storage_venta)" v-if="local_storage_venta !=''" class="btn btn-link">Traer mi ultima venta (ID: {{local_storage_venta}})</button>
 
-
+                        <!-- modal ultima factura de venta (factura electronica) -->
                         <b-modal
                             no-close-on-esc
                             no-close-on-backdrop
@@ -743,158 +841,7 @@
                       <!-- MODAL VENTAS  -->
                       <template>
                         <div>
-                          <b-modal
-                            no-close-on-esc
-                            no-close-on-backdrop
-                            class="modal-header-ventas"
-                            id="modal-md"
-                            size="md"
-                            :ref="'ventasModal'"
-                            hide-footer
-                            centered
-                          >
-                            <section>
-                              <div
-                                class="ticket"
-                                id="printVenta"
-                                style="
-                                  font-size: 12px;
-                                  font-family: 'Times New Roman';
-                                "
-                              >
-                                <center>
-                                  <img
-                                    :src="listarConf.logo"
-                                    v-show="logoNull"
-                                    width="177px"
-                                    height="86px"
-                                  />
-                                </center>
-                                <center>
-                                  <p>
-                                    TICKET DE VENTA
-                                    <br />
-                                    {{ listarConf.empresa }}
-                                    <br />
-                                    {{ listarConf.direccion }}
-                                  </p>
-                                </center>
-                                <table align="center">
-                                  <thead>
-                                    <!--Fecha Emisión-->
-                                    <tr v-for="t in ticketPrint" :key="t.id">
-                                      <th colspan="4">
-                                        Fecha: {{ t.fechaVenta }}
-                                      </th>
-                                    </tr>
-                                    <tr v-for="t in ticketPrint" :key="t.id">
-                                      <th colspan="4">
-                                        Comprobante de Venta Nº {{ t.idVenta }}
-                                      </th>
-                                    </tr>
 
-                                    <tr
-                                      style="
-                                        border-top: 1px solid black;
-                                        border-collapse: collapse;
-                                      "
-                                    >
-                                      <th
-                                        style="
-                                          border-top: 1px solid black;
-                                          border-collapse: collapse;
-                                        "
-                                      >
-                                        PRODUCTO
-                                      </th>
-                                      <th
-                                        style="
-                                          border-top: 1px solid black;
-                                          border-collapse: collapse;
-                                        "
-                                      >
-                                        CANT
-                                      </th>
-                                      <th
-                                        style="
-                                          border-top: 1px solid black;
-                                          border-collapse: collapse;
-                                        "
-                                      >
-                                        PRECIO
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <!--Producto-->
-                                    <tr
-                                      v-for="t in ticketPrintDetalle"
-                                      :key="t.id"
-                                    >
-                                      <td>
-                                        {{ t.nombre }} ($
-                                        {{ formatPrice(t.precio) }} C/U)
-                                      </td>
-                                      <td>{{ t.cantidadDetalle }}</td>
-                                      <td class="text-right">
-                                        {{
-                                          formatPrice(
-                                            t.precio * t.cantidadDetalle
-                                          )
-                                        }}
-                                      </td>
-                                    </tr>
-                                    <!--Producto-->
-                                    <br />
-                                    <!--Totales-->
-                                    <tr v-for="t in ticketPrint" :key="t.id">
-                                      <td>
-                                        <b>Total:</b>
-                                        $ {{ formatPrice(t.totalVenta) }}
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <div>
-                                          <label>
-                                            <b>Vuelto:</b>
-                                            $ {{ formatPrice(get_vuelto) }} <label v-if="get_vuelto < 0" for=""> Deuda de cliente</label>
-                                          </label>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                                <br />
-                                <center>
-                                  <p class="centrado">
-                                    <b>Cliente: </b>{{ cliente }}
-                                  </p>
-                                  <p class="centrado">
-                                    ¡GRACIAS POR SU COMPRA!
-                                  </p>
-                                  <p>NEO-GESTION</p>
-                                  <p>.................</p>
-                                </center>
-                              </div>
-                              <!-- MODAL VENTAS  -->
-                            </section>
-                            <div class="row justify-content-center bordeFooter">
-                              <div class="col-4">
-                                <b-button
-                                  class="my-2"
-                                  block
-                                  pill
-                                  variant="info"
-                                  onclick="printJS({
-                                            printable: 'printVenta',
-                                            type:'html', })"
-
-                                  >imprimir ticket</b-button>
-                                  <!-- @click="hideModal()" -->
-                              </div>
-                            </div>
-                          </b-modal>
                         </div>
                       </template>
                     </div>
@@ -1063,7 +1010,7 @@
                                     <option value="false">NO</option>
                             </select>
 
-                            {{(data.item.afecto=='false')?false:true}}
+                            <!-- {{(data.item.afecto=='false')?false:true}} -->
                         </template>
                         <template v-slot:cell(tia)="data">
                             <!-- {{ (data.item.afecto) }} -->
@@ -1079,7 +1026,11 @@
                             </select>
                         </template>
                         <template v-slot:cell(mia)="data">
-                            <input :disabled="(data.item.afecto=='false')?true:false" :value="data.item.monto_impuesto_adicional" class="form-control form-control-sm" type="text" name="input_monto_impuesto_adicional" id="">
+
+                            <input
+                            @click="ingresar_mia_carro(data.index, $event.target.value)"
+                            @input="ingresar_mia_carro(data.index, $event.target.value)"
+                            :disabled="(data.item.afecto=='false')?true:false" :value="data.item.monto_impuesto_adicional" class="form-control form-control-sm" type="text" name="input_monto_impuesto_adicional" >
                         </template>
                         <template v-slot:cell(precioProd)="data"
                           >$ {{ formatPrice(data.item.precio) }}</template>

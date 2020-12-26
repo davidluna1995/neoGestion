@@ -396,6 +396,12 @@ export default {
                 alert("No ha seleccionado un tipo de pago")
                 return false;
             }
+            console.log("carro", this.arregloCarro.length)
+            if(this.arregloCarro.length == 0){
+                this.visualizar_compra = false;
+                alert("El carro esta vacio")
+                return false;
+            }
             // o si aparte de estar en contado hay algun tipo de pago seleccionado, entonces ver cual esta activo para asi validar
             if(this.sii_forma_pago.trim() =='CONTADO' && this.formaPago.length == 1){
                 console.log(this.formaPago);
@@ -634,13 +640,20 @@ export default {
                 console.log("loop: ",loop.decimal)
                 if(this.arregloCarro[index].tipo_impuesto_adicional == loop.id){
 
-                    const monto_neto = (this.arregloCarro[index].precio * this.arregloCarro[index].cantidad_ls) - Math.round((parseInt(this.arregloCarro[index].precio) * (this.arregloCarro[index].cantidad_ls)) * ((this.arregloCarro[index].descuento)?this.arregloCarro[index].descuento:0) /100);
-                    this.arregloCarro[index].monto_impuesto_adicional = Math.round(monto_neto * (1 + loop.decimal)) - monto_neto
+                    if(loop.id == 35 || loop.id == 28){
+                       console.log("Monto manual")
+                    }else{
+                        console.log("soy los calculables");
+                        const monto_neto = (this.arregloCarro[index].precio * this.arregloCarro[index].cantidad_ls) - Math.round((parseInt(this.arregloCarro[index].precio) * (this.arregloCarro[index].cantidad_ls)) * ((this.arregloCarro[index].descuento)?this.arregloCarro[index].descuento:0) /100);
+                        this.arregloCarro[index].monto_impuesto_adicional = Math.round(monto_neto * (1 + loop.decimal)) - monto_neto
+                    }
+
                 }
             });
 
 
             this.total_temporal();
+            this.total_temporal_monto_especifico();
             localStorage.removeItem('Carro');
             localStorage.setItem("Carro", JSON.stringify(this.arregloCarro));
 
@@ -663,18 +676,25 @@ export default {
             console.log(this.arregloCarro[index].descuento);
 
             if(this.arregloCarro[index].afecto == "true"){
+                console.log("me entrooo en descuentos");
                 this.tipos_imp_adicionales.map( loop =>{
                     console.log("loop: ",loop.decimal)
                     if(this.arregloCarro[index].tipo_impuesto_adicional == loop.id){
 
-                        const monto_neto = (this.arregloCarro[index].precio * this.arregloCarro[index].cantidad_ls) - Math.round((parseInt(this.arregloCarro[index].precio) * (this.arregloCarro[index].cantidad_ls)) * ((this.arregloCarro[index].descuento)?this.arregloCarro[index].descuento:0) /100);
-                        this.arregloCarro[index].monto_impuesto_adicional = Math.round(monto_neto * (1 + loop.decimal)) - monto_neto
+                        if(loop.id == 35 || loop.id == 28){
+                            console.log("PONE VO EL MONTO LOJI")
+                         }else{
+                             console.log("soy los calculables");
+                             const monto_neto = (this.arregloCarro[index].precio * this.arregloCarro[index].cantidad_ls) - Math.round((parseInt(this.arregloCarro[index].precio) * (this.arregloCarro[index].cantidad_ls)) * ((this.arregloCarro[index].descuento)?this.arregloCarro[index].descuento:0) /100);
+                             this.arregloCarro[index].monto_impuesto_adicional = Math.round(monto_neto * (1 + loop.decimal)) - monto_neto
+                         }
                     }
                 });
             }
 
 
             this.total_temporal();
+            this.total_temporal_monto_especifico();
             localStorage.removeItem('Carro');
             localStorage.setItem("Carro", JSON.stringify(this.arregloCarro));
             console.log(localStorage.getItem("Carro"));
@@ -693,7 +713,9 @@ export default {
                 document.getElementsByName('input_tipo_impuesto_adicional')[index].disabled = true;
                 document.getElementsByName('input_tipo_impuesto_adicional')[index].value = '';
                 document.getElementsByName('input_monto_impuesto_adicional')[index].disabled = true;
-                document.getElementsByName('input_monto_impuesto_adicional')[index].value = '';
+                // document.getElementsByName('input_monto_impuesto_adicional')[index].value = '0';
+                this.arregloCarro[index].monto_impuesto_adicional = null;
+
             }else{
                 this.arregloCarro[index].activo_iva = false;
                 document.getElementsByName('input_tipo_impuesto_adicional')[index].disabled = false;
@@ -701,6 +723,7 @@ export default {
             }
 
             this.total_temporal();
+            this.total_temporal_monto_especifico();
             localStorage.removeItem('Carro');
             localStorage.setItem("Carro", JSON.stringify(this.arregloCarro));
             // console.log(localStorage.getItem("Carro"));
@@ -708,7 +731,6 @@ export default {
 
         ingresar_tipo_imp_adic_carro(index, valor){
             this.arregloCarro[index].tipo_impuesto_adicional = valor;
-
 
 
             //si el imp adicional es de gacolina o diesel, especificar manualmente el monto
@@ -722,20 +744,42 @@ export default {
                     if(valor == loop.id){
                         alert(loop.decimal);
                         const monto_neto = (this.arregloCarro[index].precio * this.arregloCarro[index].cantidad_ls) - Math.round((parseInt(this.arregloCarro[index].precio) * (this.arregloCarro[index].cantidad_ls)) * ((this.arregloCarro[index].descuento)?this.arregloCarro[index].descuento:0) /100);
-                        this.arregloCarro[index].monto_impuesto_adicional = Math.round(monto_neto * (1 + loop.decimal)) - monto_neto
+                        this.arregloCarro[index].monto_impuesto_adicional = Math.round(monto_neto * (1 + loop.decimal)) - monto_neto;
+
                     }
                 });
             }
 
             this.total_temporal();
+            this.total_temporal_monto_especifico();
+            localStorage.removeItem('Carro');
+            localStorage.setItem("Carro", JSON.stringify(this.arregloCarro));
+            // console.log(localStorage.getItem("Carro"));
+        },
+
+        ingresar_mia_carro(index, valor){
+            this.arregloCarro[index].monto_impuesto_adicional = valor;
+            this.total_temporal();
+            this.total_temporal_monto_especifico();
             localStorage.removeItem('Carro');
             localStorage.setItem("Carro", JSON.stringify(this.arregloCarro));
             console.log(localStorage.getItem("Carro"));
+        },
+        total_temporal_monto_especifico(){
+            this.impuesto_especifico=0;
+            const vue = this;
+
+            this.arregloCarro.map(function(item, index) {
+
+                vue.impuesto_especifico = Number(vue.impuesto_especifico) + Number(item.monto_impuesto_adicional)
+
+            });
         },
 
         eliminarItem(indice) {
             this.arregloCarro.splice(indice, 1);
             this.total_temporal();
+            this.total_temporal_monto_especifico();
             localStorage.removeItem('Carro');
             localStorage.setItem("Carro", JSON.stringify(this.arregloCarro));
 
@@ -745,6 +789,8 @@ export default {
             localStorage.removeItem('Carro');
             this.arregloCarro = [];
             this.total = 0;
+            this.impuesto_especifico = 0;
+            this.suma_solo_ivas = 0;
             this.montoDebito = 0;
             this.montoCredito = 0;
             this.montoEfectivoDebito = 0;
@@ -778,7 +824,9 @@ export default {
             }
 
         },
-
+        emitir_dte33(factura, neto, imp_especifico, iva, bruto, vuelto, credito ){
+            console.log(factura, neto, imp_especifico, iva, bruto, vuelto, credito);
+        },
         registrar_venta(cliente) {
             this.confirm_compra = true;
             if (document.getElementById('rut').value.trim() == ''){
@@ -984,6 +1032,7 @@ export default {
         document.getElementById("inputBuscar").focus();
 
         this.total_temporal();
+        this.total_temporal_monto_especifico();
 
 
         // this.total_a_pagar = document.getElementById('total_a_pagar').value;
