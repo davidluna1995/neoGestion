@@ -36,7 +36,7 @@
               <!-- AQUI EL DISEÑO DE LA FACTURA ELECTRONICA -->
               <div class="factura">
                 <center style="font-size: 2rem; border:3px solid red;color:red;font-family:sans-serif;">
-                  <b><pre style="color:red">R.U.T {{ pre_factura.emisor.rut }}</pre></b>
+                  <b class="upper"><pre style="color:red">R.U.T {{ pre_factura.emisor.rut }}</pre></b>
                   <b><pre style="color:red">FACTURA ELECTRONICA</pre></b>
                   <b><pre style="color:red">Nº XXXX</pre></b>
                 </center>
@@ -46,7 +46,7 @@
                 </center>
                 <!-- <br /> -->
                 <center style="font-size: 2rem;font-family:sans-serif;">
-                  <pre> {{ upper(pre_factura.emisor.empresa) }}</pre>
+                  <pre> {{ pre_factura.emisor.empresa }}</pre>
                 </center>
 
                 <!-- DATOS DEL EMISOR  -->
@@ -63,15 +63,15 @@
                     word-wrap: break-word;
                   "
                 >
-                  <label><b>DIRECCION: </b> {{upper(pre_factura.emisor.direccion)}}</label><br>
-                  <label><b>GIRO: </b>{{ upper(pre_factura.emisor.giro) }}</label> <br>
+                  <label class="upper"><b>DIRECCION: </b> {{pre_factura.emisor.direccion}}</label><br>
+                  <label class="upper"><b>GIRO: </b>{{ pre_factura.emisor.giro }}</label> <br>
 
 
                   <b>EMISION&nbsp;: </b> 29/12/2020 <br />
-                  <b>MEDIO DE PAGO&nbsp;: </b> {{ upper(pre_factura.sii_forma_pago) }} <br /><br>
-                  <b>SEÑOR(A)&nbsp;: </b> {{ upper(pre_factura.reseptor.cliente) }} <br />
-                  <b>RUT&nbsp;: </b> {{ upper(pre_factura.reseptor.rut) }} <br />
-                  <b>GIRO&nbsp;: </b> {{ upper(pre_factura.reseptor.giro) }} <br />
+                  <b class="upper">MEDIO DE PAGO&nbsp;: </b> {{ pre_factura.sii_forma_pago }} <br /><br>
+                  <b class="upper">SEÑOR(A)&nbsp;: </b> {{ pre_factura.reseptor.cliente }} <br />
+                  <b class="upper">RUT&nbsp;: </b> {{ pre_factura.reseptor.rut }} <br />
+                  <b class="upper">GIRO&nbsp;: </b> {{ pre_factura.reseptor.giro }} <br />
 
                   <table style="width:100%; padding-right:2px;">
                     <tr>
@@ -117,12 +117,12 @@
                       </td>
                     </tr>
 
-                    <tr v-for="c in pre_factura.carro " :key="c.id">
-                        <td>{{ upper(c.nombre) }}</td>
-                        <td>{{ formatPrice(c.precio) }}</td>
-                        <td>{{ c.cantidad_ls }}</td>
-                        <td>{{ c.unidad }}</td>
-                        <td>{{ formatPrice(c.precio * c.cantidad_ls) }}</td>
+                    <tr v-for="c in pre_factura.Productos " :key="c.id">
+                        <td>{{ c.NombreProducto  }}</td>
+                        <td>{{ formatPrice(c.PrecioNeto) }}</td>
+                        <td>{{ c.Cantidad }}</td>
+                        <td>{{ c.UnidadMedida }}</td>
+                        <td>{{ formatPrice(c.PrecioNeto * c.Cantidad) }}</td>
                     </tr>
 
                     <tr>
@@ -259,7 +259,7 @@
               onclick="printJS({
           printable: 'pdfFactura',
           type:'html',
-          style: 'pre{font-family:sans-serif;width: 100%;white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;}'
+          style: 'b{text-transform: uppercase;},pre{text-transform: uppercase;font-family:sans-serif;width: 100%;white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;}'
          })"
             >
               Imprimir
@@ -1264,5 +1264,7 @@
     max-height: 150px;
   }
 }
-
+.upper{
+    text-transform: uppercase;
+}
 </style>

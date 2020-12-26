@@ -164,12 +164,17 @@ export default {
             pre_factura:{
                 carro: [
                   {
-                    id: 0,
-                    sku: "",
-                    nombre: "",
-                    cantidad: 0,
-                    precio: 0,
-                    cantidad_ls: ""
+                    // id: 0,
+                    Afecto: "",
+                    nomNombreProducto: "",
+                    DescripcionAdicional: "",
+                    UnidadMedida: 0,
+                    Cantidad: 0,
+                    PrecioNeto:0,
+                    DescuentoNeto:0,
+                    SubTotal:0,
+                    TipoImpAdicional:0,
+                    MontoImpAdicional:0
                   }
 
                 ],
@@ -257,16 +262,21 @@ export default {
         limpia_factura(){
             this.pre_factura={
                 carro: [
-                  {
-                    id: 0,
-                    sku: "",
-                    nombre: "",
-                    cantidad: 0,
-                    precio: 0,
-                    cantidad_ls: ""
-                  }
+                    {
+                      id: 0,
+                      Afecto: "",
+                      nomNombreProducto: "",
+                      DescripcionAdicional: "",
+                      UnidadMedida: 0,
+                      Cantidad: "",
+                      PrecioNeto:0,
+                      DescuentoNeto:0,
+                      SubTotal:0,
+                      TipoImpAdicional:0,
+                      MontoImpAdicional:0
+                    }
 
-                ],
+                  ],
                 venta_total: 0,
                 forma_pago_id: "",
                 tipo_entrega_id: "",
@@ -365,9 +375,11 @@ export default {
             this.$refs['ventasModal'].hide();
             // this.limpiarCarro();
         },
-        upper(texto){
-            return texto+' to uppercase';
-        },
+
+
+        // uppercase: function(v) {
+        //     return v.toUpperCase();
+        // },
         visualizar_factura(cliente){
 
             this.limpia_factura();

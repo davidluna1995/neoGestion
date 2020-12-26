@@ -10,4 +10,10 @@ class Configuraciones extends Model
     use softDeletes;
     protected $dates = ['deleted_at'];
     protected $table = 'configuraciones';
+
+
+    public function setEmpresaAttribute($value)
+    {
+        $this->attributes['empresa'] = strtoupper($value);
+    }
 }
