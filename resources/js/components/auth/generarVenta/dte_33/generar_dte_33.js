@@ -366,7 +366,7 @@ export default {
             // this.limpiarCarro();
         },
         upper(texto){
-            return texto.toUpperCase()
+            return texto+' to uppercase';
         },
         visualizar_factura(cliente){
 
