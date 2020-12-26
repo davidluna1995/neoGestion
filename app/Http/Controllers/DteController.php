@@ -14,20 +14,34 @@ class DteController extends Controller
         $emisor = Configuraciones::all();
 
         $emisor['emisor'] = $emisor[0];
+
+        $new['Llave'] = 'test key';
+        $new['Fecha'] = 'fecha test';
+
+        if($r->sii_forma_pago == 'CONTADO'){
+            $new['FormaPago'] = 0;
+
+        }
+        if($r->sii_forma_pago == 'CREDITO'){
+            $new['FormaPago'] = 1;
+
+        }
+        $new['FormaPago_str'] = $r->sii_forma_pago;
+
         $new['emisor'] = $emisor['emisor'];
         $new['emisor']['empresa'] = strtoupper($emisor[0]['empresa']);
         $new['emisor']['giro'] = strtoupper($emisor[0]['giro']);
         $new['emisor']['rut'] = strtoupper($emisor[0]['rut']);
         $new['emisor']['dirreccion'] = strtoupper($emisor[0]['dirreccion']);
 
-        $new['reseptor']['ciudad'] = strtoupper($r->reseptor['ciudad']);
-        $new['reseptor']['cliente'] = strtoupper($r->reseptor['cliente']);
-        $new['reseptor']['comuna'] = strtoupper($r->reseptor['comuna']);
-        $new['reseptor']['contacto'] = strtoupper($r->reseptor['contacto']);
-        $new['reseptor']['direccion'] = strtoupper($r->reseptor['direccion']);
-        $new['reseptor']['email'] = strtoupper($r->reseptor['email']);
-        $new['reseptor']['giro'] = strtoupper($r->reseptor['giro']);
-        $new['reseptor']['rut'] = strtoupper($r->reseptor['rut']);
+        $new['Cliente']['Ciudad'] = strtoupper($r->reseptor['ciudad']);
+        $new['Cliente']['RazonSocial'] = strtoupper($r->reseptor['cliente']);
+        $new['Cliente']['Comuna'] = strtoupper($r->reseptor['comuna']);
+        $new['Cliente']['Contacto'] = strtoupper($r->reseptor['contacto']);
+        $new['Cliente']['Direccion'] = strtoupper($r->reseptor['direccion']);
+        $new['Cliente']['Email'] = strtoupper($r->reseptor['email']);
+        $new['Cliente']['Giro'] = strtoupper($r->reseptor['giro']);
+        $new['Cliente']['Rut'] = strtoupper($r->reseptor['rut']);
 
         $i=0;
        foreach ($r->carro as $c) {

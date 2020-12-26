@@ -68,10 +68,14 @@
 
 
                   <b>EMISION&nbsp;: </b> 29/12/2020 <br />
-                  <b class="upper">MEDIO DE PAGO&nbsp;: </b> {{ pre_factura.sii_forma_pago }} <br /><br>
-                  <b class="upper">SEÑOR(A)&nbsp;: </b> {{ pre_factura.reseptor.cliente }} <br />
-                  <b class="upper">RUT&nbsp;: </b> {{ pre_factura.reseptor.rut }} <br />
-                  <b class="upper">GIRO&nbsp;: </b> {{ pre_factura.reseptor.giro }} <br />
+                  <b class="upper">MEDIO DE PAGO&nbsp;: </b> {{ pre_factura.FormaPago_str }} <br /><br>
+                  <b class="upper">SEÑOR(A)&nbsp;: </b> {{ pre_factura.Cliente.RazonSocial }} <br />
+                  <b class="upper">RUT&nbsp;: </b> {{ pre_factura.Cliente.Rut }} <br />
+                  <b class="upper">DIRECCION(A)&nbsp;: </b> {{ pre_factura.Cliente.Direccion }} <br />
+                  <b class="upper">COMUNA(A)&nbsp;: </b> {{ pre_factura.Cliente.Comuna }} <br />
+                  <b class="upper">CIUDAD(A)&nbsp;: </b> {{ pre_factura.Cliente.Ciudad }} <br />
+
+                  <b class="upper">GIRO&nbsp;: </b> {{ pre_factura.Cliente.Giro }} <br />
 
                   <table style="width:100%; padding-right:2px;">
                     <tr>

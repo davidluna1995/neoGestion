@@ -162,7 +162,7 @@ export default {
             sii_forma_pago:'',
             visualizar_compra:false,
             pre_factura:{
-                carro: [
+                Productos: [
                   {
                     // id: 0,
                     Afecto: "",
@@ -181,17 +181,17 @@ export default {
                 venta_total: 0,
                 forma_pago_id: "",
                 tipo_entrega_id: "",
-                reseptor: {
-                  id: 0,
-                  rut: "",
-                  tipo_cliente: "",
-                  cliente: "",
-                  contacto: "",
-                  email: "",
-                  direccion: "",
-                  comuna: "",
-                  ciudad: "",
-                  giro: ""
+                Cliente: {
+                    id: 0,
+                    Rut: "",
+                    tipo_cliente: "",
+                    RazonSocial: "",
+                    Contacto: "",
+                    Email: "",
+                    Direccion: "",
+                    Comuna: "",
+                    Ciudad: "",
+                    Giro: ""
                 },
                 pago_efectivo: "",
                 pago_debito: null,
@@ -261,7 +261,7 @@ export default {
         },
         limpia_factura(){
             this.pre_factura={
-                carro: [
+                Productos: [
                     {
                       id: 0,
                       Afecto: "",
@@ -280,17 +280,17 @@ export default {
                 venta_total: 0,
                 forma_pago_id: "",
                 tipo_entrega_id: "",
-                reseptor: {
+                Cliente: {
                   id: 0,
-                  rut: "",
+                  Rut: "",
                   tipo_cliente: "",
-                  cliente: "",
-                  contacto: "",
-                  email: "",
-                  direccion: "",
-                  comuna: "",
-                  ciudad: "",
-                  giro: ""
+                  RazonSocial: "",
+                  Contacto: "",
+                  Email: "",
+                  Direccion: "",
+                  Comuna: "",
+                  Ciudad: "",
+                  Giro: ""
                 },
                 pago_efectivo: "",
                 pago_debito: null,
