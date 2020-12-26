@@ -365,7 +365,9 @@ export default {
             this.$refs['ventasModal'].hide();
             // this.limpiarCarro();
         },
-
+        upper(texto){
+            return texto.toUpperCase()
+        },
         visualizar_factura(cliente){
 
             this.limpia_factura();
