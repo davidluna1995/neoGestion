@@ -162,49 +162,49 @@ export default {
             sii_forma_pago:'',
             visualizar_compra:false,
             pre_factura:{
-                "carro": [
+                carro: [
                   {
-                    "id": 0,
-                    "sku": "",
-                    "nombre": "",
-                    "cantidad": 0,
-                    "precio": 0,
-                    "cantidad_ls": ""
+                    id: 0,
+                    sku: "",
+                    nombre: "",
+                    cantidad: 0,
+                    precio: 0,
+                    cantidad_ls: ""
                   }
 
                 ],
-                "venta_total": 0,
-                "forma_pago_id": "",
-                "tipo_entrega_id": "",
-                "reseptor": {
-                  "id": 0,
-                  "rut": "",
-                  "tipo_cliente": "",
-                  "cliente": "",
-                  "contacto": "",
-                  "email": "",
-                  "direccion": "",
-                  "comuna": "",
-                  "ciudad": "",
-                  "giro": ""
+                venta_total: 0,
+                forma_pago_id: "",
+                tipo_entrega_id: "",
+                reseptor: {
+                  id: 0,
+                  rut: "",
+                  tipo_cliente: "",
+                  cliente: "",
+                  contacto: "",
+                  email: "",
+                  direccion: "",
+                  comuna: "",
+                  ciudad: "",
+                  giro: ""
                 },
-                "pago_efectivo": "",
-                "pago_debito": null,
-                "chk_credito": false,
-                "detalle_credito": null,
-                "monto_credito": 0,
-                "sii_forma_pago": "",
-                "tipo_venta_id": 33,
-                "emisor": {
-                  "id": 1,
-                  "logo": "",
-                  "empresa": "",
-                  "direccion": "",
-                  "deleted_at": null,
-                  "created_at": "",
-                  "updated_at": "",
-                  "rut": "",
-                  "giro": ""
+                pago_efectivo: "",
+                pago_debito: null,
+                chk_credito: false,
+                detalle_credito: null,
+                monto_credito: 0,
+                sii_forma_pago: "",
+                tipo_venta_id: 33,
+                emisor: {
+                  id: 1,
+                  logo: "",
+                  empresa: "",
+                  direccion: "",
+                  deleted_at: null,
+                  created_at: "",
+                  updated_at: "",
+                  rut: "",
+                  giro: ""
                 }
             },
             suma_solo_ivas:0
@@ -256,51 +256,51 @@ export default {
         },
         limpia_factura(){
             this.pre_factura={
-                "carro": [
+                carro: [
                   {
-                    "id": 0,
-                    "sku": "",
-                    "nombre": "",
-                    "cantidad": 0,
-                    "precio": 0,
-                    "cantidad_ls": ""
+                    id: 0,
+                    sku: "",
+                    nombre: "",
+                    cantidad: 0,
+                    precio: 0,
+                    cantidad_ls: ""
                   }
 
                 ],
-                "venta_total": 0,
-                "forma_pago_id": "",
-                "tipo_entrega_id": "",
-                "reseptor": {
-                  "id": 0,
-                  "rut": "",
-                  "tipo_cliente": "",
-                  "cliente": "",
-                  "contacto": "",
-                  "email": "",
-                  "direccion": "",
-                  "comuna": "",
-                  "ciudad": "",
-                  "giro": ""
+                venta_total: 0,
+                forma_pago_id: "",
+                tipo_entrega_id: "",
+                reseptor: {
+                  id: 0,
+                  rut: "",
+                  tipo_cliente: "",
+                  cliente: "",
+                  contacto: "",
+                  email: "",
+                  direccion: "",
+                  comuna: "",
+                  ciudad: "",
+                  giro: ""
                 },
-                "pago_efectivo": "",
-                "pago_debito": null,
-                "chk_credito": false,
-                "detalle_credito": null,
-                "monto_credito": 0,
-                "sii_forma_pago": "",
-                "tipo_venta_id": 33,
-                "emisor": {
-                  "id": 1,
-                  "logo": "",
-                  "empresa": "",
-                  "direccion": "",
-                  "deleted_at": null,
-                  "created_at": "",
-                  "updated_at": "",
-                  "rut": "",
-                  "giro": ""
+                pago_efectivo: "",
+                pago_debito: null,
+                chk_credito: false,
+                detalle_credito: null,
+                monto_credito: 0,
+                sii_forma_pago: "",
+                tipo_venta_id: 33,
+                emisor: {
+                  id: 1,
+                  logo: "",
+                  empresa: "",
+                  direccion: "",
+                  deleted_at: null,
+                  created_at: "",
+                  updated_at: "",
+                  rut: "",
+                  giro: ""
                 }
-            }
+            };
         },
 
         buscando_personalizado(){
@@ -479,6 +479,7 @@ export default {
                 if (response.data.estado == 'success') {
 
                     this.pre_factura = response.data.factura;
+                    console.log(this.pre_factura);
                     this.$refs['modal_factura'].show();
 
                     this.visualizar_compra = false;
