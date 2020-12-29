@@ -21,6 +21,8 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import VueAuth from '@websanova/vue-auth'
 
+Vue.use(require('vue-moment'));
+
 
 const router = new VueRouter({
   routes: [

@@ -120,6 +120,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 
     Route::post('ver_antes_dte_33','DteController@ver_antes_dte_33');
     Route::post('emitir_dte_33','DteController@emitir_dte_33');
+    Route::get('fecha_hora_actual','DteController@fecha_hora_actual');
 
 
 
@@ -129,3 +130,5 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 Route::post('codificar_xml', 'ConfiguracionesController@codificar_xml');
 
 Route::post('ejemplo_erik','EjemploDteController@ejemploDte');
+
+

@@ -252,6 +252,9 @@ export default {
                     } else {
                         this.empresa = this.listarConf.empresa;
                         this.direccion = this.listarConf.direccion;
+                        document.getElementById("rut").value = this.listarConf.rut;
+                        console.log(document.getElementById("rut").value);
+
                     }
                 }
             })

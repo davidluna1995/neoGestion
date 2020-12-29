@@ -191,11 +191,12 @@ class ConfiguracionesController extends Controller
             'logo',
             'empresa',
             'direccion',
-        ])
-            ->first();
+            'rut',
+            'giro'
+        ])->first();
 
         if (!is_null($listar)) {
-            return ['estado' => 'success', 'configuraciones' => $listar];
+            return [ 'estado' => 'success', 'configuraciones' => $listar ];
         } else {
             return ['estado' => 'failed', 'mensaje' => 'No existe informacion.'];
         }

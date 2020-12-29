@@ -212,7 +212,8 @@ export default {
                   giro: ""
                 }
             },
-            suma_solo_ivas:0
+            suma_solo_ivas:0,
+            date:{}
         }
 
 
@@ -233,6 +234,12 @@ export default {
 
 
     methods: {
+
+        fecha_hora_acual(){
+                this.axios.get('api/fecha_hora_actual').then((res)=>{
+                    this.date = res.data
+                });
+        },
 
         david_kk(){
             if( this.formaPago.length == 0){
@@ -380,6 +387,9 @@ export default {
         // uppercase: function(v) {
         //     return v.toUpperCase();
         // },
+        fecha_espaniol(date){
+            return date.getMonth();
+        },
         visualizar_factura(cliente){
 
             this.limpia_factura();
@@ -482,7 +492,8 @@ export default {
                 'detalle_credito': this.detalle_credito,
                 'monto_credito': this.monto_credito,
                 'sii_forma_pago': this.sii_forma_pago,
-                'tipo_venta_id' : 33 //FACTURACION ELECTRONICA
+                'tipo_venta_id' : 33, //FACTURACION ELECTRONICA
+                'fecha' : this.date.date
                 // 'vuelto': (Number(this.montoEfectivo)+ Number(this.montoDebito)) - Number(this.total)
             }
 
@@ -1040,6 +1051,7 @@ export default {
     },
 
     mounted() {
+        this.fecha_hora_acual();
         this.traer_clientes();
         this.cargarCarro();
         this.traer_configuraciones();

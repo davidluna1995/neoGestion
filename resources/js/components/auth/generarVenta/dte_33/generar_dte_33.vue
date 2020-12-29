@@ -27,7 +27,7 @@
     <!-- Modal factura -->
 
     <b-modal ref="modal_factura" no-close-on-esc
-                            no-close-on-backdrop hide-footer title="Using Component Methods">
+                            no-close-on-backdrop hide-footer title="Facturación electronica (DTE 33)">
 
         <div class="modal-body">
 
@@ -67,7 +67,7 @@
                   <label class="upper"><b>GIRO: </b>{{ pre_factura.emisor.giro }}</label> <br>
 
 
-                  <b>EMISION&nbsp;: </b> 29/12/2020 <br />
+                  <b>EMISION&nbsp;: </b> {{ pre_factura.Fecha | moment("DD/MM/YYYY") }} <br />
                   <b class="upper">MEDIO DE PAGO&nbsp;: </b> {{ pre_factura.FormaPago_str }} <br /><br>
                   <b class="upper">SEÑOR(A)&nbsp;: </b> {{ pre_factura.Cliente.RazonSocial }} <br />
                   <b class="upper">RUT&nbsp;: </b> {{ pre_factura.Cliente.Rut }} <br />
@@ -407,8 +407,13 @@
                     </div>
 
                     <br>
+                    <h5>Datos generales (Cliente)</h5>
+                    <label for="">Fecha de emisión:</label>
+                    <!-- {{ date.fecha }} -->
+                    <input v-model="date.date" class="form-control form-control-sm" type="date" name="" id="">
+                    <br>
                       <label>Forma de pago:</label>
-
+                     <br>
                       <select v-model="sii_forma_pago" @change="formaPago=[]; montoEfectivo=''; montoDebito=''" name="" id="" class="form-control form-control-sm">
                            <option value="">--SELECCIONE--</option>
                           <option value="CONTADO">Contado</option>

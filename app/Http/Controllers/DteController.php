@@ -16,7 +16,7 @@ class DteController extends Controller
         $emisor['emisor'] = $emisor[0];
 
         $new['Llave'] = 'test key';
-        $new['Fecha'] = 'fecha test';
+        $new['Fecha'] = $r->fecha;
 
         if($r->sii_forma_pago == 'CONTADO'){
             $new['FormaPago'] = 0;
@@ -70,5 +70,12 @@ class DteController extends Controller
         return ['estado'=>'success', 'factura'=>$r->all()];
 
 
+    }
+
+
+
+    public function fecha_hora_actual(){
+
+        return ['fecha' => date('d-m-yy'), 'hora' => date('G:i'), 'date'=> date('yy-m-d')];
     }
 }
