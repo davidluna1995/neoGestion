@@ -166,7 +166,56 @@ class EjemploDteController extends Controller
     public function ejemploDte(Request $r){
 
         //llave unica para cada cliente y sistema que tengamos
-        $Llave = 'eTUDwTw$eBj5tChr7$9zf$uZkRqq';
+        $Llave = $r->llave;
+
+
+        //Leeo el contenido del archivo CAF
+        // $XMLCAF = file_get_contents("CAFprueba.xml");
+
+        //codifico el contenido del archivo CAF
+        $XMLCAF = base64_encode($r->xml);
+        //Reemplasamos los caracteres recervados que no pasan por URL
+        $XMLCAF = $this->caracteres_reservados_url($XMLCAF);
+
+
+        //Lo mismo de las 3 lineas de arriba pero en una sola
+        //$XMLCAF = caracteres_reservados_url(base64_encode(file_get_contents("CAFprueba.xml")));
+
+        //conformo la URL de la API con la llave y el contenido del CAF codificado base64
+        $URL = 'http://webapineofox.millarstic.cl/api/Caf?Llave='.$Llave.'&TxtCAF='.$XMLCAF.'';
+
+
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => $URL,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "GET",
+        CURLOPT_HTTPHEADER => array(
+            "Content-Type: application/json"
+        ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        //muestro la respuesta del API
+        echo $response;
+
+
+    }
+
+    public function ingresar_caf(Request $r){
+
+        //llave unica para cada cliente y sistema que tengamos
+        $Llave = $r->llave;
+
 
         //Leeo el contenido del archivo CAF
         // $XMLCAF = file_get_contents("CAFprueba.xml");

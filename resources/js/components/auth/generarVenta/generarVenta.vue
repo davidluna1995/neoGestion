@@ -660,7 +660,7 @@
                                 </b-input-group>
                             </b-form-group>
                         <!-- <input v-model="montoDebito" class="form-control form-control-sm" type="numeric" placeholder="Abono en debito"> -->
-                    </div>
+                  </div>
 
                 </div>
 

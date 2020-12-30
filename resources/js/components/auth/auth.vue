@@ -41,7 +41,7 @@
           <b-nav-item-dropdown  text="Generar venta">
 
                 <b-dropdown-item @click="url('generarVenta')">
-                <i class="fas fa-cart-plus"></i> Voucher
+                <i class="fas fa-cart-plus"></i> Voucher / Boleta electrónica
                 </b-dropdown-item>
 
                 <b-dropdown-item @click="url('facturacion_electronica')">
@@ -70,6 +70,11 @@
             <b-dropdown-item @click="url('configuraciones')">
               <i class="fas fa-cog"></i> Configuracion
             </b-dropdown-item>
+            <b-dropdown-item v-if="usuario.rol==admin" @click="url('caf')">
+              <i class="fas fa-file-code"></i> CAF (Código de asignación de folios)
+            </b-dropdown-item>
+
+
             <b-dropdown-item @click="logout()">
               <i class="fas fa-sign-in-alt"></i> Cerrar Sesion
             </b-dropdown-item>

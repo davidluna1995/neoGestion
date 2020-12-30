@@ -27,7 +27,7 @@ export default {
             errorBuscar: '',
 
             // FORMA DE PAGO
-            cliente_id: null,
+            cliente_id: '',
             efectivo: false,
             debito: false,
             credito: false,
@@ -213,7 +213,33 @@ export default {
                 }
             },
             suma_solo_ivas:0,
-            date:{}
+            date:{},
+
+            //PERIODO Y CAJAS
+
+            estado_periodo:'',
+            estado_caja:'',
+            nombre_caja:'',
+            // FIN PERIODO Y CAJAS
+
+            //variables para abrir periodo y caja
+            fecha_inicio: '',
+            hora_inicio: '',
+            apertura_monto: 0,
+            //fin variables para abrir periodo y caja
+
+            //variables para cerrar periodo y o caja
+            data_caja_periodo:[],
+            capta_monto:{},
+
+            cierre_monto:0,
+            btn_cerrar_caja:false,
+            btn_abrir_caja:false,
+            btn_cerrar_periodo:false,
+            get_datos_periodo:[],
+
+            local_storage_venta:(localStorage.getItem('venta_id')) ? localStorage.getItem('venta_id') :'',
+            redon_medio_pago:'DEBITO' //para obtener monto real
         }
 
 
@@ -253,6 +279,7 @@ export default {
                 if(this.formaPago[0] == '1'){
                     console.log("seleccionaste solo efectivo");
                     this.montoDebito = 0
+                    this.redon_medio_pago = 'EFECTIVO';
 
                 }
 
@@ -260,9 +287,17 @@ export default {
                 if(this.formaPago[0] == '2'){
                     console.log("seleccionaste solo debito");
                     this.montoEfectivo = 0;
+                    this.redon_medio_pago = 'DEBITO';
 
 
                 }
+
+            }
+            // o si aparte de estar en contado pero "ambos" tipos seleccionado
+            if(this.sii_forma_pago.trim() =='CONTADO' && this.formaPago.length == 2){
+                //si esta seleccionado  efectivo y debito entonces
+                this.redon_medio_pago = 'DEBITO' // quiere decir que puede pagar ene fectivo un monto
+                //razonable evitando monedas de 1 o 5, pero en el momento de pagar con debito que cancele lo correspondiente
 
             }
         },
@@ -375,6 +410,9 @@ export default {
           },
 
         // MODAL VENTAS
+        abrir_modal(ref){
+            this.$refs[""+ref+""].show();
+        },
         showModal() {
             this.$refs['ventasModal'].show();
         },
@@ -382,6 +420,35 @@ export default {
             this.$refs['ventasModal'].hide();
             // this.limpiarCarro();
         },
+
+        redondeo(medio_pago,numero){
+            // console.log('numero_pelao',Math.round(numero));
+            const parsear = Math.round(numero);
+            console.log('monto',parsear);
+            if(medio_pago == 'EFECTIVO'){
+
+                const max = (''+parsear).length;
+                console.log("max", max)
+                const ultimo_numero = (''+parsear)[max - 1];
+                console.log('ultomo_numero', ultimo_numero);
+                if(ultimo_numero >= 0 && ultimo_numero <= 5){
+                    //entonces redondear para abajo
+                   return numero - ultimo_numero
+                }
+                if(ultimo_numero >= 6){
+                    return numero + (10 - ultimo_numero);
+                }
+
+                return last;
+
+            }
+
+            if(medio_pago == 'DEBITO'){
+                return numero;
+            }
+
+
+    },
 
 
         // uppercase: function(v) {
@@ -392,6 +459,10 @@ export default {
         },
         visualizar_factura(cliente){
 
+            if(this.estado_caja=='INACTIVO'){
+                this.$refs['modal-periodo-caja'].show();
+                return false;
+            }
             this.limpia_factura();
             this.visualizar_compra = true;
 
@@ -850,8 +921,37 @@ export default {
             }
 
         },
-        emitir_dte33(factura, neto, imp_especifico, iva, bruto, vuelto, credito ){
-            console.log(factura, neto, imp_especifico, iva, bruto, vuelto, credito);
+        emitir_dte33(factura, neto, imp_especifico, iva, bruto, vuelto, deuda, credito ){
+            // console.log(factura, neto, imp_especifico, iva, bruto, vuelto, credito);
+            const data = {
+                factura: factura,
+                totales:{
+                    Neto: neto,
+                    Iva: iva,
+                    Especifico: imp_especifico,
+                    Total: Math.round(bruto)
+                },
+                total: Math.round(neto),// total neto solo para vildar que no vaiga en cero al back
+                vuelto: vuelto,
+                deuda: deuda,
+                credito: credito,
+                sii_forma_pago: this.sii_forma_pago,
+                forma_pago: this.formaPago,
+                forma_pago_id: this.formaPago[0] + ',' + this.formaPago[1],
+                efectivo: this.montoEfectivo,
+                debito:this.montoDebito,
+                detalle_credito: this.detalle_credito,
+                cliente_id: this.cliente_id,
+                tipo_venta_id:'33'// facturacion electronica;
+
+            };
+
+            this.axios.post('api/emitir_dte_33', data).then((res)=>{
+
+            });
+        },
+        consultar_folios(){
+            this.axios.get('api/consulta_folios').then((res)=>{});
         },
         registrar_venta(cliente) {
             this.confirm_compra = true;
@@ -905,7 +1005,7 @@ export default {
                     this.chk_credito = false;
                     this.monto_credito = 0;
                     this.detalle_credito = '';
-                    this.cliente_id = null;
+                    this.cliente_id = '';
                     this.montoEfectivo = 0;
                     this.montoDebito = 0;
                     this.buscando_txt = '';
@@ -984,6 +1084,185 @@ export default {
             this.$router.push({name: 'User', params: {id:$id }});
         },
 
+
+
+
+
+
+
+        verifica_existe_periodo(){
+            var per = false;
+            var caj = false;
+            this.axios.get('api/verifica_existe_periodo').then((res)=>{
+
+                this.nombre_caja = res.data.data_caja;
+                this.estado_periodo = res.data.periodo.estado;
+                this.estado_caja = res.data.caja.estado;
+
+                if(res.data.periodo.estado == 'INACTIVO'){
+                    per = true;
+                    // this.estado_periodo = res.data.periodo.estado;
+
+                }
+
+                if(res.data.caja.estado == 'INACTIVO'){
+                    caj = true;
+                    // this.estado_caja = res.data.caja.estado;
+                }
+
+                if(per == true || caj == true){ // si alguno viene INACTIVO se abre modal de alerta
+                    this.$refs['modal-periodo-caja'].show();
+                }
+            });
+        },
+
+        abrir_periodo_caja(fecha, hora, monto, caja){
+            if(fecha == '' || hora == '' || (monto == 0 || monto == '')){
+                alert("Faltam campos por llenar, el monto no puede ser tampoco '0'");
+                return false;
+            }else{
+                const data = {
+                    fecha_inicio: fecha,
+                    hora_inicio: hora,
+                    monto_inicio: monto,
+                    caja_id: caja
+                }
+
+                this.axios.post("api/abrir_periodo_caja", data).then((res) => {
+                    if(res.data.estado == 'success'){
+                        this.estado_periodo = 'ACTIVO';
+                        this.estado_caja = 'ACTIVO';
+                        alert(res.data.mensaje);
+                        this.$refs['modal-periodo-caja'].hide();
+                    }
+                    if(res.data.estado == 'failed_inactivo'){
+                        this.estado_periodo = 'INACTIVO';
+                        this.estado_caja = 'INACTIVO';
+                        alert(res.data.mensaje);
+                    }
+                    if(res.data.estado == 'failed_activo'){
+                        this.estado_periodo = 'ACTIVO';
+                        this.estado_caja = 'ACTIVO';
+                        alert(res.data.mensaje);
+                        this.$refs['modal-periodo-caja'].hide();
+                    }
+                });
+            }
+
+        },
+
+        abrir_solo_caja(fecha, hora, monto, caja){
+            if(fecha == '' || hora == '' || (monto == 0 || monto == '')){
+                alert("Faltam campos por llenar, el monto no puede ser tampoco '0'");
+                return false;
+            }else{
+
+                this.btn_abrir_caja = true;
+                const data = {
+                    fecha_inicio: fecha,
+                    hora_inicio: hora,
+                    monto_inicio: monto,
+                    caja_id: caja
+                }
+
+                this.axios.post("api/abrir_solo_caja", data).then((res) => {
+                    if(res.data.estado == 'success'){
+                        // this.estado_periodo = 'ACTIVO';
+                        this.estado_caja = 'ACTIVO';
+                        this.btn_abrir_caja = false;
+                        alert(res.data.mensaje);
+                        this.$refs['modal-periodo-caja'].hide();
+                        return false;
+                    }
+                    if(res.data.estado == 'failed_periodo'){
+                        this.estado_periodo = 'INACTIVO';
+                        alert(res.data.mensaje);
+                        this.btn_abrir_caja = false;
+                        this.$refs['modal-periodo-caja'].hide();
+                        return false;
+                    }
+                    else{
+                        // this.estado_periodo = res.data.activo;
+                        this.estado_caja = res.data.activo;
+                        alert(res.data.mensaje);
+                        this.btn_abrir_caja = false;
+                        return false;
+                    }
+                });
+            }
+        },
+
+        cargar_datos_caja(caja_id){
+            // console.table(caja_id);
+            this.axios.get("api/cargar_datos_caja_y_o_periodo/"+caja_id).then((res)=>{
+                if(res.data.estado=='success'){
+                    this.data_caja_periodo = res.data.datos;
+                    this.captura_monto_cierre(this.data_caja_periodo);
+                }else{
+                    this.data_caja_periodo = res.data.datos; // []
+                }
+            });
+        },
+
+        cargar_datos_periodo(){
+            this.axios.get('api/cargar_datos_periodo').then((res)=>{
+                if(res.data.estado == 'success'){
+                    this.get_datos_periodo = res.data.almacenado_periodo;
+                }else{
+                    this.get_datos_periodo = [];
+                    alert(res.data.mensaje);
+                }
+            });
+        },
+        captura_monto_cierre(rcv){
+            console.log(rcv.id);
+            this.axios.get('api/captura_monto_cierre/'+rcv.id).then((res)=>{
+                    this.capta_monto = res.data;
+            });
+        },
+
+        cerrar_solo_caja(monto_cierre, caja, rcv){
+            this.btn_cerrar_caja=true;
+            this.axios.post('api/cerrar_solo_caja',{'monto_cierre':monto_cierre, 'caja':caja, 'rcv_id':rcv.id}
+            ).then((res) => {
+                if(res.data.estado == 'success'){
+                    this.estado_caja = 'INACTIVO';
+                    this.btn_cerrar_caja=false;
+                    alert(res.data.mensaje);
+                    this.$refs['modal-cierre-caja-periodo'].hide();
+
+                }else{
+                    this.btn_cerrar_caja=false;
+                    alert(res.data.mensaje);
+                }
+
+            });
+
+        },
+
+        cerrar_periodo(id, estado_caja){
+            this.btn_cerrar_periodo = true;
+
+            this.axios.get('api/cerrar_periodo/'+id+'/'+estado_caja).then((res)=>{
+                if(res.data.estado == 'success'){
+                    this.btn_cerrar_periodo = false;
+                    this.estado_periodo = 'INACTIVO';
+                    this.$refs['modal-cierre-periodo'].hide();
+
+                    alert(res.data.mensaje); return false;
+                }
+                else{
+                    this.btn_cerrar_periodo = false;
+                    this.estado_periodo = 'ACTIVO';
+                    alert(res.data.mensaje); return false;
+                }
+            });
+        },
+
+
+
+
+
         generar_un_xml(){
             const esto = this;
             alert("entrando..");
@@ -1034,6 +1313,7 @@ export default {
             this.axios.get('api/listar_cliente/'+rut).then((res)=>{
                 if(res.data.estado == 'success'){
                     this.mostrar_cliente = res.data.cuerpo;
+                    this.cliente_id = res.data.cuerpo.id
                     this.ver_cliente = true;
                     this.btn_buscar_rut = false;
 
@@ -1051,6 +1331,7 @@ export default {
     },
 
     mounted() {
+        this.verifica_existe_periodo();
         this.fecha_hora_acual();
         this.traer_clientes();
         this.cargarCarro();

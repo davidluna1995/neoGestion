@@ -122,6 +122,11 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::post('emitir_dte_33','DteController@emitir_dte_33');
     Route::get('fecha_hora_actual','DteController@fecha_hora_actual');
 
+    Route::get('consulta_folios','DteController@consulta_folios');
+
+
+    Route::post('ingresar_caf','EjemploDteController@ingresar_caf');
+
 
 
 });

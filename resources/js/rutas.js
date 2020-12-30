@@ -19,6 +19,7 @@ import MisVentasComponent from './components/auth/reportesVentas/mis_ventas.vue'
 import facturacion_electronica from './components/auth/generarVenta/dte_33/generar_dte_33.vue'
 
 import ClientesComponent from './components/auth/clientes/clientes.vue';
+import Caf from './components/auth/configuraciones/caf/caf.vue';
 
 const routes = [
   {
@@ -138,6 +139,11 @@ const routes = [
         name: 'configuraciones',
         path: '/configuraciones',
         component: configuracionesComponent
+      },
+      {
+        name: 'caf',
+        path: '/caf',
+        component: Caf
       },
       // {
       //   path: '/404',

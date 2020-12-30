@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button v-if="true" @click="generar_un_xml">Genera un xml factura</button>
+    <button v-if="false" @click="generar_un_xml">Genera un xml factura</button>
 
     <button
     v-if="false"
@@ -11,6 +11,7 @@
     >
       Ver xml como una factura real
     </button>
+    <!-- <button @click="consultar_folios"> consultar folios</button> -->
 
     <div v-if="false" class="card">
       aqui se veria la img
@@ -19,11 +20,182 @@
     </div>
 
 
+      <!-- MODAL mensaje de caja o periodo  -->
+    <template>
+        <div>
+          <b-modal
+            no-close-on-esc
+            no-close-on-backdrop
+            class="modal-header-ventas"
+            id="modal-periodo-caja"
+            size="md"
+            :ref="'modal-periodo-caja'"
+            hide-footer
+            centered
+          >
+            <template v-slot:modal-title>
+                      <h5 class="text-center">MENSAJE IMPORTANTE!!</h5>
+            </template>
+            <section>
+                <div v-if="estado_periodo == 'ACTIVO'" class="alert alert-primary" role="alert">
+                    <small>Si en la parte superior aparece un boton verde "Periodo activo", no es necesario abrir nuevamente una caja, puede cerrar este modal.</small>
+                </div>
+              <div v-if="estado_periodo=='INACTIVO'">
+                  <b>Iniciar nuevo periodo</b>
+                  <br><br>
+                  <div class="row">
+                      <div class="col-md-6">
+                            <label for="">Fecha inicio:</label>
+                            <input v-model="fecha_inicio" class="form-control" type="date">
+                      </div>
+                      <div class="col-md-6">
+                            <label for="">Hora inicio:</label>
+                            <input v-model="hora_inicio" class="form-control" type="time">
+                      </div>
+                  </div>
+
+              </div>
+
+              <div v-if="estado_caja=='INACTIVO'">
+                   <b>Abrir caja</b>
+                   <br><br>
+                   <label for=""><i class="fas fa-cash-register"></i> {{ nombre_caja.nombre }}</label>
+                    <br>
+                    <div v-if="estado_periodo=='ACTIVO' && estado_caja == 'INACTIVO'">
+                        <div class="row">
+                            <div class="col-md-6">
+                                    <label for="">Fecha inicio:</label>
+                                    <input v-model="fecha_inicio" class="form-control" type="date">
+                            </div>
+                            <div class="col-md-6">
+                                    <label for="">Hora inicio:</label>
+                                    <input v-model="hora_inicio" class="form-control" type="time">
+                            </div>
+                        </div>
+                    </div>
+                   <br>
+                  <label for="">Monto de apertura:</label>
+                  <input v-model="apertura_monto" class="form-control" type="numeric" placeholder="Monto de apertura..">
+                <br>
+                <div v-if="(estado_periodo=='INACTIVO' && estado_caja=='INACTIVO')">
+                    <button @click="abrir_periodo_caja(fecha_inicio, hora_inicio, apertura_monto, nombre_caja )" class="btn btn-info btn-block"> Abrir periodo y caja</button>
+                </div>
 
 
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalFactura">
+                <div v-if="estado_periodo=='ACTIVO' && estado_caja == 'INACTIVO'">
+                    <button :disabled="btn_abrir_caja" @click="abrir_solo_caja(fecha_inicio, hora_inicio, apertura_monto, nombre_caja )" class=" btn-info btn btn-block"> Abrir caja</button>
+                </div>
+
+              </div>
+            </section>
+          </b-modal>
+        </div>
+     </template>
+     <!-- MODAL mensaje de caja o periodo  -->
+     <b-card class="text-center transparencia">
+        <b-card class="largoCard">
+            <!-- {{ modal estado_caja }} -->
+            <button @click="cargar_datos_caja(nombre_caja.caja_id);abrir_modal('modal-cierre-caja-periodo');" v-if="estado_caja == 'ACTIVO'" class="btn btn-success btn-sm"><i class="fas fa-cash-register"></i> {{ nombre_caja.nombre+' '+estado_caja }}</button>
+
+            <b-modal
+                    no-close-on-esc
+                    no-close-on-backdrop
+                    class="modal-header-ventas"
+                    id="modal-cierre-caja-periodo"
+                    size="md"
+                    :ref="'modal-cierre-caja-periodo'"
+                    hide-footer
+                    centered
+            >
+                    <template v-slot:modal-title>
+                      <h5 class="text-center">{{nombre_caja.nombre}}</h5>
+                    </template>
+
+                    <section>
+                        <b>Cierre de caja:</b>
+                        <!-- <pre>{{ data_caja_periodo }}</pre> -->
+                        <br>
+                        <label for="">Estado:</label>{{ (data_caja_periodo.activo=='S')? 'ACTIVA' : 'INACTIVA' }} <br>
+
+                        <label for="">Fecha y hora de apertura:</label>
+                        {{ data_caja_periodo.fecha_inicio }} <br>
+                        <label for="">Monto apertura:</label>
+                        $ {{ formatPrice(data_caja_periodo.monto_inicio) }} <br>
+                        <label for="">Monto de cierre:</label>
+                        <label ><b>$ {{ formatPrice(capta_monto.suma_venta_total) }}</b></label> <br>
+                        <label for="">Monto total debito:</label>
+                        <label>$ {{ formatPrice(capta_monto.suma_pago_debito_total) }}</label> <br>
+                        <label for="">Monto total efectivo - vuelto:</label>
+                        <label for="">$ {{ formatPrice(capta_monto.suma_efectivo) }}</label> <br>
+
+
+
+                        <label style="color:red" for="">La fecha y hora de cierre se capturan al cerrar la caja y/o periodo</label><br>
+                        <!-- <button @click="captura_monto_cierre(data_caja_periodo)" class="btn btn-link btn-sm">Capturar monto de cierre</button> <br> -->
+                        <button :disabled="btn_cerrar_caja" @click="cerrar_solo_caja(capta_monto.suma_venta_total, nombre_caja, data_caja_periodo)" class="btn btn-success btn-block">Cerrar caja</button>
+
+                    </section>
+            </b-modal>
+
+    <!-- {{ estado_periodo }} -->
+            <button @click="cargar_datos_periodo(nombre_caja.caja_id);abrir_modal('modal-cierre-periodo');" v-if="estado_periodo == 'ACTIVO'" class="btn btn-success btn-sm"><i class="fas fa-cash-register"></i> {{ 'Periodo activo' }}</button>
+
+            <b-modal
+                    no-close-on-esc
+                    no-close-on-backdrop
+                    class="modal-header-ventas"
+                    id="modal-cierre-periodo"
+                    size="xl"
+                    :ref="'modal-cierre-periodo'"
+                    hide-footer
+                    centered
+            >
+                    <template v-slot:modal-title>
+                      <h5 class="text-center">{{'Periodo activo'}}</h5>
+                    </template>
+
+                    <section>
+                        <div class="alert alert-dark" role="alert">
+                            El periodo debe cerrarse cuando ya no existan cajas activas en turno o jornada laboral
+                        </div>
+                        <center><b>Almacenado resumen de periodo</b></center>
+                        <!-- <pre>{{ get_datos_periodo }}</pre> -->
+                        <label style="color:#2C3E50" for="">Fecha y hora de apertura:</label>
+                        {{ get_datos_periodo.fecha_inicio }} <br>
+                        <label for="" style="color:#5D6D7E">La fecha y hora de cierre se capturan al cerrar periodo</label> <br>
+
+                        <label style="color:#2C3E50" for="">Monto total de apertura (suma de las cajas activas):</label>
+                            $ {{formatPrice(get_datos_periodo.monto_inicio)}} <br>
+
+                        <label style="color:#2C3E50" for="">Monto total de cierre (suma de las cajas activas):</label>
+                            $ {{formatPrice(get_datos_periodo.monto_cierre)}} <br>
+                            <label style="color:#2C3E50" for="">Usuario de apertura de periodo (Primera caja activa):</label>
+                            {{ get_datos_periodo.name }} <br>
+
+
+                        <hr>
+
+                        <div v-if="estado_caja == 'ACTIVO'">
+                             <button :disabled="true" @click="cerrar_periodo(get_datos_periodo.id, estado_caja)" class="btn btn-success btn-block">Cerrar periodo</button>
+                        </div>
+
+
+                        <div v-if="estado_caja == 'INACTIVO'">
+                             <button :disabled="false" @click="cerrar_periodo(get_datos_periodo.id, estado_caja)" class="btn btn-success btn-block">Cerrar periodo</button>
+                        </div>
+
+                    </section>
+            </b-modal>
+
+        </b-card>
+     </b-card>
+
+
+
+
+    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalFactura">
         modal factura
-    </button>
+    </button> -->
     <!-- Modal factura -->
 
     <b-modal ref="modal_factura" no-close-on-esc
@@ -217,7 +389,7 @@
                         "
                       >
                        <!-- $ {{formatPrice((pre_factura.venta_total * 119) / 100)}} -->
-                       $ {{ formatPrice( total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas )  )}}
+                       $ {{ formatPrice( redondeo(redon_medio_pago, total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ) ) )}}
                       </td>
                     </tr>
                   </table>
@@ -277,9 +449,10 @@
                   pre_factura,
                   /*total neto*/ total,
                   /*IMP. ESPECIFICO*/  impuesto_especifico,
-                  /*I.V.A 19% :*/(((suma_solo_ivas * 119)/100) - suma_solo_ivas),
-                  /*MONTO BRUTO*/ ( total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas )  ),
+                  /*I.V.A 19% :*/Math.round(((suma_solo_ivas * 119)/100) - suma_solo_ivas),
+                  /*MONTO BRUTO*/ redondeo(redon_medio_pago,Math.round( total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas )  )),
                   /*(no visible en factura, 'vuelto')*/ Math.round(Number(montoEfectivo) + Number(montoDebito) - (total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))),
+                  /* deuda, si es que existiera */ Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) ),
                   /*credito*/ ((Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) )) )
 
               )"
@@ -414,11 +587,11 @@
                     <br>
                       <label>Forma de pago:</label>
                      <br>
-                      <select v-model="sii_forma_pago" @change="formaPago=[]; montoEfectivo=''; montoDebito=''" name="" id="" class="form-control form-control-sm">
+                      <select v-model="sii_forma_pago" @change="formaPago=[]; montoEfectivo=''; montoDebito='';redon_medio_pago='DEBITO'" name="" id="" class="form-control form-control-sm">
                            <option value="">--SELECCIONE--</option>
                           <option value="CONTADO">Contado</option>
                           <option value="CREDITO">Crédito</option>
-                          <option value="SIN COSTO">Sin costo</option>
+                          <!-- <option value="SIN COSTO">Sin costo</option> -->
                       </select>
                     <br>
                     <b-form-group v-if="sii_forma_pago == 'CONTADO'" label="Tipo de pago:">
@@ -433,6 +606,7 @@
                       @input="david_kk"
                     ></b-form-checkbox-group>
                     <br>
+                    <!-- {{redon_medio_pago}} -->
                     <div
                   v-if="
                     formaPago == '1' || formaPago == '1,2' || formaPago == '2,1'
@@ -598,7 +772,7 @@
                     <div class="col-4">
 
 
-                      <label><b>$ {{ formatPrice( total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas )  )}}</b></label>
+                      <label><b>$ {{ formatPrice( redondeo(redon_medio_pago,total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))  )}}</b></label>
 
                     </div>
 
@@ -628,8 +802,6 @@
 
                         <label>$ {{
 
-
-
                              formatPrice((Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) )) )
 
                              }}
@@ -642,7 +814,10 @@
                     </div>
 
 
-                    <div class="col-8" v-if="sii_forma_pago == 'CONTADO'">
+
+                  </div>
+                  <div class="row">
+                      <div class="col-8" v-if="sii_forma_pago == 'CONTADO'">
                       <label>Vuelto</label>
                     </div>
                     <div class="col-4">
@@ -652,16 +827,13 @@
                         <label>$ {{
                             (Number(montoEfectivo) + Number(montoDebito))?
                              /*formatPrice( ((Number(montoEfectivo) + Number(montoDebito)) - Math.trunc(((total * 119)/100) + Number(impuesto_especifico)  ) ))*/
-                             formatPrice(Math.round(Number(montoEfectivo) + Number(montoDebito) - (total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))) )
-                             :
-                             0
+                             formatPrice((Math.round(Number(montoEfectivo) + Number(montoDebito) -  /*TOTAL A PAGAR->*/redondeo(redon_medio_pago,total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))  ) ))
+                             :0
                              }}
                         </label>
                       </div>
 
-                      <!-- <div v-if="formaPago == '3'">
-                        <label>$ {{formatPrice(montoCredito - total)}}</label>
-                      </div> -->
+
                     </div>
                   </div>
                   <!-- detalle venta -->
