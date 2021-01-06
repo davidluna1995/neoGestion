@@ -8,6 +8,7 @@ use App\Ventas;
 use App\Producto;
 use Carbon\Carbon;
 use App\DetalleVenta;
+use App\Pagocredito;
 use App\PeriodoCaja;
 use App\RegistroCajaVendedor;
 use Illuminate\Http\Request;
@@ -147,6 +148,8 @@ class VentasController extends Controller
         } else {
             $venta->cliente_id = $datos->cliente_id;
         }
+
+        // dd($deuda);
 
         if ($venta->save()) {
             $ingresarDetalle = $this->registro_detalle_venta($datos->carro, $venta->id);
@@ -400,7 +403,11 @@ class VentasController extends Controller
                 $key->afecto = "true"; //true: si, false:no , true por defecto
                 $key->tipo_impuesto_adicional = 0;//ninguno por defecto al ingresar
                 $key->monto_impuesto_adicional = 0;//ninguno por defecto al ingresar
-                $key->descuento = 0;
+                $key->descuento = 0; // %
+                $key->monto_descuento = 0;
+                $key->item_neto = 0;
+                $key->item_descontado = 0;
+
             }
             return ['estado'=>'success' , 'producto' => $listar];
         } else {
@@ -419,7 +426,10 @@ class VentasController extends Controller
                                         'categoria.id as catId',
                                         'producto.imagen',
                                         'cliente.nombres',
-                                        'cliente.apellidos'
+                                        'cliente.apellidos',
+                                        'detalle_venta.descuento',
+                                        'detalle_venta.impuesto_adicional',
+                                        'detalle_venta.tipo_impuesto_adicional'
                                         ])
                                         ->join('ventas', 'ventas.id', 'detalle_venta.venta_id')
                                         ->join('producto', 'producto.id', 'detalle_venta.producto_id')
@@ -614,6 +624,10 @@ class VentasController extends Controller
                 'ventas.pago_debito',
                 'ventas.vuelto',
                 'ventas.pago_credito',
+                'ventas.totales_impuesto_especifico',
+                'ventas.totales_iva',
+                'ventas.totales_neto',
+                'ventas.tipo_venta_id as dte',
                 DB::raw("
                     case
                         when cliente.tipo_cliente = 'PERSONA' then concat(cliente.nombres,' ',cliente.apellidos)
@@ -752,6 +766,122 @@ class VentasController extends Controller
         }
         //si la venta es un vaucher---------------
 
+         //si la venta es una factura---------------
+         if($venta->tipo_venta_id == 33){
+            // $conf = Configuraciones::all();
+
+            $venta_db = DB::select("SELECT ventas.id,
+                                    venta_total,
+                                    to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
+                                    vuelto,
+                                    concat(c.nombres,' ',c.apellidos) cliente,
+                                    tipo_venta_id,
+                                    tipo_venta_id as dte,
+                                    totales_impuesto_especifico,
+                                    totales_iva,
+                                    totales_neto,
+                                    forma_pago_id,
+                                    cliente_id
+                                    from ventas
+                                    inner join cliente c on c.id = ventas.cliente_id
+                                    where ventas.id = $venta_id");
+
+
+
+
+
+
+
+            if(count($venta_db) > 0){
+                $venta_detalle = DB::select("SELECT
+                                            dv.id,
+                                            p.id producto_id,
+                                            p.nombre,
+                                            p.descripcion,
+                                            dv.cantidad,
+                                            dv.precio,
+                                            dv.descuento,
+                                            tipo_impuesto_adicional,
+                                            impuesto_adicional,
+                                            'c/u' as unidad
+
+                                        from detalle_venta dv
+                                        inner join producto p on p.id = dv.producto_id
+                                        where venta_id = $venta_id");
+
+
+
+                $new = [];
+                $reseptor = Cliente::find($venta_db[0]->cliente_id);
+                $emisor = Configuraciones::all();
+
+                $emisor['emisor'] = $emisor[0];
+
+                $new['Llave'] = 'test key';
+                $new['Fecha'] = $venta_db[0]->fecha;
+
+                if($venta_db[0]->forma_pago_id =='3'){
+                    $sii_forma_pago='CREDITO';
+                }else{
+                    $sii_forma_pago='CONTADO';
+                }
+
+                if($sii_forma_pago == 'CONTADO'){
+                    $new['FormaPago'] = 0;
+
+                }
+                if($sii_forma_pago == 'CREDITO'){
+                    $new['FormaPago'] = 1;
+
+                }
+                $new['FormaPago_str'] = $sii_forma_pago;
+
+                $new['emisor'] = $emisor['emisor'];
+                $new['emisor']['empresa'] = strtoupper($emisor[0]['empresa']);
+                $new['emisor']['giro'] = strtoupper($emisor[0]['giro']);
+                $new['emisor']['rut'] = strtoupper($emisor[0]['rut']);
+                $new['emisor']['dirreccion'] = strtoupper($emisor[0]['dirreccion']);
+
+                $new['Cliente']['Ciudad'] = strtoupper($reseptor['ciudad']);
+                $new['Cliente']['RazonSocial'] = ($reseptor['tipo_cliente'] =='PERSONA')? strtoupper($reseptor['nombres'].' '.$reseptor['apellidos']): $reseptor['razon_social'];
+                $new['Cliente']['Comuna'] = strtoupper($reseptor['comuna']);
+                $new['Cliente']['Contacto'] = strtoupper($reseptor['contacto']);
+                $new['Cliente']['Direccion'] = strtoupper($reseptor['direccion']);
+                $new['Cliente']['Email'] = strtoupper($reseptor['email']);
+                $new['Cliente']['Giro'] = strtoupper($reseptor['giro']);
+                $new['Cliente']['Rut'] = strtoupper($reseptor['rut']);
+
+                $i=0;
+                foreach ($venta_detalle as $c) {
+                    $new['Productos'][$i]['id'] = $c->id;
+                    $new['Productos'][$i]['NombreProducto'] = strtoupper($c->nombre);
+                    $new['Productos'][$i]['DescripcionAdicional'] = strtoupper('...');
+                    $new['Productos'][$i]['Afecto'] = true;
+                    $new['Productos'][$i]['Cantidad'] = $c->cantidad;
+                    $new['Productos'][$i]['PrecioNeto'] = $c->precio;
+                    $new['Productos'][$i]['DescuentoNeto'] = $c->descuento;
+                    $new['Productos'][$i]['TipoImpAdicional'] =$c->tipo_impuesto_adicional;
+                    $new['Productos'][$i]['MontoImpAdicional'] = $c->impuesto_adicional;
+                    $new['Productos'][$i]['UnidadMedida'] = $c->unidad;
+                    $new['Productos'][$i]['SubTotal'] =$c->precio;
+
+                    $i++;
+                }
+
+                    return [
+                        'estado' => 'success',
+                        'configuraciones' => $emisor,
+                        'venta' => $venta_db[0],
+                        'venta_detalle' => $venta_detalle,
+                        'factura' => $new
+                    ];
+            }
+            return ['estado'=>'failed'];
+
+
+        }
+        //si la venta es un vaucher---------------
+
     }
 
     protected function periodico_ventas_grafico($anio){
@@ -819,7 +949,48 @@ class VentasController extends Controller
     }
 
 
+public function pagar_credito(Request $r){
 
+    DB::beginTransaction();
+
+    $p = new Pagocredito;
+    $p->venta_id = $r->venta_id;
+    $p->pago = 'S';
+    $p->descripcion = $r->detalle_credito;
+    $p->monto_pago = $r->monto_credito;
+    if($p->save()){
+        $venta = Ventas::find($r->venta_id);
+
+        //si el monto ingresado es mayor a la deuda entonces
+        if($r->monto_credito > $venta->pago_credito){
+            //ingnorar el pago
+            return ['estado'=>'failed','mensaje'=>'el monto ingresado es mayor a la deuda'];
+        }
+        //si el monto a pagar es menor que la deuda, entonces
+        if($r->monto_credito < $venta->pago_credito){
+            //restar a la deuda el input del monto a ingresar
+            // $venta->pago_credito = (int)$venta->pago_credito - (int)$r->monto_credito;
+        }
+        //si el monto a ingresar es igual a la deuda entonces dejar el campo nulo
+        if($r->monto_credito == $venta->pago_credito){
+            // $venta->pago_credito = null;
+        }
+
+        if($venta->save()){
+            DB::commit();
+            return [
+                'estado'=>'success',
+                'mensaje'=>'Pago con exito'
+            ];
+        }
+        DB::rollBack();
+        // return ['venta'=>$venta, 'pago_credito'=>$p];
+
+        DB::rollBack();
+
+
+    }
+}
 
 
 

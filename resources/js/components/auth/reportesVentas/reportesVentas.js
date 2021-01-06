@@ -38,6 +38,7 @@ export default {
                 { key: 'index', label: 'ID', variant: 'dark' },
                 { key: 'venta', label: 'Venta Total' },
                 { key: 'fecha', label: 'Fecha Venta' },
+                { key: 'dte', label: 'Doc.' },
                 { key: 'creado', label: 'Creado Por' },
                 { key: 'cliente', label: 'Cliente' },
                 { key: 'tipo_pago', label:'Tipo de pago' },
@@ -59,7 +60,9 @@ export default {
                 { key: 'categoria', label: 'Categoria' },
                 { key: 'precio', label: 'Precio' },
                 { key: 'cantidad', label: 'Cantidad Vendida' },
-                { key: 'cliente', label: 'Cliente' },
+                { key: 'descuento', label: '% Descuento' },
+                { key: 'impuesto_adicional', label: 'Imp adicional' },
+                { key: 'tipo_impuesto_adicional', label: 'ID Imp adicional' },
 
 
 
@@ -88,7 +91,65 @@ export default {
             listarConf:[],
             ticketPrint:[],
             ticketPrintDetalle:[],
-            load_comprobante:false
+            load_comprobante:false,
+
+            //datos pa visualizar factura
+            factura:{
+                Productos: [
+                  {
+                    // id: 0,
+                    Afecto: "",
+                    nomNombreProducto: "",
+                    DescripcionAdicional: "",
+                    UnidadMedida: 0,
+                    Cantidad: 0,
+                    PrecioNeto:0,
+                    DescuentoNeto:0,
+                    SubTotal:0,
+                    TipoImpAdicional:0,
+                    MontoImpAdicional:0
+                  }
+
+                ],
+                venta_total: 0,
+                forma_pago_id: "",
+                tipo_entrega_id: "",
+                Cliente: {
+                    id: 0,
+                    Rut: "",
+                    tipo_cliente: "",
+                    RazonSocial: "",
+                    Contacto: "",
+                    Email: "",
+                    Direccion: "",
+                    Comuna: "",
+                    Ciudad: "",
+                    Giro: ""
+                },
+                pago_efectivo: "",
+                pago_debito: null,
+                chk_credito: false,
+                detalle_credito: null,
+                monto_credito: 0,
+                sii_forma_pago: "",
+                tipo_venta_id: 33,
+                emisor: {
+                  id: 1,
+                  logo: "",
+                  empresa: "",
+                  direccion: "",
+                  deleted_at: null,
+                  created_at: "",
+                  updated_at: "",
+                  rut: "",
+                  giro: ""
+                }
+            },
+            totales:{},
+            total: 0,
+            impuesto_especifico:'0',
+            suma_solo_ivas:0
+            //fin datos pa visualizar factura
         }
     },
     methods: {
@@ -162,15 +223,24 @@ export default {
 
         // MODAL EDITAR
         abrir_venta(ref, venta_id){
+            this.limpia_factura();
             this.load_comprobante = true;
             this.axios.get('api/comprobante/'+venta_id).then((res)=>{
 
                 if(res.data.estado == 'success'){
-                    this.listarConf = res.data.configuraciones;
-                    this.ticketPrint = res.data.venta;
-                    this.ticketPrintDetalle = res.data.venta_detalle
-                    this.$refs[""+ref+""].show();
-                    this.load_comprobante = false;
+                    if(res.data.venta.tipo_venta_id == 1){
+                        this.listarConf = res.data.configuraciones;
+                        this.ticketPrint = res.data.venta;
+                        this.ticketPrintDetalle = res.data.venta_detalle
+                        this.$refs[""+ref+""].show();
+                        this.load_comprobante = false;
+                    }
+                    if(res.data.venta.tipo_venta_id == 33){
+                        this.factura = res.data.factura;
+                        this.totales = res.data.venta;
+                        this.$refs[""+ref+""].show();
+                        this.load_comprobante = false;
+                    }
                 }else{
                     this.load_comprobante = false;
                     alert("No es posible seguir con el proceso");
@@ -224,7 +294,60 @@ export default {
             }
 
         },
+        limpia_factura(){
+            this.totales = {};
+            this.factura={
+                Productos: [
+                    {
+                      id: 0,
+                      Afecto: "",
+                      nomNombreProducto: "",
+                      DescripcionAdicional: "",
+                      UnidadMedida: 0,
+                      Cantidad: "",
+                      PrecioNeto:0,
+                      DescuentoNeto:0,
+                      SubTotal:0,
+                      TipoImpAdicional:0,
+                      MontoImpAdicional:0
+                    }
 
+                  ],
+                venta_total: 0,
+                forma_pago_id: "",
+                tipo_entrega_id: "",
+                Cliente: {
+                  id: 0,
+                  Rut: "",
+                  tipo_cliente: "",
+                  RazonSocial: "",
+                  Contacto: "",
+                  Email: "",
+                  Direccion: "",
+                  Comuna: "",
+                  Ciudad: "",
+                  Giro: ""
+                },
+                pago_efectivo: "",
+                pago_debito: null,
+                chk_credito: false,
+                detalle_credito: null,
+                monto_credito: 0,
+                sii_forma_pago: "",
+                tipo_venta_id: 33,
+                emisor: {
+                  id: 1,
+                  logo: "",
+                  empresa: "",
+                  direccion: "",
+                  deleted_at: null,
+                  created_at: "",
+                  updated_at: "",
+                  rut: "",
+                  giro: ""
+                }
+            };
+        },
         traer_detalle_ventas(idVenta) {
             if(this.usuario.rol != this.admin){
                 return false;

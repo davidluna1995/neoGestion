@@ -15,6 +15,7 @@ import configuracionesComponent from './components/auth/configuraciones/configur
 import recuperarPasswordComponent from './components/recuperarPassword.vue';
 import resetearPasswordComponent from './components/resetearPassword.vue';
 import MisVentasComponent from './components/auth/reportesVentas/mis_ventas.vue';
+import pagos_pendientes from './components/auth/clientes/pagos_pendientes.vue'
 
 import facturacion_electronica from './components/auth/generarVenta/dte_33/generar_dte_33.vue'
 
@@ -89,6 +90,11 @@ const routes = [
         name: 'clientes',
         path: '/clientes',
         component: ClientesComponent
+      },
+      {
+        name: 'pagos_pendientes',
+        path: '/pagos_pendientes',
+        component: pagos_pendientes
       },
       {
         name: 'agregarProducto',

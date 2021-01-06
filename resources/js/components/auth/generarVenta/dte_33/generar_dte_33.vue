@@ -202,7 +202,7 @@
                             no-close-on-backdrop hide-footer title="Facturación electronica (DTE 33)">
 
         <div class="modal-body">
-
+            <!-- {{ pre_factura }} -->
            <!-- <pre> {{pre_factura}}</pre> -->
             <div id="pdfFactura">
               <!-- AQUI EL DISEÑO DE LA FACTURA ELECTRONICA -->
@@ -298,7 +298,8 @@
                         <td>{{ formatPrice(c.PrecioNeto) }}</td>
                         <td>{{ c.Cantidad }}</td>
                         <td>{{ c.UnidadMedida }}</td>
-                        <td>{{ formatPrice(c.PrecioNeto * c.Cantidad) }}</td>
+                        <!-- <td>{{ formatPrice(c.PrecioNeto * c.Cantidad) }}</td> -->
+                        <td>{{ formatPrice(c.SubTotal) }}</td>
                     </tr>
 
                     <tr>
@@ -451,7 +452,8 @@
                   /*IMP. ESPECIFICO*/  impuesto_especifico,
                   /*I.V.A 19% :*/Math.round(((suma_solo_ivas * 119)/100) - suma_solo_ivas),
                   /*MONTO BRUTO*/ redondeo(redon_medio_pago,Math.round( total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas )  )),
-                  /*(no visible en factura, 'vuelto')*/ Math.round(Number(montoEfectivo) + Number(montoDebito) - (total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))),
+                  /*(no visible en factura, 'vuelto')*/ Math.round(Number(montoEfectivo) + Number(montoDebito) -  /*TOTAL A PAGAR->*/redondeo(redon_medio_pago,total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))  ),
+
                   /* deuda, si es que existiera */ Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) ),
                   /*credito*/ ((Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) )) )
 
@@ -587,7 +589,7 @@
                     <br>
                       <label>Forma de pago:</label>
                      <br>
-                      <select v-model="sii_forma_pago" @change="formaPago=[]; montoEfectivo=''; montoDebito='';redon_medio_pago='DEBITO'" name="" id="" class="form-control form-control-sm">
+                      <select v-model="sii_forma_pago" @change="formaPago=[]; montoEfectivo='0'; montoDebito='0';redon_medio_pago='DEBITO'" name="" id="" class="form-control form-control-sm">
                            <option value="">--SELECCIONE--</option>
                           <option value="CONTADO">Contado</option>
                           <option value="CREDITO">Crédito</option>
@@ -1195,7 +1197,8 @@
                         </template>
                         <template v-slot:cell(tia)="data">
                             <!-- {{ (data.item.afecto) }} -->
-                            <select  :disabled="(data.item.afecto=='false')?true:false" :value="(data.item.tipo_impuesto_adicional)?data.item.tipo_impuesto_adicional:'0'"
+                            <!-- :disabled="(data.item.afecto=='false')?true:false" -->
+                            <select   :value="(data.item.tipo_impuesto_adicional)?data.item.tipo_impuesto_adicional:'0'"
                                 @change="ingresar_tipo_imp_adic_carro(
                                     data.index,
                                     $event.target.value,
@@ -1207,11 +1210,11 @@
                             </select>
                         </template>
                         <template v-slot:cell(mia)="data">
-
+                            <!-- :disabled="(data.item.afecto=='false')?true:false" -->
                             <input
                             @click="ingresar_mia_carro(data.index, $event.target.value)"
                             @input="ingresar_mia_carro(data.index, $event.target.value)"
-                            :disabled="(data.item.afecto=='false')?true:false" :value="data.item.monto_impuesto_adicional" class="form-control form-control-sm" type="text" name="input_monto_impuesto_adicional" >
+                             :value="data.item.monto_impuesto_adicional" class="form-control form-control-sm" type="text" name="input_monto_impuesto_adicional" >
                         </template>
                         <template v-slot:cell(precioProd)="data"
                           >$ {{ formatPrice(data.item.precio) }}</template>

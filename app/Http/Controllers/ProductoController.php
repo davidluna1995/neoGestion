@@ -393,7 +393,7 @@ class ProductoController extends Controller
         //                             )
 
         //                             ->get();
-
+        $producto = trim($producto);
         $listar = DB::select("SELECT
                                     producto.id,
                                     producto.sku,

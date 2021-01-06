@@ -10,21 +10,23 @@
               <!-- ESCRIBIR PRODUCTO -->
               <div class="col-12 col-sm-8 col-md-8 col-lg-8 col-xl-8">
                 <b-input-group>
-                  <b-form-input
+                    <input type="text" id="input_buscador"  @keyup="escribiendoProducto" @keyup.enter="traer_producto()"  placeholder="Buscar producto.." class="form-control my-2">
+                  <!-- <b-form-input
                     id="inputBuscar"
                     v-on:keyup="escribiendoProducto"
                     placeholder="Buscar producto..."
                     v-model="buscadorProducto"
                     v-on:keyup.enter="traer_producto()"
                     class="my-2"
-                  ></b-form-input>
+                  ></b-form-input> -->
                 </b-input-group>
               </div>
               <!-- BUSCAR PRODUCTO -->
               <div class="col-12 col-sm-2 col-md-2 col-lg-2 col-xl-2">
+                  <!-- :disabled="btn_buscar_producto" -->
                 <b-button
                   id="btnBuscar"
-                  :disabled="btn_buscar_producto"
+
                   block
                   variant="success"
                   class="my-2"
@@ -123,7 +125,7 @@
                 </template>
                 <template v-slot:cell(imagen)="data">
                   <div class="col-12">
-                  
+
                     <b-img class="tamanio" thumbnail v-if="data.item.imagen"  :src="data.item.imagen" alt="Image 1"></b-img>
                   </div>
                 </template>
@@ -354,14 +356,14 @@
                                     <i class="fas fa-camera-retro fa-2x text-success"></i>
                                   </div>
                                   <div class="col-10">
-                                  
+
                                       <!-- <b-form-file size="sm" ref="cony" id="cony" @change="captar_foto"   placeholder="Seleccione un logo"></b-form-file> -->
                                       <input name="imagen" class="imagen form-control" type="file" accept="image/*" @change="preview_image">
                                       <img class="thumbnail" id="output_image"/>
-                                    
-                                    
+
+
                                   </div>
-                                  
+
                                 </div>
                               </div>
                               <div class="col-3">

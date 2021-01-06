@@ -65,6 +65,7 @@ export default {
 
             // BUSCADOR
             buscadorProducto: '',
+            in_buscador:'',
             productoSearch: '',
             idProducto: '0',
             btn_buscar_producto: true,
@@ -295,18 +296,23 @@ export default {
         },
 
         traer_producto() {
+            var input_buscador = document.getElementById('input_buscador');
+             console.log(input_buscador.value)
+            if (input_buscador.value == '') {
+                this.showAlertBuscar = true;
+                this.errorBuscar = ("El campo no puede quedar vacio, ingrese un producto porfavor.");
+                this.traer_productos();
+                return false;
+            }
+
             this.listarProductos = [];
             this.btn_buscar_producto = true;
-            this.axios.get('api/buscar_producto/' + this.buscadorProducto).then((response) => {
+            this.axios.get('api/buscar_producto/' + input_buscador.value).then((response) => {
 
-                if (this.buscadorProducto == '') {
-                    this.showAlertBuscar = true;
-                    this.errorBuscar = ("El campo no puede quedar vacio, ingrese un producto porfavor.");
-                    this.traer_productos();
-                } else {
+
 
                     if (response.data.estado == 'success') {
-
+                        input_buscador.value = '';
                         this.listarProductos = response.data.producto;
                         this.buscadorProducto = '';
                         this.btn_buscar_producto = true;
@@ -321,7 +327,7 @@ export default {
                             this.traer_productos();
                         }
                     }
-                }
+
 
             })
                 .catch(error => {

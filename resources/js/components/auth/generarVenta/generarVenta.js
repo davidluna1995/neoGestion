@@ -31,8 +31,8 @@ export default {
             efectivo: false,
             debito: false,
             credito: false,
-            montoEfectivo: '',
-            montoDebito: '',
+            montoEfectivo: '0',
+            montoDebito: '0',
             montoCredito: 0,
             montoEfectivoDebito: 0,
             total: 0,
@@ -170,6 +170,8 @@ export default {
             ticketPrintDetalle:{},
             traer_ul_venta:false,
             sii_forma_pago:'',
+            redon_medio_pago:'DEBITO' //para obtener monto real
+
 
         }
 
@@ -180,6 +182,9 @@ export default {
 
         console.log(document);
         setInterval(this.getNow, 1000);
+
+        this.montoEfectivo= '0';
+        this.montoDebito= '0';
 
     },
 
@@ -227,7 +232,7 @@ export default {
 
 
 
-                    },
+        },
 
 
         traer_clientes() {
@@ -235,11 +240,50 @@ export default {
               this.listar_clientes = response.data.cuerpo;
                     })
 
-          },
+        },
 
         buscadorClientes({ cliente,rut }) {
             return `${cliente} - ${rut}`
-          },
+        },
+
+        david_kk(){
+            // if( this.formaPago.length == 0){
+            //     this.montoDebito = '0'
+
+            //     this.montoEfectivo = '0';
+            // }
+            // this.montoDebito = '0'
+
+            // this.montoEfectivo = '0';
+            if(this.sii_forma_pago.trim() =='CONTADO' && this.formaPago.length == 1){
+                console.log(this.formaPago);
+                //si esta seleccionado solo efectivo, entonces
+                if(this.formaPago[0] == '1'){
+
+                    console.log("seleccionaste solo efectivo");
+
+                    this.redon_medio_pago = 'EFECTIVO';
+
+                }
+
+                //si esta seleccionado solo efectivo, entonces
+                if(this.formaPago[0] == '2'){
+                    console.log("seleccionaste solo debito");
+
+                    this.redon_medio_pago = 'DEBITO';
+
+
+                }
+
+            }
+            // o si aparte de estar en contado pero "ambos" tipos seleccionado
+            if(this.sii_forma_pago.trim() =='CONTADO' && this.formaPago.length == 2){
+                //si esta seleccionado  efectivo y debito entonces
+                this.redon_medio_pago = 'DEBITO' // quiere decir que puede pagar ene fectivo un monto
+                //razonable evitando monedas de 1 o 5, pero en el momento de pagar con debito que cancele lo correspondiente
+
+            }
+        },
 
         // MODAL VENTAS
         abrir_modal(ref){
@@ -492,7 +536,7 @@ export default {
             }
             const data = {
                 'carro': this.arregloCarro,
-                'venta_total': this.total,
+                'venta_total': this.redondeo(this.redon_medio_pago, this.total),
                 'sii_forma_pago': this.sii_forma_pago,
                 'forma_pago_id': this.formaPago[0] + ',' + this.formaPago[1],
                 'tipo_entrega_id': this.entrega,
@@ -796,6 +840,34 @@ export default {
             });
         },
 
+        redondeo(medio_pago,numero){
+            // console.log('numero_pelao',Math.round(numero));
+            const parsear = Math.round(numero);
+            console.log('monto',parsear);
+            if(medio_pago == 'EFECTIVO'){
+
+                const max = (''+parsear).length;
+                console.log("max", max)
+                const ultimo_numero = (''+parsear)[max - 1];
+                console.log('ultomo_numero', ultimo_numero);
+                if(ultimo_numero >= 0 && ultimo_numero <= 5){
+                    //entonces redondear para abajo
+                   return numero - ultimo_numero
+                }
+                if(ultimo_numero >= 6){
+                    return numero + (10 - ultimo_numero);
+                }
+
+                return last;
+
+            }
+
+            if(medio_pago == 'DEBITO'){
+                return numero;
+            }
+
+
+        },
 
 
         printDiv(contenido) {

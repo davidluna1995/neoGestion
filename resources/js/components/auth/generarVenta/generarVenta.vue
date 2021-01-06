@@ -599,8 +599,8 @@
 
                 <br>
                       <label>Forma de pago:</label>
-
-                      <select v-model="sii_forma_pago" @change="formaPago=[]; montoEfectivo=''; montoDebito=''" name="" id="" class="form-control form-control-sm">
+                        <!-- {{montoEfectivo}} -->
+                      <select v-model="sii_forma_pago" @change="formaPago=[]; montoEfectivo='0'; montoDebito='0'" name="" id="" class="form-control form-control-sm">
                            <option value="">--SELECCIONE--</option>
                           <option value="CONTADO">Contado</option>
                           <option value="CREDITO">Crédito</option>
@@ -616,6 +616,7 @@
                       button-variant="outline-success"
                       buttons
                       size="sm"
+                      @input="david_kk"
                     ></b-form-checkbox-group>
                   </b-form-group>
 
@@ -678,8 +679,8 @@
                         type="number"
                         placeholder="Ingrese el monto que cancela el cliente"
                         v-model="montoEfectivo"
-                        >{{ formatPrice() }}</b-form-input
-                      >
+                        ></b-form-input>
+
                       <b-input-group-append>
                         <b-button size="sm" text="Button" disabled
                           >Efectivo</b-button
@@ -765,10 +766,22 @@
                   </label>
                   <div v-if="sii_forma_pago == 'CONTADO'" class="row">
                     <div class="col-8">
-                      <label>Total a Pagar</label>
+                      <label>Total neto</label>
                     </div>
                     <div class="col-4">
                       <label>$ {{ formatPrice(total) }}</label>
+                    </div>
+                    <div class="col-8">
+                      <label>IVA 19%</label>
+                    </div>
+                    <div class="col-4">
+                      <label>$ {{ formatPrice(total*0.19) }}</label>
+                    </div>
+                    <div class="col-8">
+                      <label>Total a Pagar + IVA 19%</label>
+                    </div>
+                    <div class="col-4">
+                      <b><label>$ {{ formatPrice(redondeo(redon_medio_pago,total+(total*0.19))) }}</label></b>
                     </div>
 
                     <div class="col-8">
@@ -832,16 +845,16 @@
 
                           >$
                           {{
-                            formatPrice(Number(montoEfectivo) - Number(total))
-                          }}</label> <label style="color:red" v-if="Number(montoEfectivo) - Number(total) < 0"><i class="fas fa-arrow-up"></i> deuda de cliente</label>
+                            formatPrice(redondeo(redon_medio_pago,Number(montoEfectivo) - Number(total+(total*0.19))))
+                          }}</label> <label style="color:red" v-if="Number(montoEfectivo) - Number(total+(total*0.19)) < 0"><i class="fas fa-arrow-up"></i> deuda de cliente</label>
                       </div>
                       <div v-if="formaPago == '2'">
                         <label
                           >$
                           {{
-                            formatPrice(Number(montoDebito) - Number(total))
+                            formatPrice(redondeo(redon_medio_pago,Number(montoDebito) - Number(total+(total*0.19))))
                           }}</label>
-                          <label style="color:red" v-if="(Number(montoDebito) - Number(total)) < 0">
+                          <label style="color:red" v-if="(Number(montoDebito) - Number(total+(total*0.19))) < 0">
                             <i class="fas fa-arrow-up"></i> deuda de cliente
                           </label>
                       </div>
@@ -850,9 +863,11 @@
                           >$
                           {{
                             formatPrice(
-                              Number(montoEfectivo) +
+                              redondeo(redon_medio_pago,
+                                Number(montoEfectivo) +
                                 Number(montoDebito) -
-                                Number(total)
+                                Number(total+(total*0.19))
+                                )
                             )
                           }}</label> <label style="color:red" v-if="(Number(montoEfectivo)+Number(montoDebito)-Number(total)) < 0">
                             <i class="fas fa-arrow-up"></i> deuda de cliente
@@ -863,12 +878,14 @@
                           >$
                           {{
                             formatPrice(
-                              Number(montoEfectivo) +
+                                redondeo(redon_medio_pago,
+                                Number(montoEfectivo) +
                                 Number(montoDebito) -
-                                Number(total)
+                                Number(total+(total*0.19))
+                                )
                             )
                           }}</label>
-                          <label style="color:red" v-if="(Number(montoEfectivo)+Number(montoDebito)-Number(total)) < 0">
+                          <label style="color:red" v-if="(Number(montoEfectivo)+Number(montoDebito)-Number(total+(total*0.19))) < 0">
                             <i class="fas fa-arrow-up"></i> deuda de cliente
                           </label>
                       </div>
@@ -881,10 +898,23 @@
 
                    <div v-if="sii_forma_pago == 'CREDITO'" class="row">
                     <div class="col-8">
-                      <label>Total a Pagar</label>
+                      <label>Total neto</label>
                     </div>
                     <div class="col-4">
                       <label>$ {{ formatPrice(total) }}</label>
+                    </div>
+                     <div class="col-8">
+                      <label>IVA 19%</label>
+                    </div>
+                    <div class="col-4">
+                      <label>$ {{ formatPrice(total*0.19) }}</label>
+                    </div>
+
+                    <div class="col-8">
+                      <label>Total a pagar + IVA 19%</label>
+                    </div>
+                    <div class="col-4">
+                      <b><label>$ {{ formatPrice(total + (total*0.19)) }}</label></b>
                     </div>
 
                     <div class="col-8">
@@ -902,7 +932,7 @@
                     </div>
                     <div class="col-4">
                       <div>
-                        <label>$ {{ formatPrice(Number(total) - (Number(montoEfectivo) + Number(montoDebito)) ) }}</label>
+                        <label>$ {{ formatPrice(Number(total+(total*0.19)) - (Number(montoEfectivo) + Number(montoDebito)) ) }}</label>
                       </div>
                     </div>
 

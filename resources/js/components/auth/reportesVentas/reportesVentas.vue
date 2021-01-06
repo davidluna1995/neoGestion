@@ -120,14 +120,15 @@
                   </template>
 
                   <template v-slot:cell(fecha)="data">{{data.item.creado}}</template>
+                  <template v-slot:cell(dte)="data">Dte {{data.item.dte}}</template>
                   <template v-slot:cell(creado)="data">{{data.item.nombreUsuarioVenta}}</template>
                   <template v-slot:cell(cliente)="data">{{data.item.cliente}}</template>
-                   <template v-slot:cell(tipo_pago)="data"><small>{{ 'Efectivo: '+formatPrice((data.item.pago_efectivo)?data.item.pago_efectivo : 0) }} <br>
+                  <template v-slot:cell(tipo_pago)="data"><small>{{ 'Efectivo: '+formatPrice((data.item.pago_efectivo)?data.item.pago_efectivo : 0) }} <br>
                                                        {{ 'Debito: '+formatPrice((data.item.pago_debito)?data.item.pago_debito : 0)}}   </small>
-                   </template>
-                   <template v-slot:cell(credito)="data">
+                  </template>
+                  <template v-slot:cell(credito)="data">
                        {{ formatPrice((data.item.pago_credito)?data.item.pago_credito : 0) }} <br>
-                   </template>
+                  </template>
                    <!-- <template v-slot:cell(deuda_credito)="data">
                        <label style="color:red" v-if="((data.item.monto_credito)?data.item.monto_credito : 0)>0">
                            $ {{ formatPrice((data.item.monto_credito)?data.item.monto_credito : 0) }}
@@ -140,7 +141,7 @@
                        <label style="color:red" v-if="((data.item.vuelto)?data.item.vuelto : 0) > 0"> $ {{ formatPrice((data.item.vuelto)?data.item.vuelto : 0) }}</label>
                        <label style="color:black" v-if="((data.item.vuelto)?data.item.vuelto : 0) == 0"> $ {{ formatPrice((data.item.vuelto)?data.item.vuelto : 0) }}</label>
                    </template>
-                  <template v-slot:cell(detalle)="data">
+                   <template v-slot:cell(detalle)="data">
                     <!-- EDITAR PRODUCTOS -->
                     <!-- BOTON EDITAR -->
                     <div class="row">
@@ -191,7 +192,9 @@
                                   v-slot:cell(precio)="data"
                                 >{{ formatPrice(data.item.precio) }}</template>
                                 <template v-slot:cell(cantidad)="data">{{ data.item.cantidadDetalle }}</template>
-                                <template v-slot:cell(cliente)="data">{{ data.item.nombres }} {{data.item.apellidos}}</template>
+                                <template v-slot:cell(descuento)="data">{{ data.item.descuento }}</template>
+                                <template v-slot:cell(impuesto_adicional)="data">{{ data.item.impuesto_adicional }}</template>
+                                <template v-slot:cell(tipo_impuesto_adicional)="data">{{ data.item.tipo_impuesto_adicional }}</template>
                               </b-table>
                             </div>
 
@@ -220,17 +223,26 @@
                       </template>
                     </div>
                   </template>
-                  <template v-slot:cell(comprobante)="data">
+                   <template v-slot:cell(comprobante)="data">
                       <div>
                           <button :disabled="load_comprobante" class="btn btn-sm btn-success my-2" @click="abrir_venta('comprobante', data.item.idVenta)">
-                              <i  class="fas fa-file-invoice "></i>
+                              <i  class="fas fa-file-invoice "></i> {{data.item.dte}}
                                <!-- <span v-if="load_comprobante" class="sr-only">Loading...</span> -->
                           </button>
 
                       <!-- BOTON VENTAS -->
 
-                      <!-- MODAL VENTAS  -->
-                      <template>
+
+
+
+                  <!-- comprobante -->
+                      </div>
+                  </template>
+                </b-table>
+
+
+                <!-- MODAL VENTAS  -->
+
                         <div>
                           <b-modal
                             no-close-on-esc
@@ -242,7 +254,8 @@
                             hide-footer
                             centered
                           >
-                            <section>
+                          <!-- <pre>{{factura}}</pre> -->
+                            <section v-if="totales.dte == '1'">
                               <div
                                 class="ticket"
                                 id="printVenta"
@@ -368,6 +381,231 @@
                               </div>
                               <!-- MODAL VENTAS  -->
                             </section>
+
+
+                            <section v-if="totales.dte == '33'">
+                                <div id="pdfFactura">
+
+                                <div class="factura">
+                                    <center style="font-size: 2rem; border:3px solid red;color:red;font-family:sans-serif;">
+                                    <b class="upper"><pre style="color:red">R.U.T {{ factura.emisor.rut }}</pre></b>
+                                    <b><pre style="color:red">FACTURA ELECTRONICA</pre></b>
+                                    <b><pre style="color:red">Nº XXXX</pre></b>
+                                    </center>
+                                    <br />
+                                    <center style="font-size: 2rem;font-family:sans-serif;">
+                                    <pre> S.I.I LOS ANGELES</pre>
+                                    </center>
+                                    <!-- <br /> -->
+                                    <center style="font-size: 2rem;font-family:sans-serif;">
+                                    <pre> {{ factura.emisor.empresa }}</pre>
+                                    </center>
+
+                                    <!-- DATOS DEL EMISOR  -->
+                                    <section
+                                    class="datos_emisor"
+                                    style="
+                                        font-family: sans-serif;
+                                        font-size: 1.2rem;
+                                        width: 100%;
+                                        white-space: pre-wrap;
+                                        white-space: -moz-pre-wrap;
+                                        white-space: -pre-wrap;
+                                        white-space: -o-pre-wrap;
+                                        word-wrap: break-word;
+                                    "
+                                    >
+                                    <label class="upper"><b>DIRECCION: </b> {{factura.emisor.direccion}}</label><br>
+                                    <label class="upper"><b>GIRO: </b>{{ factura.emisor.giro }}</label> <br>
+
+
+                                    <b>EMISION&nbsp;: </b> {{ factura.Fecha }} <br />
+                                    <b class="upper">MEDIO DE PAGO&nbsp;: </b> {{ factura.FormaPago_str }} <br /><br>
+                                    <b class="upper">SEÑOR(A)&nbsp;: </b> {{ factura.Cliente.RazonSocial }} <br />
+                                    <b class="upper">RUT&nbsp;: </b> {{ factura.Cliente.Rut }} <br />
+                                    <b class="upper">DIRECCION(A)&nbsp;: </b> {{ factura.Cliente.Direccion }} <br />
+                                    <b class="upper">COMUNA(A)&nbsp;: </b> {{ factura.Cliente.Comuna }} <br />
+                                    <b class="upper">CIUDAD(A)&nbsp;: </b> {{ factura.Cliente.Ciudad }} <br />
+
+                                    <b class="upper">GIRO&nbsp;: </b> {{ factura.Cliente.Giro }} <br />
+
+                                    <table style="width:100%; padding-right:2px;">
+                                        <tr>
+                                        <td
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                        >
+                                            Item
+                                        </td>
+                                        <td
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                        >
+                                            P.unitario
+                                        </td>
+                                        <td
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                        >
+                                            Cantidad
+                                        </td>
+                                        <td
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                        >
+                                            Unidad
+                                        </td>
+                                        <td
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                        >
+                                            Total item
+                                        </td>
+                                        </tr>
+
+                                        <tr v-for="f in factura.Productos " :key="f.id">
+                                            <td>{{ f.NombreProducto  }}</td>
+                                            <td>{{ formatPrice(f.PrecioNeto) }}</td>
+                                            <td>{{ f.Cantidad }}</td>
+                                            <td>{{ f.UnidadMedida }}</td>
+                                            <!-- <td>{{ formatPrice(c.PrecioNeto * c.Cantidad) }}</td> -->
+                                            <td>{{ formatPrice(Number((f.PrecioNeto * f.Cantidad) - f.DescuentoNeto) ) }}</td>
+                                        </tr>
+
+                                        <tr>
+                                        <td
+                                            class="fintabla"
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                            colspan="4"
+                                        >
+                                            <div style="text-align: right">TOTAL NETO&nbsp;:</div>
+                                        </td>
+                                        <td
+                                            class="fintabla"
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                        >
+                                        $ {{ formatPrice(totales.totales_neto) }}
+                                        <!-- $ {{formatPrice(pre_factura.venta_total)}} -->
+                                        </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td
+                                            class="fintabla"
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                            colspan="4"
+                                        >
+                                            <div style="text-align: right">IMP. ESPECIFICO&nbsp;:</div>
+                                        </td>
+                                        <td
+                                            class="fintabla"
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                        >
+                                        $ {{ formatPrice(totales.totales_impuesto_especifico) }}
+                                        <!-- $ {{formatPrice(pre_factura.venta_total)}} -->
+                                        </td>
+                                        </tr>
+
+                                        <tr>
+                                        <td
+                                            class="fintabla"
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                            colspan="4"
+                                        >
+                                            <div style="text-align: right">I.V.A 19%&nbsp;:</div>
+                                        </td>
+                                        <td
+                                            class="fintabla"
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                        >
+                                            <!-- $ {{ formatPrice(((pre_factura.venta_total * 119) / 100) - pre_factura.venta_total  ) }} -->
+                                            $ {{ formatPrice(totales.totales_iva)}}
+                                        </td>
+                                        </tr>
+
+                                        <tr>
+                                        <td
+                                            class="fintabla"
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                            colspan="4"
+                                        >
+                                            <div style="text-align: right">MONTO BRUTO&nbsp;:</div>
+                                        </td>
+                                        <td
+                                            class="fintabla"
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                        >
+                                        <!-- $ {{formatPrice((pre_factura.venta_total * 119) / 100)}} -->
+                                        $ {{ formatPrice(totales.venta_total)}}
+                                        </td>
+                                        </tr>
+                                    </table>
+
+                                    <!-- <div style="text-align:right">
+                            Total: 10.000
+                        </div> -->
+                                    </section>
+                                </div>
+
+                                <!-- AQUI SE GENERA EL TIMBRE ELECTRONICO -------------------------------------------------------->
+                                <div style="text-align: center"><br>
+                                    <!-- insert your custom barcode setting your data in the GET parameter "data" -->
+                                    <img
+                                    width="90%"
+                                    height="120%"
+                                    alt="Barcode Generator TEC-IT"
+                                    :src="'https://barcode.tec-it.com/barcode.ashx?data='+/*ted*/+'&code=PDF417&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&codepage=Default&qunit=Mm&quiet=0'"
+                                    />
+                                </div>
+                                <div style="font-size: 1.2rem; font-family: sans-serif">
+                                    <!-- back-linking to www.tec-it.com is required -->
+
+                                    <!-- logos are optional -->
+                                    <center>
+                                        Timbre electronico SII <br>
+                                        Verifique en www.sii.cl
+                                    </center>
+
+                                </div>
+                                <!-- AQUI SE GENERA EL TIMBRE ELECTRONICO -------------------------------------------------------------->
+
+
+                                </div>
+                            </section>
                             <div class="row justify-content-center bordeFooter">
                               <div class="col-4">
                                 <b-button
@@ -385,13 +623,6 @@
                             </div>
                           </b-modal>
                         </div>
-                      </template>
-
-
-                  <!-- comprobante -->
-                      </div>
-                  </template>
-                </b-table>
               </div>
             </div>
           </div>

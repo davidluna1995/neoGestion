@@ -12,9 +12,15 @@
           <b-nav-item v-if="usuario.rol==admin" @click="url('index')">
             <i class="fas fa-home"></i> Panel de Control
           </b-nav-item>
-          <b-nav-item @click="url('clientes')">
-            <i class="fas fa-user-friends"></i> Clientes
-          </b-nav-item>
+          <b-nav-item-dropdown  text="Clientes">
+            <b-dropdown-item @click="url('clientes')">
+              <i class="fas fa-search-dollar"></i> Clientes
+            </b-dropdown-item>
+
+            <b-dropdown-item @click="url('pagos_pendientes')">
+              <i class="fas fa-paste"></i> Pagos pendientes
+            </b-dropdown-item>
+          </b-nav-item-dropdown>
           <b-nav-item @click="url('categorias')">
             <i class="fas fa-indent"></i> Categorias
           </b-nav-item>

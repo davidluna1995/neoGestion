@@ -448,7 +448,7 @@ export default {
             }
 
 
-    },
+        },
 
 
         // uppercase: function(v) {
@@ -503,7 +503,7 @@ export default {
                 //si esta seleccionado solo efectivo, entonces
                 if(this.formaPago[0] == '1'){
                     // console.log("seleccionaste solo efectivo");
-                    if(this.montoEfectivo.trim() =='' || this.montoEfectivo <= 0){
+                    if(this.montoEfectivo =='' || this.montoEfectivo <= 0){
 
                         alert("El monto efectivo debe existir o ser mayor a cero")
                         this.visualizar_compra = false;
@@ -770,6 +770,10 @@ export default {
 
             //  console.log($event.target.value);
             this.arregloCarro[index].descuento = valor;
+            const item_monto_neto = (this.arregloCarro[index].precio * this.arregloCarro[index].cantidad_ls) - Math.round((parseInt(this.arregloCarro[index].precio) * (this.arregloCarro[index].cantidad_ls)) * ((this.arregloCarro[index].descuento)?this.arregloCarro[index].descuento:0) /100);
+            this.arregloCarro[index].item_neto = (this.arregloCarro[index].precio * this.arregloCarro[index].cantidad_ls);
+            this.arregloCarro[index].item_descontado = item_monto_neto;
+            this.arregloCarro[index].monto_descuento = this.arregloCarro[index].item_neto - this.arregloCarro[index].item_descontado
             console.log(this.arregloCarro[index].descuento);
 
             if(this.arregloCarro[index].afecto == "true"){
@@ -783,7 +787,7 @@ export default {
                          }else{
                              console.log("soy los calculables");
                              const monto_neto = (this.arregloCarro[index].precio * this.arregloCarro[index].cantidad_ls) - Math.round((parseInt(this.arregloCarro[index].precio) * (this.arregloCarro[index].cantidad_ls)) * ((this.arregloCarro[index].descuento)?this.arregloCarro[index].descuento:0) /100);
-                             this.arregloCarro[index].monto_impuesto_adicional = Math.round(monto_neto * (1 + loop.decimal)) - monto_neto
+                            //  this.arregloCarro[index].monto_impuesto_adicional = Math.round(monto_neto * (1 + loop.decimal)) - monto_neto
                          }
                     }
                 });
@@ -803,21 +807,21 @@ export default {
 
             this.arregloCarro[index].afecto = valor;
             //si no es afecto a IVA entonces, desactivar el tipo impuesto adicional con el monto de este mismo
-            if(valor == "false"){
+            // if(valor == "false"){
 
-                this.arregloCarro[index].tipo_impuesto_adicional = '';
-                this.arregloCarro[index].activo_iva = true;
-                document.getElementsByName('input_tipo_impuesto_adicional')[index].disabled = true;
-                document.getElementsByName('input_tipo_impuesto_adicional')[index].value = '';
-                document.getElementsByName('input_monto_impuesto_adicional')[index].disabled = true;
-                // document.getElementsByName('input_monto_impuesto_adicional')[index].value = '0';
-                this.arregloCarro[index].monto_impuesto_adicional = null;
+            //     this.arregloCarro[index].tipo_impuesto_adicional = '';
+            //     this.arregloCarro[index].activo_iva = true;
+            //     // document.getElementsByName('input_tipo_impuesto_adicional')[index].disabled = true;
+            //     // document.getElementsByName('input_tipo_impuesto_adicional')[index].value = '';
+            //     // document.getElementsByName('input_monto_impuesto_adicional')[index].disabled = true;
+            //     // document.getElementsByName('input_monto_impuesto_adicional')[index].value = '0';
+            //     // this.arregloCarro[index].monto_impuesto_adicional = null;
 
-            }else{
-                this.arregloCarro[index].activo_iva = false;
-                document.getElementsByName('input_tipo_impuesto_adicional')[index].disabled = false;
-                document.getElementsByName('input_monto_impuesto_adicional')[index].disabled = false;
-            }
+            // }else{
+            //     this.arregloCarro[index].activo_iva = false;
+            //     // document.getElementsByName('input_tipo_impuesto_adicional')[index].disabled = false;
+            //     // document.getElementsByName('input_monto_impuesto_adicional')[index].disabled = false;
+            // }
 
             this.total_temporal();
             this.total_temporal_monto_especifico();
@@ -911,6 +915,14 @@ export default {
                 this.total = parseInt(this.total + this.totalTemporal);
                 console.log("total: "+this.total);
 
+                //  console.log($event.target.value);
+                // this.arregloCarro[i].descuento = valor;
+                const item_monto_neto = (this.arregloCarro[i].precio * this.arregloCarro[i].cantidad_ls) - Math.round((parseInt(this.arregloCarro[i].precio) * (this.arregloCarro[i].cantidad_ls)) * ((this.arregloCarro[i].descuento)?this.arregloCarro[i].descuento:0) /100);
+                this.arregloCarro[i].item_neto = (this.arregloCarro[i].precio * this.arregloCarro[i].cantidad_ls);
+                this.arregloCarro[i].item_descontado = item_monto_neto;
+                this.arregloCarro[i].monto_descuento = this.arregloCarro[i].item_neto - this.arregloCarro[i].item_descontado
+                console.log(this.arregloCarro[i].descuento);
+
                 //recalculo de solo afectos a iva
                 console.log("veni afecto: "+this.arregloCarro[i].afecto+' . '+this.arregloCarro[i].nombre);
                 if(this.arregloCarro[i].afecto == 'true'){
@@ -921,6 +933,13 @@ export default {
             }
 
         },
+        url(ruta) {
+            this.$router.push({ path: ruta }).catch(error => {
+              if (error.name != "NavigationDuplicated") {
+                throw error;
+              }
+            });
+          },
         emitir_dte33(factura, neto, imp_especifico, iva, bruto, vuelto, deuda, credito ){
             // console.log(factura, neto, imp_especifico, iva, bruto, vuelto, credito);
             const data = {
@@ -947,7 +966,12 @@ export default {
             };
 
             this.axios.post('api/emitir_dte_33', data).then((res)=>{
+                if(res.data.estado == 'success'){
+                    this.limpiarCarro()
+                    alert("Factura electronica emitida");
+                    this.url('index');
 
+                }
             });
         },
         consultar_folios(){

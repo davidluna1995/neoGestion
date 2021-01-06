@@ -130,6 +130,39 @@ class ClientesController extends Controller
         ];
     }
 
+    public function cliente_deuda(){
+
+        $listar = DB::select("SELECT
+        case
+            when c.tipo_cliente ='PERSONA' then concat(c.nombres,' ', c.apellidos)
+            when c.tipo_cliente = 'EMPRESA' then razon_social
+        end as cliente,
+        c.contacto,
+        v.id venta_id,
+        to_char(v.created_at, 'DD/MM/YYYY HH24:MI') fecha,
+        v.pago_credito monto_credito,
+        v.detalle_credito,
+		case
+			when pc.pago = 'S' then '✔'
+			when pc.pago is null then 'x'
+			when pc.pago = 'N' then 'x'
+			end as pago,
+			pc.monto_pago,
+			pc.descripcion,
+			to_char(pc.created_at, 'DD/MM/YYYY HH24:MI') fecha_pago
+        from ventas v
+        inner join cliente c on c.id = v.cliente_id
+		left join pago_credito pc on pc.venta_id = v.id
+        where v.detalle_credito is not null or v.pago_credito is not null order by v.id desc");
+
+        if(count($listar) > 0){
+            return [ 'estado' => 'success', 'listar' => $listar ];
+        }
+        return [ 'estado' => 'failed', 'listar' => null ];
+
+
+    }
+
     public function listar_cliente_rut($rut){
 
         $cuerpo = DB::select("SELECT

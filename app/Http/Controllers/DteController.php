@@ -58,11 +58,11 @@ class DteController extends Controller
             $new['Productos'][$i]['Afecto'] = $c['afecto'];
             $new['Productos'][$i]['Cantidad'] = $c['cantidad_ls'];
             $new['Productos'][$i]['PrecioNeto'] = $c['precio'];
-            $new['Productos'][$i]['DescuentoNeto'] = $c['descuento'];
+            $new['Productos'][$i]['DescuentoNeto'] = $c['monto_descuento']/*$c['descuento']*/;
             $new['Productos'][$i]['TipoImpAdicional'] =$c['tipo_impuesto_adicional'];
             $new['Productos'][$i]['MontoImpAdicional'] = $c['monto_impuesto_adicional'];
             $new['Productos'][$i]['UnidadMedida'] = $c['unidad'];
-            $new['Productos'][$i]['SubTotal'] =$c['precio'];
+            $new['Productos'][$i]['SubTotal'] =$c['item_descontado'];
 
             $i++;
        }
@@ -215,6 +215,12 @@ class DteController extends Controller
         } else {
             $venta->cliente_id = $datos->cliente_id;
         }
+        //datos totales de factura dte33
+
+        $totales = $datos->totales;
+        $venta->totales_impuesto_especifico = $totales['Especifico'];
+        $venta->totales_iva = $totales['Iva'];
+        $venta->totales_neto = $totales['Neto'];
 
         if ($venta->save()) {
             $ingresarDetalle = $this->registro_detalle_venta($datos->factura['Productos'], $venta->id);
@@ -224,52 +230,14 @@ class DteController extends Controller
             // dd($ingresarDetalle);
             if ($ingresarDetalle['estado'] == true) {
 
-                // DB::commit();
-                // $factura = $datos['factura'];
-                // $factura['Total'] = $datos['totales'];
+                 DB::commit();
+                 $factura = $datos['factura'];
+                 $factura['Total'] = $datos['totales'];
 
-                $factura = [
-                    'Encabezado' => [
-                        'IdDoc' => [
-                            'TipoDTE' => 34,
-                            'Folio' => 11,
-                        ],
-                        'Emisor' => [
-                            'RUTEmisor' => '77106553-8',
-                            'RznSoc' => 'Neofox Lmtda',
-                            'GiroEmis' => 'Servicios integrales de informática',
-                            'Acteco' => 726000,
-                            'DirOrigen' => 'Los Angeles',
-                            'CmnaOrigen' => 'Los Angeles',
-                        ],
-                        'Receptor' => [
-                            'RUTRecep' => '18805652-0',
-                            'RznSocRecep' => 'Alejandro Godoy',
-                            'GiroRecep' => 'Gobierno',
-                            'DirRecep' => 'Quito 1120',
-                            'CmnaRecep' => 'Los Angeles',
-                        ],
-                    ],
-                    'Detalle' => [
-                        [
-                            'NmbItem' => 'Cajón AFECTO',
-                            'QtyItem' => 123,
-                            'PrcItem' => 923,
-                        ],
-                        [
-                            'NmbItem' => 'Relleno AFECTO',
-                            'QtyItem' => 53,
-                            'PrcItem' => 1473,
-                        ],
-                    ],
-                ];
-
-                $caratula = [
-                    //'RutEnvia' => '11222333-4', // se obtiene de la firma
-                    'RutReceptor' => '18805652-0',
-                    'FchResol' => '2014-12-05',
-                    'NroResol' => 0,
-                ];
+                 return [
+                    'estado' => 'success',
+                    'factura' => $factura
+                 ];
 
             ////DATOS PARA LLEGAR A LA FACTURA --------------------------------
                 $config = [
@@ -279,41 +247,41 @@ class DteController extends Controller
                             'pass' => '1028',
                         ],
                     ];
-                \sasco\LibreDTE\Sii::setAmbiente(\sasco\LibreDTE\Sii::CERTIFICACION);
-                $token = \sasco\LibreDTE\Sii\Autenticacion::getToken($config['firma']);
+                // \sasco\LibreDTE\Sii::setAmbiente(\sasco\LibreDTE\Sii::CERTIFICACION);
+                // $token = \sasco\LibreDTE\Sii\Autenticacion::getToken($config['firma']);
 
 
                 // Objetos de Firma y Folios
-                $Firma = new \sasco\LibreDTE\FirmaElectronica($config['firma']);
+                // $Firma = new \sasco\LibreDTE\FirmaElectronica($config['firma']);
                 // dd(file_get_contents(__DIR__.'/folio_prueba_neofox.xml'));
-                $Folios = new \sasco\LibreDTE\Sii\Folios(file_get_contents(__DIR__.'/folio_prueba_neofox.xml'));
+                // $Folios = new \sasco\LibreDTE\Sii\Folios(file_get_contents(__DIR__.'/folio_prueba_neofox.xml'));
 
                 // generar XML del DTE timbrado y firmado
-                $DTE = new \sasco\LibreDTE\Sii\Dte($factura);
-                $DTE->timbrar($Folios);
+                // $DTE = new \sasco\LibreDTE\Sii\Dte($factura);
+                // $DTE->timbrar($Folios);
 
-                $DTE->firmar($Firma);
+                // $DTE->firmar($Firma);
 
                 //  dd($DTE);
 
 
                 // generar sobre con el envío del DTE y enviar al SII
-                $EnvioDTE = new \sasco\LibreDTE\Sii\EnvioDte();
-                $EnvioDTE->agregar($DTE);
-                $EnvioDTE->setFirma($Firma);
+                // $EnvioDTE = new \sasco\LibreDTE\Sii\EnvioDte();
+                // $EnvioDTE->agregar($DTE);
+                // $EnvioDTE->setFirma($Firma);
 
-                $EnvioDTE->setCaratula($caratula);
-                $EnvioDTE->generar();
+                // $EnvioDTE->setCaratula($caratula);
+                // $EnvioDTE->generar();
 
-                if ($EnvioDTE->schemaValidate()) {
-                    // var_dump( $EnvioDTE->generar());
-                    $track_id = $EnvioDTE->enviar();
-                    dd($track_id);
-                }
+                // if ($EnvioDTE->schemaValidate()) {
+                //     // var_dump( $EnvioDTE->generar());
+                //     $track_id = $EnvioDTE->enviar();
+                //     dd($track_id);
+                // }
 
                 // si hubo algún error se muestra
-                foreach (\sasco\LibreDTE\Log::readAll() as $log)
-                dd($log,"\n");
+                // foreach (\sasco\LibreDTE\Log::readAll() as $log)
+                // dd($log,"\n");
             //// FIN DATOS PARA LLEGAR A LA FACTURA ----------------------------------------
                 return [
                     'venta' =>$venta,
@@ -336,6 +304,7 @@ class DteController extends Controller
 
     public function registro_detalle_venta($carro, $venta_id)
     {
+
 
         for ($i = 0; $i < count($carro); $i++) {
             $productoCantidad = Producto::select([
@@ -364,6 +333,10 @@ class DteController extends Controller
             $det_venta->producto_id = $carro[$i]['id'];
             $det_venta->cantidad = $carro[$i]['Cantidad'];
             $det_venta->precio = $carro[$i]['PrecioNeto'];
+            //DATOS DE FACTURA (OPCIONALES A LA HORA DE GENERAR DICHA FACTURA)
+            $det_venta->descuento = $carro[$i]['DescuentoNeto'];
+            $det_venta->impuesto_adicional = $carro[$i]['MontoImpAdicional'];
+            $det_venta->tipo_impuesto_adicional = $carro[$i]['TipoImpAdicional'];
 
             if ($det_venta->save()) {
                 $actualizarCantidad = Producto::find($carro[$i]['id']);
@@ -410,6 +383,6 @@ class DteController extends Controller
 
     public function fecha_hora_actual(){
 
-        return ['fecha' => date('d-m-yy'), 'hora' => date('G:i'), 'date'=> date('yy-m-d')];
+        return ['fecha' => date('d-m-Y'), 'hora' => date('G:i'), 'date'=> date('Y-m-d')];
     }
 }
