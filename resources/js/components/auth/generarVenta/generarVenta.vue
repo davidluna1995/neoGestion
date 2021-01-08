@@ -779,10 +779,14 @@
                     </div>
                     <div class="col-8">
                       <label>Total a Pagar + IVA 19%</label>
+                      <hr>
                     </div>
                     <div class="col-4">
                       <b><label>$ {{ formatPrice(redondeo(redon_medio_pago,total+(total*0.19))) }}</label></b>
+                      <hr>
                     </div>
+
+
 
                     <div class="col-8">
                       <label>Cliente Paga</label>
@@ -844,9 +848,12 @@
                         <label
 
                           >$
-                          {{
+                          {{ formatPrice(Number(montoEfectivo) - redondeo(redon_medio_pago,total+(total*0.19))) }}
+
+                          <!-- {{
                             formatPrice(redondeo(redon_medio_pago,Number(montoEfectivo) - Number(total+(total*0.19))))
-                          }}</label> <label style="color:red" v-if="Number(montoEfectivo) - Number(total+(total*0.19)) < 0"><i class="fas fa-arrow-up"></i> deuda de cliente</label>
+                          }} -->
+                          </label> <label style="color:red" v-if="Number(montoEfectivo) - redondeo(redon_medio_pago,total+(total*0.19)) < 0"><i class="fas fa-arrow-up"></i> deuda de cliente</label>
                       </div>
                       <div v-if="formaPago == '2'">
                         <label
@@ -869,7 +876,8 @@
                                 Number(total+(total*0.19))
                                 )
                             )
-                          }}</label> <label style="color:red" v-if="(Number(montoEfectivo)+Number(montoDebito)-Number(total)) < 0">
+                          }}</label> <label style="color:red" v-if="redondeo(redon_medio_pago,Number(montoEfectivo) +Number(montoDebito) -Number(total+(total*0.19))
+                                ) < 0">
                             <i class="fas fa-arrow-up"></i> deuda de cliente
                           </label>
                       </div>
@@ -889,9 +897,7 @@
                             <i class="fas fa-arrow-up"></i> deuda de cliente
                           </label>
                       </div>
-                      <!-- <div v-if="formaPago == '3'">
-                        <label>$ {{formatPrice(montoCredito - total)}}</label>
-                      </div> -->
+
                     </div>
                   </div>
 
@@ -932,7 +938,8 @@
                     </div>
                     <div class="col-4">
                       <div>
-                        <label>$ {{ formatPrice(Number(total+(total*0.19)) - (Number(montoEfectivo) + Number(montoDebito)) ) }}</label>
+                          <label for="">$ {{formatPrice(Math.round(total+(total*0.19)) - (Number(montoEfectivo) + Number(montoDebito)) )}}</label>
+                        <!-- <label>$ {{ formatPrice(Number(total+(total*0.19)) - (Number(montoEfectivo) + Number(montoDebito)) ) }}</label> -->
                       </div>
                     </div>
 

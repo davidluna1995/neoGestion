@@ -30,7 +30,9 @@ export default {
       options: [
         { item: 'S', name: 'Unidad' },
         { item: 'N', name: 'Granel (Stock - ilimitado)' },
-      ]
+      ],
+      iva_incluido_1:true,
+      iva_incluido_2:true,
     }
 
   },
@@ -96,6 +98,8 @@ export default {
         'precio_1': this.precio_1,
         'precio_2': this.precio_2,
         'stock': this.selected,
+        'iva_incluido_1': this.iva_incluido_1,
+        'iva_incluido_2': this.iva_incluido_2
 
       }
       this.axios.post('api/registro_producto', data).then((response) => {

@@ -130,6 +130,8 @@
                   </div>
                   <div class="col-11">
                     <b-form-input v-model="precio_1" type="number" placeholder="Precio 1"></b-form-input>
+                    <br>
+                    <label for=""> <input class="orm-check-input" v-model="iva_incluido_1" type="checkbox"> ¿IVA incluido?</label>
                   </div>
                 </div>
               </b-form-group>
@@ -143,6 +145,8 @@
                   </div>
                   <div class="col-11">
                     <b-form-input v-model="precio_2" type="number" placeholder="Precio 2"></b-form-input>
+
+                    <label for=""> <input class="orm-check-input" v-model="iva_incluido_2" type="checkbox"> ¿IVA incluido?</label>
                   </div>
                 </div>
               </b-form-group>

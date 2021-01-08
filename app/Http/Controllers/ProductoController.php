@@ -46,10 +46,24 @@ class ProductoController extends Controller
 
     protected function registro_producto(Request $datos)
     {
+        // dd($datos);
+
         $validarDatos = $this->validar_producto($datos);
 
         if($datos->stock == 'N'){
             $datos->cantidad = null;
+        }
+
+        //iva no o si incluido
+        if($datos->iva_incluido_1 == true){
+            $ivaincluido = 'S';
+        }else{
+            $ivaincluido = 'N';
+        }
+        if($datos->iva_incluido_2 == true){
+            $ivaincluido = 'S';
+        }else{
+            $ivaincluido = 'N';
         }
 
         if ($validarDatos['estado'] == 'success') {
@@ -69,6 +83,8 @@ class ProductoController extends Controller
             $producto->precio_2 = $datos->precio_2;
             $producto->stock = $datos->stock;
             $producto->activo = 'S';
+            $producto->iva_incluido = $ivaincluido;
+            $producto->iva_incluido_2 = $ivaincluido;
 
             if ($producto->save()) {
                 return ['estado'=>'success', 'mensaje'=>'Producto guardado con exito.'];
@@ -85,14 +101,16 @@ class ProductoController extends Controller
                                     'producto.id',
                                     'producto.sku',
                                     'producto.nombre',
-                                    'producto.descripcion as proDesc',
+                                    'producto.descripcion as prodesc',
                                     'producto.cantidad',
                                     'producto.precio_1',
                                     'producto.precio_2',
-                                    'categoria.descripcion as catDesc',
-                                    'categoria.id as catId',
+                                    'producto.iva_incluido',
+                                    'producto.iva_incluido_2',
+                                    'categoria.descripcion as catdesc',
+                                    'categoria.id as catid',
                                     'producto.created_at as creado',
-                                    'u.name as nombreUsuario',
+                                    'u.name as nombreusuario',
                                     'producto.imagen'
                                 ])
                                     ->join('categoria', 'categoria.id', 'producto.categoria_id')
@@ -403,6 +421,8 @@ class ProductoController extends Controller
                                     producto.precio_1,
                                     producto.precio_2,
                                     producto.created_at as creado,
+                                    producto.iva_incluido,
+                                    producto.iva_incluido_2,
                                     categoria.descripcion as catdesc,
                                     categoria.id as catid,
                                     u.name as nombreusuario,

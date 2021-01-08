@@ -262,7 +262,7 @@ export default {
 
                     console.log("seleccionaste solo efectivo");
 
-                    this.redon_medio_pago = 'EFECTIVO';
+                     this.redon_medio_pago = 'EFECTIVO';
 
                 }
 
@@ -852,9 +852,11 @@ export default {
                 console.log('ultomo_numero', ultimo_numero);
                 if(ultimo_numero >= 0 && ultimo_numero <= 5){
                     //entonces redondear para abajo
+                    console.log('<= 5 ',numero - ultimo_numero)
                    return numero - ultimo_numero
                 }
                 if(ultimo_numero >= 6){
+                    console.log('>= 6 ', numero + (10 - ultimo_numero) )
                     return numero + (10 - ultimo_numero);
                 }
 

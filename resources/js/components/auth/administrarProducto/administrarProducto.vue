@@ -133,10 +133,10 @@
                   <div class="col-12">{{ data.item.nombre }}</div>
                 </template>
                 <template v-slot:cell(cat)="data">
-                  <div class="col-12">{{ data.item.catDesc }}</div>
+                  <div class="col-12">{{ data.item.catdesc }}</div>
                 </template>
                 <template v-slot:cell(desc)="data">
-                  <div class="col-12">{{ data.item.proDesc }}</div>
+                  <div class="col-12">{{ data.item.prodesc }}</div>
                 </template>
                 <template v-slot:cell(stock)="data">
                   <div class="col-12">{{formatPrice(data.item.cantidad)}}</div>
@@ -419,7 +419,7 @@
                       <b-col sm="12" lg="3">
                         <b>Precio 1:</b>
                         <span class="green">$</span>
-                        {{ formatPrice(data.item.precio_1) }}
+                        {{ formatPrice(data.item.precio_1) }}  {{(data.item.iva_incluido)?'(IVA incluido)':''}}
                       </b-col>
                       <b-col sm="12" lg="3">
                         <b>Precio 2:</b>
@@ -432,7 +432,7 @@
                       </b-col>
                       <b-col sm="12" lg="3">
                         <b>Creado por:</b>
-                        {{ data.item.nombreUsuario }}
+                        {{ data.item.nombreusuario }}
                       </b-col>
                     </b-row>
                   </b-card>
