@@ -187,6 +187,13 @@
                     </section>
             </b-modal>
 
+            <br>
+            <!-- seleect de tipo de monto -->
+            <label for="">Formato de precio:</label>
+            <select v-model="dte_precio" class="form-control" name="" id="">
+                <option  value="iva_incluido">Precio + iva incluido</option>
+                <option  value="neto">Precio neto</option>
+            </select>
         </b-card>
      </b-card>
 
@@ -744,6 +751,8 @@
                     </div>
 
                   <!-- detalle venta -->
+<!-- esta parte es solo para precio NETO -->
+<div v-if="dte_precio == 'neto'">
                   <label>
                     <b>Detalle de Venta</b>
                   </label>
@@ -810,52 +819,147 @@
                         </label>
                       </div>
 
-                      <!-- <div v-if="formaPago == '3'">
-                        <label>$ {{formatPrice(montoCredito - total)}}</label>
-                      </div> -->
                     </div>
 
 
 
                   </div>
-                  <div class="row">
-                      <div class="col-8" v-if="sii_forma_pago == 'CONTADO'">
-                      <label>Vuelto</label>
+                    <div class="row">
+                        <div class="col-8" v-if="sii_forma_pago == 'CONTADO'">
+                        <label>Vuelto</label>
+                        </div>
+                        <div class="col-4">
+
+                        <div v-if="sii_forma_pago == 'CONTADO'">
+
+                            <label>$ {{
+                                (Number(montoEfectivo) + Number(montoDebito))?
+                                /*formatPrice( ((Number(montoEfectivo) + Number(montoDebito)) - Math.trunc(((total * 119)/100) + Number(impuesto_especifico)  ) ))*/
+                                formatPrice((Math.round(Number(montoEfectivo) + Number(montoDebito) -  /*TOTAL A PAGAR->*/redondeo(redon_medio_pago,total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))  ) ))
+                                :0
+                                }}
+                            </label>
+                        </div>
+
+
+                        </div>
+                    </div>
+                  <!-- detalle venta -->
+</div>
+<!-- FIN esta parte es solo para precio NETO -->
+
+<!-- ESTA PARTE ES SOLO PARA PRECIO + IVA -->
+<div v-if="dte_precio == 'iva_incluido'">
+    <label> <b>Detalle de Venta</b> </label>
+        <div class="row">
+
+
+            <div class="col-8">
+                <label>Monto neto</label>
+            </div>
+             <div class="col-4">
+                 $ {{ formatPrice(Math.round(suma_solo_ivas) / 1.19 ) }}
+             </div>
+
+             <div class="col-8">
+                      <label>Impuesto especifico</label>
                     </div>
                     <div class="col-4">
+                      <label>$ {{ formatPrice(impuesto_especifico) }}</label>
+             </div>
 
-                      <div v-if="sii_forma_pago == 'CONTADO'">
+             <div class="col-8">
+                <label>(I.V.A 19%)</label>
+            </div>
+             <div class="col-4">
+                 $ {{ formatPrice(Math.round(suma_solo_ivas) - Math.round(suma_solo_ivas)/1.19 ) }}
+             </div>
 
-                        <label>$ {{
-                            (Number(montoEfectivo) + Number(montoDebito))?
-                             /*formatPrice( ((Number(montoEfectivo) + Number(montoDebito)) - Math.trunc(((total * 119)/100) + Number(impuesto_especifico)  ) ))*/
-                             formatPrice((Math.round(Number(montoEfectivo) + Number(montoDebito) -  /*TOTAL A PAGAR->*/redondeo(redon_medio_pago,total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))  ) ))
-                             :0
-                             }}
-                        </label>
-                      </div>
+            <!-- TOTAL A PAGAR -->
+            <div class="col-8">
+                <label>Total a pagar</label>
+            </div>
+             <div class="col-4">
+                 $ {{ formatPrice(total + Number(impuesto_especifico) ) }}
+             </div>
+        </div>
 
 
-                    </div>
-                  </div>
-                  <!-- detalle venta -->
+        <div class="row">
+            <div class="col-8">
+                <hr>
+                <label>Cliente Paga</label>
+            </div>
+            <div class="col-4">
+
+
+                <div >
+                    <hr>
+                    <label>$ {{ formatPrice(Number(montoEfectivo) + Number(montoDebito) ) }}</label>
+                </div>
+
+            </div>
+
+
+            <div class="col-8" v-if="sii_forma_pago == 'CREDITO'">
+                <label for="">Deuda (credito)</label>
+
+            </div>
+
+            <div class="col-4">
+
+                <div v-if="sii_forma_pago == 'CREDITO'">
+
+                    <label>$ {{
+
+                        formatPrice((Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) )) )
+
+                        }}
+                    </label>
+                </div>
+
+
+
+
+
+             </div>
+
+
+         </div>
+
+         <div class="row">
+                 <div class="col-8" v-if="sii_forma_pago == 'CONTADO'">
+                        <label>Vuelto</label>
+              </div>
+              <div class="col-4">
+
+                        <div v-if="sii_forma_pago == 'CONTADO'">
+
+
+                            <label>$ {{
+                                (Number(montoEfectivo) + Number(montoDebito))?
+                                /*formatPrice( ((Number(montoEfectivo) + Number(montoDebito)) - Math.trunc(((total * 119)/100) + Number(impuesto_especifico)  ) ))*/
+                                formatPrice(( (Math.round(Number(montoEfectivo) + Number(montoDebito)) -  /*TOTAL A PAGAR->*/(redondeo(redon_medio_pago, total + Number(impuesto_especifico) )))  ) )
+                                :0
+                                }}
+                            </label>
+                        </div>
+
+                </div>
+
+
+            </div>
+
+</div>
+
+<!-- FIN ESTA PARTE ES SOLO PARA PRECIO + IVA -->
+
 
                   <!-- Comprobante -->
                   <div class="row justify-content-end">
                     <div class="col-12">
                       <!-- BOTON VENTAS -->
                       <div>
-                        <!-- <b-button
-                         :disabled="confirm_compra"
-                          pill
-                          block
-                          size="sm"
-                          id="show-btn"
-                          class="my-2"
-                          variant="success"
-                          @click="registrar_venta(mostrar_cliente)"
-                          >Confirmar Compra</b-button> -->
-                        <!-- @click="showModal();" -->
 
                         <button :disabled="traer_ul_venta" @click="abrir_ultima_venta('comprobante',local_storage_venta)" v-if="local_storage_venta !=''" class="btn btn-link">Traer mi ultima venta (ID: {{local_storage_venta}})</button>
 

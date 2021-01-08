@@ -170,7 +170,9 @@ export default {
             ticketPrintDetalle:{},
             traer_ul_venta:false,
             sii_forma_pago:'',
-            redon_medio_pago:'DEBITO' //para obtener monto real
+            redon_medio_pago:'DEBITO', //para obtener monto real
+
+            dte_precio:'iva_incluido'
 
 
         }

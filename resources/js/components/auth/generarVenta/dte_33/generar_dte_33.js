@@ -239,7 +239,8 @@ export default {
             get_datos_periodo:[],
 
             local_storage_venta:(localStorage.getItem('venta_id')) ? localStorage.getItem('venta_id') :'',
-            redon_medio_pago:'DEBITO' //para obtener monto real
+            redon_medio_pago:'DEBITO', //para obtener monto real
+            dte_precio:'iva_incluido'
         }
 
 

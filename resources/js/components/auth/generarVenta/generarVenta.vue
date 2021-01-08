@@ -377,8 +377,13 @@
 
                     </section>
             </b-modal>
-
-
+            <br><br>
+            <!-- SELECT DE SELECTOR TIPO PRECIO -->
+            <label for="">Formato de precio:</label>
+            <select v-model="dte_precio" class="form-control" name="" id="">
+                <option  value="iva_incluido">Precio + iva incluido</option>
+                <option  value="neto">Precio neto</option>
+            </select>
 
 
 
