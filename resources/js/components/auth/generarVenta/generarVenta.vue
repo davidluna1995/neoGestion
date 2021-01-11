@@ -774,20 +774,23 @@
                       <label>Total neto</label>
                     </div>
                     <div class="col-4">
-                      <label>$ {{ formatPrice(total) }}</label>
+                      <label v-if="dte_precio == 'neto'">$ {{ formatPrice(total) }}</label>
+                      <label v-if="dte_precio == 'iva_incluido'">$ {{ formatPrice(total/1.19) }}</label>
                     </div>
                     <div class="col-8">
                       <label>IVA 19%</label>
                     </div>
                     <div class="col-4">
-                      <label>$ {{ formatPrice(total*0.19) }}</label>
+                      <label v-if="dte_precio == 'neto'">$ {{ formatPrice(total*0.19) }}</label>
+                       <label v-if="dte_precio == 'iva_incluido'">$ {{ formatPrice((total/1.19)*0.19) }}</label>
                     </div>
                     <div class="col-8">
                       <label>Total a Pagar + IVA 19%</label>
                       <hr>
                     </div>
                     <div class="col-4">
-                      <b><label>$ {{ formatPrice(redondeo(redon_medio_pago,total+(total*0.19))) }}</label></b>
+                      <b v-if="dte_precio=='neto'"><label>$ {{ formatPrice(redondeo(redon_medio_pago,total+(total*0.19))) }}</label></b>
+                       <b v-if="dte_precio=='iva_incluido'"><label>$ {{ formatPrice(redondeo(redon_medio_pago,total)) }}</label></b>
                       <hr>
                     </div>
 
@@ -850,57 +853,98 @@
                         <label>$ 0</label>
                       </div>
                       <div v-if="formaPago == '1'">
-                        <label
-
-                          >$
-                          {{ formatPrice(Number(montoEfectivo) - redondeo(redon_medio_pago,total+(total*0.19))) }}
-
-                          <!-- {{
-                            formatPrice(redondeo(redon_medio_pago,Number(montoEfectivo) - Number(total+(total*0.19))))
-                          }} -->
-                          </label> <label style="color:red" v-if="Number(montoEfectivo) - redondeo(redon_medio_pago,total+(total*0.19)) < 0"><i class="fas fa-arrow-up"></i> deuda de cliente</label>
+                        <div v-if="dte_precio=='neto'">
+                            <label>${{ formatPrice(Number(montoEfectivo) - redondeo(redon_medio_pago,total+(total*0.19))) }} </label>
+                            <label style="color:red" v-if="Number(montoEfectivo) - redondeo(redon_medio_pago,total+(total*0.19)) < 0"><i class="fas fa-arrow-up"></i> deuda de cliente</label>
+                        </div>
+                        <div v-if="dte_precio=='iva_incluido'">
+                            <label>${{ formatPrice(Number(montoEfectivo) - redondeo(redon_medio_pago,total)) }} </label>
+                            <label style="color:red" v-if="Number(montoEfectivo) - redondeo(redon_medio_pago,total) < 0"><i class="fas fa-arrow-up"></i> deuda de cliente</label>
+                        </div>
                       </div>
                       <div v-if="formaPago == '2'">
-                        <label
-                          >$
-                          {{
-                            formatPrice(redondeo(redon_medio_pago,Number(montoDebito) - Number(total+(total*0.19))))
-                          }}</label>
-                          <label style="color:red" v-if="(Number(montoDebito) - Number(total+(total*0.19))) < 0">
-                            <i class="fas fa-arrow-up"></i> deuda de cliente
-                          </label>
+                          <div v-if="dte_precio=='neto'">
+                            <label>${{formatPrice(redondeo(redon_medio_pago,Number(montoDebito) - Number(total+(total*0.19))))}}</label>
+                            <label style="color:red" v-if="(Number(montoDebito) - Number(total+(total*0.19))) < 0">
+                                <i class="fas fa-arrow-up"></i> deuda de cliente
+                            </label>
+                          </div>
+
+                          <div v-if="dte_precio=='iva_incluido'">
+                            <label>${{formatPrice(redondeo(redon_medio_pago,Number(montoDebito) - Number(total) ) ) }}</label>
+                            <label style="color:red" v-if="(Number(montoDebito) - Number(total)) < 0">
+                                <i class="fas fa-arrow-up"></i> deuda de cliente
+                            </label>
+                          </div>
                       </div>
                       <div v-if="formaPago == '1,2'">
-                        <label
-                          >$
-                          {{
-                            formatPrice(
-                              redondeo(redon_medio_pago,
-                                Number(montoEfectivo) +
-                                Number(montoDebito) -
-                                Number(total+(total*0.19))
+                        <div v-if="dte_precio=='neto'">
+                            <label
+                            >$
+                            {{
+                                formatPrice(
+                                redondeo(redon_medio_pago,
+                                    Number(montoEfectivo) +
+                                    Number(montoDebito) -
+                                    Number(total+(total*0.19))
+                                    )
                                 )
-                            )
-                          }}</label> <label style="color:red" v-if="redondeo(redon_medio_pago,Number(montoEfectivo) +Number(montoDebito) -Number(total+(total*0.19))
-                                ) < 0">
-                            <i class="fas fa-arrow-up"></i> deuda de cliente
-                          </label>
+                            }}</label> <label style="color:red" v-if="redondeo(redon_medio_pago,Number(montoEfectivo) +Number(montoDebito) -Number(total+(total*0.19))
+                                    ) < 0">
+                                <i class="fas fa-arrow-up"></i> deuda de cliente
+                            </label>
+                        </div>
+                        <div v-if="dte_precio=='iva_incluido'">
+                            <label
+                            >$
+                            {{
+                                formatPrice(
+                                redondeo(redon_medio_pago,
+                                    Number(montoEfectivo) +
+                                    Number(montoDebito) -
+                                    Number(total)
+                                    )
+                                )
+                            }}</label> <label style="color:red" v-if="redondeo(redon_medio_pago,Number(montoEfectivo) +Number(montoDebito) -Number(total)
+                                    ) < 0">
+                                <i class="fas fa-arrow-up"></i> deuda de cliente
+                            </label>
+                        </div>
                       </div>
                       <div v-if="formaPago == '2,1'">
-                        <label
-                          >$
-                          {{
-                            formatPrice(
-                                redondeo(redon_medio_pago,
-                                Number(montoEfectivo) +
-                                Number(montoDebito) -
-                                Number(total+(total*0.19))
+                        <div v-if="dte_precio=='neto'">
+                            <label
+                            >$
+                            {{
+                                formatPrice(
+                                    redondeo(redon_medio_pago,
+                                    Number(montoEfectivo) +
+                                    Number(montoDebito) -
+                                    Number(total+(total*0.19))
+                                    )
                                 )
-                            )
-                          }}</label>
-                          <label style="color:red" v-if="(Number(montoEfectivo)+Number(montoDebito)-Number(total+(total*0.19))) < 0">
-                            <i class="fas fa-arrow-up"></i> deuda de cliente
-                          </label>
+                            }}</label>
+                            <label style="color:red" v-if="(Number(montoEfectivo)+Number(montoDebito)-Number(total+(total*0.19))) < 0">
+                                <i class="fas fa-arrow-up"></i> deuda de cliente
+                            </label>
+                        </div>
+
+                        <div v-if="dte_precio=='iva_incluido'">
+                            <label
+                            >$
+                            {{
+                                formatPrice(
+                                    redondeo(redon_medio_pago,
+                                    Number(montoEfectivo) +
+                                    Number(montoDebito) -
+                                    Number(total)
+                                    )
+                                )
+                            }}</label>
+                            <label style="color:red" v-if="(Number(montoEfectivo)+Number(montoDebito)-Number(total)) < 0">
+                                <i class="fas fa-arrow-up"></i> deuda de cliente
+                            </label>
+                        </div>
                       </div>
 
                     </div>
@@ -912,20 +956,23 @@
                       <label>Total neto</label>
                     </div>
                     <div class="col-4">
-                      <label>$ {{ formatPrice(total) }}</label>
+                      <label v-if="dte_precio == 'neto'">$ {{ formatPrice(total) }}</label>
+                      <label v-if="dte_precio == 'iva_incluido'">$ {{ formatPrice(total/1.19) }}</label>
                     </div>
                      <div class="col-8">
                       <label>IVA 19%</label>
                     </div>
                     <div class="col-4">
-                      <label>$ {{ formatPrice(total*0.19) }}</label>
+                      <label v-if="dte_precio == 'neto'">$ {{ formatPrice(total*0.19) }}</label>
+                      <label v-if="dte_precio == 'iva_incluido'">$ {{ formatPrice((total/1.19)*0.19) }}</label>
                     </div>
 
                     <div class="col-8">
                       <label>Total a pagar + IVA 19%</label>
                     </div>
                     <div class="col-4">
-                      <b><label>$ {{ formatPrice(total + (total*0.19)) }}</label></b>
+                      <b v-if="dte_precio=='neto'" ><label>$ {{ formatPrice(total + (total*0.19)) }}</label></b>
+                      <b v-if="dte_precio=='iva_incluido'"><label>$ {{ formatPrice(redondeo(redon_medio_pago,total)) }}</label></b>
                     </div>
 
                     <div class="col-8">
@@ -943,7 +990,8 @@
                     </div>
                     <div class="col-4">
                       <div>
-                          <label for="">$ {{formatPrice(Math.round(total+(total*0.19)) - (Number(montoEfectivo) + Number(montoDebito)) )}}</label>
+                          <label v-if="dte_precio=='neto'">$ {{formatPrice(Math.round(total+(total*0.19)) - (Number(montoEfectivo) + Number(montoDebito)) )}}</label>
+                          <label v-if="dte_precio=='iva_incluido'">$ {{formatPrice(Math.round(total) - (Number(montoEfectivo) + Number(montoDebito)) )}}</label>
                         <!-- <label>$ {{ formatPrice(Number(total+(total*0.19)) - (Number(montoEfectivo) + Number(montoDebito)) ) }}</label> -->
                       </div>
                     </div>
@@ -964,7 +1012,11 @@
                           id="show-btn"
                           class="my-2"
                           variant="success"
-                          @click="registrar_venta()"
+                          @click="registrar_venta(
+                              /*neto*/(dte_precio=='neto')?total : Math.round(total/1.19)  ,
+                              /*iva*/ (dte_precio=='neto')?Math.round(total*0.19): Math.round((total/1.19)*0.19),
+                             /*bruto*/(dte_precio=='neto')?redondeo(redon_medio_pago,total+(total*0.19)) : redondeo(redon_medio_pago,total)  ,
+                          )"
                           >Confirmar Compra</b-button
                         >
                         <!-- @click="showModal();" -->
@@ -1078,8 +1130,14 @@
           <!--Totales-->
           <tr>
             <td>
-              <b>Total:</b>
+              <b>Total 1:</b>
               $ {{ formatPrice(ticketPrint.venta_total) }}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <b>IVA:</b>
+              $ {{ formatPrice(ticketPrint.totales_iva) }}
             </td>
           </tr>
           <tr>
@@ -1243,6 +1301,12 @@
                                       <td>
                                         <b>Total:</b>
                                         $ {{ formatPrice(t.totalVenta) }}
+                                      </td>
+                                    </tr>
+                                    <tr v-for="t in ticketPrint" :key="t.id">
+                                      <td>
+                                        <b>Iva:</b>
+                                        $ {{ formatPrice(t.totales_iva) }}
                                       </td>
                                     </tr>
                                     <tr>

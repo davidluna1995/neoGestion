@@ -149,6 +149,10 @@ class VentasController extends Controller
             $venta->cliente_id = $datos->cliente_id;
         }
 
+        //datos totales de boleta dte39
+
+        $venta->totales_iva = $datos->iva;
+        $venta->totales_neto = $datos->neto;
         // dd($deuda);
 
         if ($venta->save()) {
@@ -157,7 +161,7 @@ class VentasController extends Controller
             $cliente=Cliente::find($datos->cliente_id);
 
             if ($ingresarDetalle == true) {
-                 DB::commit(); /*descomentar aqui despues*/
+                DB::commit(); /*descomentar aqui despues*/
                 $ticketDetalle = $this->ticketDetalle($venta->id);
                 $ticket = $this->ticket($venta->id);
                 if ($ticketDetalle['estado'] == 'success' && $ticket['estado'] == 'success') {
@@ -709,7 +713,8 @@ class VentasController extends Controller
         $listar = Ventas::select([
             'ventas.id as idVenta',
             'ventas.created_at as fechaVenta',
-            'ventas.venta_total as totalVenta'
+            'ventas.venta_total as totalVenta',
+            'ventas.totales_iva'
             ])
             ->where('ventas.id', $idVenta)
             ->get();

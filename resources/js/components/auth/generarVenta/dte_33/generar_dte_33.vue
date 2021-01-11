@@ -327,7 +327,8 @@
                           border-top: 1px solid black;
                         "
                       >
-                      $ {{ formatPrice(total) }}
+                      <label v-if="dte_precio=='neto'"> $ {{ formatPrice(total) }}</label>
+                      <label v-if="dte_precio=='iva_incluido'"> $ {{ formatPrice(Math.round(suma_solo_ivas) / 1.19 ) }}</label>
                        <!-- $ {{formatPrice(pre_factura.venta_total)}} -->
                       </td>
 
@@ -374,7 +375,8 @@
                         "
                       >
                         <!-- $ {{ formatPrice(((pre_factura.venta_total * 119) / 100) - pre_factura.venta_total  ) }} -->
-                        $ {{ formatPrice(((suma_solo_ivas * 119)/100) - suma_solo_ivas )}}
+                       <label v-if="dte_precio=='neto'"> $ {{ formatPrice(((suma_solo_ivas * 119)/100) - suma_solo_ivas )}}</label>
+                       <label v-if="dte_precio=='iva_incluido'"> $ {{ formatPrice(Math.round(suma_solo_ivas) - Math.round(suma_solo_ivas)/1.19 ) }}</label>
                       </td>
                     </tr>
 
@@ -397,7 +399,8 @@
                         "
                       >
                        <!-- $ {{formatPrice((pre_factura.venta_total * 119) / 100)}} -->
-                       $ {{ formatPrice( redondeo(redon_medio_pago, total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ) ) )}}
+                       <label v-if="dte_precio=='neto'"> $ {{ formatPrice( redondeo(redon_medio_pago, total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ) ) )}} </label>
+                       <label v-if="dte_precio=='iva_incluido'"> $ {{ formatPrice(redondeo(redon_medio_pago,total + Number(impuesto_especifico) ) ) }}</label>
                       </td>
                     </tr>
                   </table>
@@ -451,6 +454,7 @@
 
 
             <button
+              v-if="dte_precio=='neto'"
               type="button"
               class="btn btn-success"
               @click="emitir_dte33(
@@ -463,6 +467,27 @@
 
                   /* deuda, si es que existiera */ Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) ),
                   /*credito*/ ((Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) )) )
+
+              )"
+            >
+              Emitir Dte
+            </button>
+
+            <button
+              v-if="dte_precio=='iva_incluido'"
+              type="button"
+              class="btn btn-success"
+              @click="emitir_dte33(
+                  pre_factura,
+                  /*total neto*/ Math.round(suma_solo_ivas / 1.19 ),
+                  /*IMP. ESPECIFICO*/  impuesto_especifico,
+                  /*I.V.A 19% :*/Math.round(suma_solo_ivas) - Math.round(suma_solo_ivas/1.19),
+                  /*MONTO BRUTO*/ redondeo(redon_medio_pago,total + Number(impuesto_especifico) ),
+                  /*(no visible en factura, 'vuelto')*/ (Math.round(Number(montoEfectivo) + Number(montoDebito)) -  /*TOTAL A PAGAR->*/(redondeo(redon_medio_pago, total + Number(impuesto_especifico) ))),
+
+                  /* deuda, si es que existiera */  (redondeo(redon_medio_pago,total + Number(impuesto_especifico) ) ) -  ( Number(montoEfectivo) + Number(montoDebito)),
+
+                   /*credito*/ (redondeo(redon_medio_pago,total + Number(impuesto_especifico) ) ) -  ( Number(montoEfectivo) + Number(montoDebito))
 
               )"
             >
@@ -879,9 +904,9 @@
             <div class="col-8">
                 <label>Total a pagar</label>
             </div>
-             <div class="col-4">
-                 $ {{ formatPrice(total + Number(impuesto_especifico) ) }}
-             </div>
+             <div class="col-4"><b>
+                 $ {{ formatPrice(redondeo(redon_medio_pago,total + Number(impuesto_especifico) ) ) }}
+             </b></div>
         </div>
 
 
@@ -912,7 +937,8 @@
 
                     <label>$ {{
 
-                        formatPrice((Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) )) )
+
+                        formatPrice(Math.round( (total + Number(impuesto_especifico)) - ( Number(montoEfectivo) + Number(montoDebito))))
 
                         }}
                     </label>

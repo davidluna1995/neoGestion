@@ -515,7 +515,7 @@ export default {
                 //si esta seleccionado solo efectivo, entonces
                 if(this.formaPago[0] == '2'){
                     // console.log("seleccionaste solo debito");
-                    if(this.montoDebito.trim() =='' || this.montoDebito <= 0){
+                    if( this.montoDebito <= 0){
                         alert("El monto debito debe existir o ser mayor a cero")
                         this.visualizar_compra = false;
                         return false
@@ -527,8 +527,7 @@ export default {
             // o si aparte de estar en contado pero "ambos" tipos seleccionado
             if(this.sii_forma_pago.trim() =='CONTADO' && this.formaPago.length == 2){
                 //si esta seleccionado  efectivo y debito entonces
-                if((this.montoEfectivo.trim() =='' || this.montoEfectivo <= 0)
-                || (this.montoDebito.trim() =='' || this.montoDebito <= 0)){
+                if((this.montoEfectivo <= 0) || (this.montoDebito <= 0)){
 
                     // console.log("seleccionaste ambos");
                     alert("Efectivo y debito deben existir o ser mayor a cero")
@@ -537,20 +536,6 @@ export default {
                 }
 
             }
-
-
-            // if(this.chk_credito == true){
-            //     if(this.monto_credito <= 0 || this.monto_credito == '' || this.monto_credito == null){
-            //         alert("El monto del credito debe ser mayor a 0")
-            //         this.visualizar_compra = false;
-            //         return false;
-            //     }
-            //     if( this.detalle_credito == '' || this.detalle_credito == null){
-            //         alert("El detalle del credito no debe estar vacio")
-            //         this.visualizar_compra = false;
-            //         return false;
-            //     }
-            // }
 
             const data = {
                 'carro': this.arregloCarro,
@@ -962,6 +947,7 @@ export default {
                 debito:this.montoDebito,
                 detalle_credito: this.detalle_credito,
                 cliente_id: this.cliente_id,
+                dte_precio: this.dte_precio,
                 tipo_venta_id:'33'// facturacion electronica;
 
             };

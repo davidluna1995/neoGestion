@@ -82,6 +82,7 @@ class DteController extends Controller
 
     public function emitir_dte_33(Request $r){
 
+
         $venta_maxima = $this->registro_venta($r);
 
         return $venta_maxima;
@@ -230,10 +231,21 @@ class DteController extends Controller
             // dd($ingresarDetalle);
             if ($ingresarDetalle['estado'] == true) {
 
-                 DB::commit();
+                //  DB::commit();
                  $factura = $datos['factura'];
                  $factura['Total'] = $datos['totales'];
 
+                // si el precio es + iva entonces:
+                if($datos->dte_precio == 'iva_incluido'){ // se descuenta el iva hasta dejar el precio en NETO
+                    foreach ($factura['Productos'] as $key => &$segment) {
+                        $segment['PrecioNeto'] = round($segment['PrecioNeto'] / 1.19);
+                        $segment['SubTotal'] = round($segment['SubTotal'] / 1.19); // no se si redondear este valor, puede afectar el monto neto
+
+                    }
+                }
+                 DB::commit();
+
+                //  return $factura;
                  return [
                     'estado' => 'success',
                     'factura' => $factura

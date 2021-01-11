@@ -467,7 +467,9 @@ export default {
 
         },
 
-        registrar_venta() {
+        registrar_venta(neto, iva, bruto) {
+
+            console.log(neto, iva, bruto);
 
             if(this.estado_caja=='INACTIVO'){
                 this.$refs['modal-periodo-caja'].show();
@@ -538,7 +540,11 @@ export default {
             }
             const data = {
                 'carro': this.arregloCarro,
-                'venta_total': this.redondeo(this.redon_medio_pago, this.total),
+                // 'venta_total': this.redondeo(this.redon_medio_pago, this.total),
+                'venta_total': this.redondeo(this.redon_medio_pago, bruto),
+                'bruto': bruto,
+                'iva':iva,
+                'neto':neto,
                 'sii_forma_pago': this.sii_forma_pago,
                 'forma_pago_id': this.formaPago[0] + ',' + this.formaPago[1],
                 'tipo_entrega_id': this.entrega,
