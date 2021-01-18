@@ -147,7 +147,21 @@ export default {
             local_storage_venta:(localStorage.getItem('venta_id')) ? localStorage.getItem('venta_id') :'',
 
 
-            listarConf:{},
+            listarConf:{
+
+            },
+            emisor:{
+                created_at: "2020-10-21 10:30:36",
+                deleted_at: null,
+                direccion: "quito 1120, villa pto alegres",
+                dirreccion: "",
+                empresa: "NEOGESTION",
+                giro: "GIRO DE SERVICIOS DE PAGINAS WEB",
+                id: 1,
+                logo: "storage/ArchivosConfiguracion/fox-head_1606833571.ico",
+                rut: "77.106.553-8",
+                updated_at: "2020-12-29 12:42:29",
+            },
             ticketPrint:{},
             ticketPrintDetalle:{},
 
@@ -212,7 +226,8 @@ export default {
                   giro: ""
                 }
             },
-            suma_solo_ivas:0,
+            suma_solo_ivas:0, //afectos
+            suma_solo_exento:0, //exentos
             date:{},
 
             //PERIODO Y CAJAS
@@ -240,7 +255,12 @@ export default {
 
             local_storage_venta:(localStorage.getItem('venta_id')) ? localStorage.getItem('venta_id') :'',
             redon_medio_pago:'DEBITO', //para obtener monto real
-            dte_precio:'iva_incluido'
+            dte_precio:'iva_incluido',
+
+            post_factura:{},
+            fac_venta:{},
+            fac_cliente:{}
+
         }
 
 
@@ -352,7 +372,8 @@ export default {
                   updated_at: "",
                   rut: "",
                   giro: ""
-                }
+                },
+
             };
         },
 
@@ -878,6 +899,7 @@ export default {
             this.total = 0;
             this.impuesto_especifico = 0;
             this.suma_solo_ivas = 0;
+            this.suma_solo_exento = 0;
             this.montoDebito = 0;
             this.montoCredito = 0;
             this.montoEfectivoDebito = 0;
@@ -892,6 +914,7 @@ export default {
             this.total = 0;
             this.totalTemporal = 0;
             this.suma_solo_ivas =0;
+            this.suma_solo_exento = 0;
             for (let i = 0; i < this.arregloCarro.length; i++) {
                  //   sub total - ((subtotal) * descuento / 100)
                 console.log(parseInt(this.arregloCarro[i].precio) * (this.arregloCarro[i].cantidad_ls)+' - '+((parseInt(this.arregloCarro[i].precio) * (this.arregloCarro[i].cantidad_ls)) * ((this.arregloCarro[i].descuento)?this.arregloCarro[i].descuento:0) /100))
@@ -916,6 +939,9 @@ export default {
 
                     console.log('solo_iva: '+this.suma_solo_ivas)
                 }
+                if(this.arregloCarro[i].afecto == 'false'){
+                    this.suma_solo_exento = this.suma_solo_exento + parseInt(this.arregloCarro[i].precio) * (this.arregloCarro[i].cantidad_ls) - Math.round((parseInt(this.arregloCarro[i].precio) * (this.arregloCarro[i].cantidad_ls)) * ((this.arregloCarro[i].descuento)?this.arregloCarro[i].descuento:0) /100);
+                }
             }
 
         },
@@ -926,12 +952,15 @@ export default {
               }
             });
           },
-        emitir_dte33(factura, neto, imp_especifico, iva, bruto, vuelto, deuda, credito ){
+        emitir_dte33(factura, neto, exento, imp_especifico, iva, bruto, vuelto, deuda, credito ){
             // console.log(factura, neto, imp_especifico, iva, bruto, vuelto, credito);
+
+
             const data = {
                 factura: factura,
                 totales:{
                     Neto: neto,
+                    Exento: exento,
                     Iva: iva,
                     Especifico: imp_especifico,
                     Total: Math.round(bruto)
@@ -952,13 +981,25 @@ export default {
 
             };
 
+
             this.axios.post('api/emitir_dte_33', data).then((res)=>{
                 if(res.data.estado == 'success'){
-                    this.limpiarCarro()
+                    this.limpiarCarro();
+                    //guardamos la ID de la venta en local Storage, por cada venta se ira actualizando
+                     localStorage.setItem('venta_id', res.data.venta.id);
+                     this.local_storage_venta = localStorage.getItem('venta_id');
                     alert("Factura electronica emitida");
-                    this.url('index');
+                    this.$refs['modal_factura'].hide();
+                    document.getElementById('btn_ultima_venta').click()
+
+                    // this.url('index');
 
                 }
+            });
+        },
+        dte_34(){
+            this.axios.get('api/super_factura').then((res)=>{
+
             });
         },
         consultar_folios(){
@@ -1030,8 +1071,8 @@ export default {
                     this.confirm_compra = false;
 
                     //guardamos la ID de la venta en local Storage, por cada venta se ira actualizando
-                    localStorage.setItem('venta_id', this.ticketPrint[0].idVenta);
-                    this.local_storage_venta = localStorage.getItem('venta_id');
+                    // localStorage.setItem('venta_id', this.ticketPrint[0].idVenta);
+                    // this.local_storage_venta = localStorage.getItem('venta_id');
                 }
 
                 if (response.data.estado == 'failed') {
@@ -1053,9 +1094,12 @@ export default {
             this.traer_ul_venta = true;
             this.axios.get('api/comprobante/'+venta_id).then((res)=>{
                 if(res.data.estado == 'success'){
-                    this.listarConf = res.data.configuraciones;
-                    this.ticketPrint = res.data.venta;
+                    this.emisor = res.data.configuraciones.emisor;
+                    this.fac_venta = res.data.venta;
+                    this.post_factura = res.data.factura;
+                    this.fac_cliente = res.data.factura.Cliente;
                     this.ticketPrintDetalle = res.data.venta_detalle;
+
                     this.traer_ul_venta = false;
                     this.$refs[""+component+""].show();
                 }else{

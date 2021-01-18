@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button v-if="false" @click="generar_un_xml">Genera un xml factura</button>
+    <button v-if="true" @click="generar_un_xml">Genera un xml factura</button>
 
     <button
     v-if="false"
@@ -12,7 +12,7 @@
       Ver xml como una factura real
     </button>
 
-    <div v-if="false" class="card">
+    <div v-if="true" class="card">
       aqui se veria la img
       <img width="700" height="400" :src="ted" alt="">
     </div>
@@ -382,7 +382,7 @@
             <label for="">Formato de precio:</label>
             <select v-model="dte_precio" class="form-control" name="" id="">
                 <option  value="iva_incluido">Precio + iva incluido</option>
-                <option  value="neto">Precio neto</option>
+                <!-- <option  value="neto">Precio neto</option> -->
             </select>
 
 

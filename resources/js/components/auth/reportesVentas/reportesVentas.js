@@ -58,11 +58,14 @@ export default {
                 { key: 'nombre', label: 'Nombre producto' },
                 { key: 'descripcion', label: 'Descripcion' },
                 { key: 'categoria', label: 'Categoria' },
+                { key: 'unidad', label: 'Unidad' },
                 { key: 'precio', label: 'Precio' },
                 { key: 'cantidad', label: 'Cantidad Vendida' },
-                { key: 'descuento', label: '% Descuento' },
+                { key: 'descuento', label: '$ Descuento' },
+                { key: '_descuento', label: '% Descuento' },
                 { key: 'impuesto_adicional', label: 'Imp adicional' },
                 { key: 'tipo_impuesto_adicional', label: 'ID Imp adicional' },
+                { key: 'afecto', label: 'Afecto' },
 
 
 

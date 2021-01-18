@@ -136,5 +136,20 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 Route::post('codificar_xml', 'ConfiguracionesController@codificar_xml');
 
 Route::post('ejemplo_erik','EjemploDteController@ejemploDte');
+Route::get('factura_exenta', 'DteController@factura_exenta');
+Route::get('estado_dte_enviado', 'DteController@estado_dte_enviado');
+Route::get('open_factura', 'DteController@open_factura');
+
+
+//super factura
+Route::get('super_factura', 'DteController@super_factura');
+Route::get('super_boleta', 'DteController@super_boleta');
+Route::get('documentos_recibidos', 'DteController@documentos_recibidos');
+Route::get('dte_erik','DteController@dte_erik');
+
+
+
+
+
 
 

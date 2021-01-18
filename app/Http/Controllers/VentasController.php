@@ -22,6 +22,7 @@ use App\User;
 use BigFish\PDF417\PDF417;
 use BigFish\PDF417\Renderers\ImageRenderer;
 use BigFish\PDF417\Renderers\SvgRenderer;
+use DOMDocument;
 
 class VentasController extends Controller
 {
@@ -433,16 +434,21 @@ class VentasController extends Controller
                                         'cliente.apellidos',
                                         'detalle_venta.descuento',
                                         'detalle_venta.impuesto_adicional',
-                                        'detalle_venta.tipo_impuesto_adicional'
+                                        'detalle_venta.tipo_impuesto_adicional',
+                                        'detalle_venta.porcentaje_descuento',
+                                        'detalle_venta.afecto_iva',
+                                        'detalle_venta.unidad'
                                         ])
                                         ->join('ventas', 'ventas.id', 'detalle_venta.venta_id')
                                         ->join('producto', 'producto.id', 'detalle_venta.producto_id')
-                                        ->join('categoria', 'categoria.id', 'producto.categoria_id')
+                                        ->leftJoin('categoria', 'categoria.id', 'producto.categoria_id')
                                         ->join('users', 'users.id', 'ventas.user_id')
                                         ->join('cliente','cliente.id','ventas.cliente_id')
                                         ->orderby('ventas.id', 'desc')
                                         ->where('venta_id', $idVenta)
                                         ->get();
+
+
 
         if (!$listar->isEmpty()) {
             return ['estado'=>'success' , 'detalleVenta' => $listar];
@@ -785,10 +791,14 @@ class VentasController extends Controller
                                     totales_impuesto_especifico,
                                     totales_iva,
                                     totales_neto,
+                                    totales_exento,
                                     forma_pago_id,
-                                    cliente_id
+                                    cliente_id,
+                                    regexp_replace(dx.ted, '\s', '', 'g') ted,
+                                    dx.folio
                                     from ventas
                                     inner join cliente c on c.id = ventas.cliente_id
+                                    left join documento_xml dx on dx.venta_id = ventas.id
                                     where ventas.id = $venta_id");
 
 
@@ -801,14 +811,14 @@ class VentasController extends Controller
                 $venta_detalle = DB::select("SELECT
                                             dv.id,
                                             p.id producto_id,
-                                            p.nombre,
-                                            p.descripcion,
+                                            upper(p.nombre) nombre,
+                                            upper(p.descripcion) descripcion,
                                             dv.cantidad,
                                             dv.precio,
                                             dv.descuento,
                                             tipo_impuesto_adicional,
                                             impuesto_adicional,
-                                            'c/u' as unidad
+                                            unidad
 
                                         from detalle_venta dv
                                         inner join producto p on p.id = dv.producto_id
@@ -1176,239 +1186,128 @@ public function pagar_credito(Request $r){
 
     }
 
+    public function fragmentar_xml($xml){
+
+        $arrXml = array();
+        $dom = new DOMDocument;
+        $dom->loadXML($xml);
+        foreach( $dom->getElementsByTagName( 'TED' ) as $item ) {
+            $arrXml[] = $dom->saveXML( $item );
+        }
+        return( $arrXml );
+
+    }
+
     public function generar_un_xml(){
-        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="ISO-8859-1"?>
-        <EnvioDTE xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sii.cl/SiiDte EnvioDTE_v10.xsd" version="1.0">
-        <SetDTE ID="SetDoc">
-         <Caratula version="1.0">
-          <RutEmisor>97975000-5</RutEmisor>
-          <RutEnvia>7880442-4</RutEnvia>
-          <RutReceptor>60803000-K</RutReceptor>
-          <FchResol>2003-09-02</FchResol>
-          <NroResol>0</NroResol>
-          <TmstFirmaEnv>2003-10-13T09:33:22</TmstFirmaEnv>
-          <SubTotDTE>
-           <TpoDTE>33</TpoDTE>
-           <NroDTE>1</NroDTE>
-          </SubTotDTE>
-         </Caratula>
-        <DTE version="1.0">
-            <Documento ID="F60T33">
-                <Encabezado>
-                    <IdDoc>
-                        <TipoDTE>33</TipoDTE>
-                        <Folio>60</Folio>
-                        <FchEmis>2003-10-13</FchEmis>
-                    </IdDoc>
-                    <Emisor>
-                        <RUTEmisor>97975000-5</RUTEmisor>
-                        <RznSoc>RUT DE PRUEBA</RznSoc>
-                        <GiroEmis>Insumos de Computacion</GiroEmis>
-                        <Acteco>31341</Acteco>
-                        <CdgSIISucur>1234</CdgSIISucur>
-                        <DirOrigen>Teatinos 120, Piso 4</DirOrigen>
-                        <CmnaOrigen>Santiago</CmnaOrigen>
-                        <CiudadOrigen>Santiago</CiudadOrigen>
-                    </Emisor>
-                    <Receptor>
-                        <RUTRecep>77777777-7</RUTRecep>
-                        <RznSocRecep>EMPRESA  LTDA</RznSocRecep>
-                        <GiroRecep>COMPUTACION</GiroRecep>
-                        <DirRecep>SAN DIEGO 2222</DirRecep>
-                        <CmnaRecep>LA FLORIDA</CmnaRecep>
-                        <CiudadRecep>SANTIAGO</CiudadRecep>
-                    </Receptor>
-                    <Totales>
-                        <MntNeto>100000</MntNeto>
-                        <TasaIVA>19</TasaIVA>
-                        <IVA>19000</IVA>
-                        <MntTotal>119000</MntTotal>
-                    </Totales>
-                </Encabezado>
-                <Detalle>
-                    <NroLinDet>1</NroLinDet>
-                    <CdgItem>
-                        <TpoCodigo>INT1</TpoCodigo>
-                        <VlrCodigo>011</VlrCodigo>
-                    </CdgItem>
-                    <NmbItem>Parlantes Multimedia 180W.</NmbItem>
-                    <DscItem/>
-                    <QtyItem>20</QtyItem>
-                    <PrcItem>4500</PrcItem>
-                    <MontoItem>90000</MontoItem>
-                </Detalle>
-                <Detalle>
-                    <NroLinDet>2</NroLinDet>
-                    <CdgItem>
-                        <TpoCodigo>INT1</TpoCodigo>
-                        <VlrCodigo>0231</VlrCodigo>
-                    </CdgItem>
-                    <NmbItem>Mouse Inalambrico PS/2</NmbItem>
-                    <DscItem/>
-                    <QtyItem>1</QtyItem>
-                    <PrcItem>5000</PrcItem>
-                    <MontoItem>5000</MontoItem>
-                </Detalle>
-                <Detalle>
-                    <NroLinDet>3</NroLinDet>
-                    <CdgItem>
-                        <TpoCodigo>INT1</TpoCodigo>
-                        <VlrCodigo>1515</VlrCodigo>
-                    </CdgItem>
-                    <NmbItem>Caja de Diskettes 10 Unidades</NmbItem>
-                    <DscItem/>
-                    <QtyItem>5</QtyItem>
-                    <PrcItem>1000</PrcItem>
-                    <MontoItem>5000</MontoItem>
-                </Detalle>
-                <TED version="1.0">
-                    <DD>
-                        <RE>97975000-5</RE>
-                        <TD>33</TD>
-                        <F>60</F>
-                        <FE>2003-10-13</FE>
-                        <RR>77777777-7</RR>
-                        <RSR>EMPRESA  LTDA</RSR>
-                        <MNT>119000</MNT>
-                        <IT1>Parlantes Multimedia 180W.</IT1>
-                        <CAF version="1.0">
-                            <DA>
-                                <RE>97975000-5</RE>
-                                <RS>RUT DE PRUEBA</RS>
-                                <TD>33</TD>
-                                <RNG>
-                                    <D>1</D>
-                                    <H>200</H>
-                                </RNG>
-                                <FA>2003-09-04</FA>
-                                <RSAPK>
-                                    <M>0a4O6Kbx8Qj3K4iWSP4w7KneZYeJ+g/prihYtIEolKt3cykSxl1zO8vSXu397QhTmsX7SBEudTUx++2zDXBhZw==</M>
-                                    <E>Aw==</E>
-                                </RSAPK>
-                                <IDK>100</IDK>
-                            </DA>
-                            <FRMA algoritmo="SHA1withRSA">g1AQX0sy8NJugX52k2hTJEZAE9Cuul6pqYBdFxj1N17umW7zG/hAavCALKByHzdYAfZ3LhGTXCai5zNxOo4lDQ==</FRMA>
-                        </CAF>
-                        <TSTED>2003-10-13T09:33:20</TSTED>
-                    </DD>
-                    <FRMT algoritmo="SHA1withRSA">GbmDcS9e/jVC2LsLIe1iRV12Bf6lxsILtbQiCkh6mbjckFCJ7fj/kakFTS06Jo8i
-        S4HXvJj3oYZuey53Krniew==</FRMT>
-                </TED>
-                <TmstFirma>2003-10-13T09:33:20</TmstFirma>
-            </Documento>
-        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
-        <SignedInfo>
-        <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
-        <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-        <Reference URI="#F60T33">
-        <Transforms>
-        <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
-        </Transforms>
-        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-        <DigestValue>hlmQtu/AyjUjTDhM3852wvRCr8w=</DigestValue>
-        </Reference>
-        </SignedInfo>
-        <SignatureValue>JG1Ig0pvSIH85kIKGRZUjkyX6CNaY08Y94j4UegTgDe8+wl61GzqjdR1rfOK9BGn93AMOo6aiAgolW0k/XklNVtM/ZzpNNS3d/fYVa1q509mAMSXbelxSM3bjoa7H6Wzd/mV1PpQ8zK5gw7mgMMP4IKxHyS92G81GEguSmzcQmA=</SignatureValue>
-        <KeyInfo>
-        <KeyValue>
-        <RSAKeyValue>
-        <Modulus>
-        tNEknkb1kHiD1OOAWlLKkcH/UP5UGa6V6MYso++JB+vYMg2OXFROAF7G8BNFFPQx
-        iuS/7y1azZljN2xq+bW3bAou1bW2ij7fxSXWTJYFZMAyndbLyGHM1e3nVmwpgEpx
-        BHhZzPvwLb55st1wceuKjs2Ontb13J33sUb7bbJMWh0=
-        </Modulus>
-        <Exponent>
-        AQAB
-        </Exponent>
-        </RSAKeyValue>
-        </KeyValue>
-        <X509Data>
-        <X509Certificate>MIIEgjCCA+ugAwIBAgIEAQAApzANBgkqhkiG9w0BAQUFADCBtTELMAkGA1UEBhMC
-        Q0wxHTAbBgNVBAgUFFJlZ2lvbiBNZXRyb3BvbGl0YW5hMREwDwYDVQQHFAhTYW50
-        aWFnbzEUMBIGA1UEChQLRS1DRVJUQ0hJTEUxIDAeBgNVBAsUF0F1dG9yaWRhZCBD
-        ZXJ0aWZpY2Fkb3JhMRcwFQYDVQQDFA5FLUNFUlRDSElMRSBDQTEjMCEGCSqGSIb3
-        DQEJARYUZW1haWxAZS1jZXJ0Y2hpbGUuY2wwHhcNMDMxMDAxMTg1ODE1WhcNMDQw
-        OTMwMDAwMDAwWjCBuDELMAkGA1UEBhMCQ0wxFjAUBgNVBAgUDU1ldHJvcG9saXRh
-        bmExETAPBgNVBAcUCFNhbnRpYWdvMScwJQYDVQQKFB5TZXJ2aWNpbyBkZSBJbXB1
-        ZXN0b3MgSW50ZXJub3MxDzANBgNVBAsUBlBpc28gNDEjMCEGA1UEAxQaV2lsaWJh
-        bGRvIEdvbnphbGV6IENhYnJlcmExHzAdBgkqhkiG9w0BCQEWEHdnb256YWxlekBz
-        aWkuY2wwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALxZlVh1xr9sKQIBDF/6
-        Va+lsHQSG5AAmCWvtNTIOXN3E9EQCy7pOPHrDg6EusvoHyesZSKJbc0TnIFXZp78
-        q7mbdHijzKqvMmyvwbdP7KK8LQfwf84W4v9O8MJeUHlbJGlo5nFACrPAeTtONbHa
-        ReyzeMDv2EganNEDJc9c+UNfAgMBAAGjggGYMIIBlDAjBgNVHREEHDAaoBgGCCsG
-        AQQBwQEBoAwWCjA3ODgwNDQyLTQwCQYDVR0TBAIwADA8BgNVHR8ENTAzMDGgL6At
-        hitodHRwOi8vY3JsLmUtY2VydGNoaWxlLmNsL2UtY2VydGNoaWxlY2EuY3JsMCMG
-        A1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTY5MjgxODAtNTAfBgNVHSMEGDAWgBTg
-        KP3S4GBPs0brGsz1CJEHcjodCDCB0AYDVR0gBIHIMIHFMIHCBggrBgEEAcNSBTCB
-        tTAvBggrBgEFBQcCARYjaHR0cDovL3d3dy5lLWNlcnRjaGlsZS5jbC8yMDAwL0NQ
-        Uy8wgYEGCCsGAQUFBwICMHUac0VsIHRpdHVsYXIgaGEgc2lkbyB2YWxpZG8gZW4g
-        Zm9ybWEgcHJlc2VuY2lhbCwgcXVlZGFuZG8gZWwgQ2VydGlmaWNhZG8gcGFyYSB1
-        c28gdHJpYnV0YXJpbywgcGFnb3MsIGNvbWVyY2lvIHkgb3Ryb3MwCwYDVR0PBAQD
-        AgTwMA0GCSqGSIb3DQEBBQUAA4GBABMfCyJF0mNXcov8iEWvjGFyyPTsXwvsYbbk
-        OJ41wjaGOFMCInb4WY0ngM8BsDV22bGMs8oLyX7rVy16bGA8Z7WDUtYhoOM7mqXw
-        /Hrpqjh3JgAf8zqdzBdH/q6mAbdvq/yb04JHKWPC7fMFuBoeyVWAnhmuMZfReWQi
-        MUEHGGIW</X509Certificate>
-        </X509Data>
-        </KeyInfo>
-        </Signature></DTE>
-        </SetDTE><Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
-        <SignedInfo>
-        <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
-        <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-        <Reference URI="#SetDoc">
-        <Transforms>
-        <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
-        </Transforms>
-        <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-        <DigestValue>4OTWXyRl5fw3htjTyZXQtYEsC3E=</DigestValue>
-        </Reference>
-        </SignedInfo>
-        <SignatureValue>sBnr8Yq14vVAcrN/pKLD/BrqUFczKMW3y1t3JOrdsxhhq6IxvS13SgyMXbIN/T9ciRaFgNabs3pi732XhcpeiSmD1ktzbRctEbSIszYkFJY49k0eB+TVzq3eVaQr4INrymfuOnWj78BZcwKuXvDy4iAcx6/TBbAAkPFwMP9ql2s=</SignatureValue>
-        <KeyInfo>
-        <KeyValue>
-        <RSAKeyValue>
-        <Modulus>
-        tNEknkb1kHiD1OOAWlLKkcH/UP5UGa6V6MYso++JB+vYMg2OXFROAF7G8BNFFPQx
-        iuS/7y1azZljN2xq+bW3bAou1bW2ij7fxSXWTJYFZMAyndbLyGHM1e3nVmwpgEpx
-        BHhZzPvwLb55st1wceuKjs2Ontb13J33sUb7bbJMWh0=
-        </Modulus>
-        <Exponent>
-        AQAB
-        </Exponent>
-        </RSAKeyValue>
-        </KeyValue>
-        <X509Data>
-        <X509Certificate>MIIEgjCCA+ugAwIBAgIEAQAApzANBgkqhkiG9w0BAQUFADCBtTELMAkGA1UEBhMC
-        Q0wxHTAbBgNVBAgUFFJlZ2lvbiBNZXRyb3BvbGl0YW5hMREwDwYDVQQHFAhTYW50
-        aWFnbzEUMBIGA1UEChQLRS1DRVJUQ0hJTEUxIDAeBgNVBAsUF0F1dG9yaWRhZCBD
-        ZXJ0aWZpY2Fkb3JhMRcwFQYDVQQDFA5FLUNFUlRDSElMRSBDQTEjMCEGCSqGSIb3
-        DQEJARYUZW1haWxAZS1jZXJ0Y2hpbGUuY2wwHhcNMDMxMDAxMTg1ODE1WhcNMDQw
-        OTMwMDAwMDAwWjCBuDELMAkGA1UEBhMCQ0wxFjAUBgNVBAgUDU1ldHJvcG9saXRh
-        bmExETAPBgNVBAcUCFNhbnRpYWdvMScwJQYDVQQKFB5TZXJ2aWNpbyBkZSBJbXB1
-        ZXN0b3MgSW50ZXJub3MxDzANBgNVBAsUBlBpc28gNDEjMCEGA1UEAxQaV2lsaWJh
-        bGRvIEdvbnphbGV6IENhYnJlcmExHzAdBgkqhkiG9w0BCQEWEHdnb256YWxlekBz
-        aWkuY2wwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALxZlVh1xr9sKQIBDF/6
-        Va+lsHQSG5AAmCWvtNTIOXN3E9EQCy7pOPHrDg6EusvoHyesZSKJbc0TnIFXZp78
-        q7mbdHijzKqvMmyvwbdP7KK8LQfwf84W4v9O8MJeUHlbJGlo5nFACrPAeTtONbHa
-        ReyzeMDv2EganNEDJc9c+UNfAgMBAAGjggGYMIIBlDAjBgNVHREEHDAaoBgGCCsG
-        AQQBwQEBoAwWCjA3ODgwNDQyLTQwCQYDVR0TBAIwADA8BgNVHR8ENTAzMDGgL6At
-        hitodHRwOi8vY3JsLmUtY2VydGNoaWxlLmNsL2UtY2VydGNoaWxlY2EuY3JsMCMG
-        A1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTY5MjgxODAtNTAfBgNVHSMEGDAWgBTg
-        KP3S4GBPs0brGsz1CJEHcjodCDCB0AYDVR0gBIHIMIHFMIHCBggrBgEEAcNSBTCB
-        tTAvBggrBgEFBQcCARYjaHR0cDovL3d3dy5lLWNlcnRjaGlsZS5jbC8yMDAwL0NQ
-        Uy8wgYEGCCsGAQUFBwICMHUac0VsIHRpdHVsYXIgaGEgc2lkbyB2YWxpZG8gZW4g
-        Zm9ybWEgcHJlc2VuY2lhbCwgcXVlZGFuZG8gZWwgQ2VydGlmaWNhZG8gcGFyYSB1
-        c28gdHJpYnV0YXJpbywgcGFnb3MsIGNvbWVyY2lvIHkgb3Ryb3MwCwYDVR0PBAQD
-        AgTwMA0GCSqGSIb3DQEBBQUAA4GBABMfCyJF0mNXcov8iEWvjGFyyPTsXwvsYbbk
-        OJ41wjaGOFMCInb4WY0ngM8BsDV22bGMs8oLyX7rVy16bGA8Z7WDUtYhoOM7mqXw
-        /Hrpqjh3JgAf8zqdzBdH/q6mAbdvq/yb04JHKWPC7fMFuBoeyVWAnhmuMZfReWQi
-        MUEHGGIW</X509Certificate>
-        </X509Data>
-        </KeyInfo>
-        </Signature></EnvioDTE>
+
+        $arrXml = array();
+        $dom    = new DOMDocument;
+
+
+        $xml = /*new \SimpleXMLElement*/('<DTE version="1.0">
+        <Documento ID="MSTIC77033461-633520201228100053">
+        <Encabezado>
+        <IdDoc>
+        <TipoDTE>33</TipoDTE>
+        <Folio>5</Folio>
+        <FchEmis>2020-12-28</FchEmis>
+        <FmaPago>1</FmaPago>
+        </IdDoc>
+        <Emisor>
+        <RUTEmisor>77033461-6</RUTEmisor>
+        <RznSoc>SERVICIOS TIC ERIK ALEXIS MILLAR BUSTOS E.I.R.L.</RznSoc>
+        <GiroEmis>ACTIVIDADES DE CONSULTORIA DE INFORMATICA Y DE GESTION DE INSTALACIONE</GiroEmis>
+        <Acteco>620200</Acteco>
+        <Acteco>620900</Acteco>
+        <DirOrigen>ALFONSO CARRASCO 288</DirOrigen>
+        <CmnaOrigen>LOS ANGELES</CmnaOrigen>
+        </Emisor>
+        <Receptor>
+        <RUTRecep>15629658-9</RUTRecep>
+        <RznSocRecep>Erik Millar Bustos</RznSocRecep>
+        <GiroRecep>personal</GiroRecep>
+        <DirRecep>alfonso carrasco 228</DirRecep>
+        <CmnaRecep>los angeles</CmnaRecep>
+        <CiudadRecep>Los �ngeles</CiudadRecep>
+        </Receptor>
+        <Totales>
+        <MntNeto>1760</MntNeto>
+        <TasaIVA>19</TasaIVA>
+        <IVA>334</IVA>
+        <ImptoReten>
+        <TipoImp>28</TipoImp>
+        <TasaImp>0.15</TasaImp>
+        <MontoImp>371</MontoImp>
+        </ImptoReten>
+        <MntTotal>2465</MntTotal>
+        </Totales>
+        </Encabezado>
+        <Detalle>
+        <NroLinDet>1</NroLinDet>
+        <NmbItem>Producto Prueba 1</NmbItem>
+        <QtyItem>2</QtyItem>
+        <PrcItem>100</PrcItem>
+        <MontoItem>200</MontoItem>
+        </Detalle>
+        <Detalle>
+        <NroLinDet>2</NroLinDet>
+        <NmbItem>Producto Prueba 2</NmbItem>
+        <DscItem>Producto con Impuestos especifico</DscItem>
+        <QtyItem>5</QtyItem>
+        <PrcItem>312</PrcItem>
+        <CodImpAdic>28</CodImpAdic>
+        <MontoItem>1560</MontoItem>
+        </Detalle>
+        <TED version="1.0">
+        <DD>
+        <RE>77033461-6</RE>
+        <TD>33</TD>
+        <F>5</F>
+        <FE>2020-12-28</FE>
+        <RR>15629658-9</RR>
+        <RSR>Erik Millar Bustos</RSR>
+        <MNT>2465</MNT>
+        <IT1>Producto Prueba 1</IT1>
+        <CAF version="1.0">
+        <DA>
+        <RE>77033461-6</RE>
+        <RS>SERVICIOS TIC ERIK ALEXIS MILLAR BUSTOS</RS>
+        <TD>33</TD>
+        <RNG>
+        <D>1</D>
+        <H>10</H>
+        </RNG>
+        <FA>2020-12-27</FA>
+        <RSAPK>
+        <M>qh431KRpN3aDEHvkBe0NecvZDPUrFW/SVY+xzD0dWT27XhFLNOZmLJjv75l+Ait9I5zL/fAxNIXwqydOGxN+0w==</M>
+        <E>Aw==</E>
+        </RSAPK>
+        <IDK>100</IDK>
+        </DA>
+        <FRMA algoritmo="SHA1withRSA">OQP4TTl3eRuNpGhY0d0iuijdkJmskvxh0UyTiB1eJbR0Zg4nPHFxsydvIb3rouplN4mlKgiF8B/Kuibw40zrcg==</FRMA>
+        </CAF>
+        <TSTED>2021-01-14T13:55:49</TSTED>
+        </DD>
+        <FRMT algoritmo="SHA1withRSA">QIgRgirt0aADFkhN477JiUF85ltnhu3yKRCCoHKbqngXxyD0WvZlHB3bG2MoHP3gKhIaFEiD0S9eniJqhuUFGQ==</FRMT>
+        </TED>
+        <TmstFirma>2021-01-14T13:55:49</TmstFirma>
+        </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI="#MSTIC77033461-633520201228100053"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>egZVO/gXh4Rc4VdYo8aJvL92MQI=</DigestValue></Reference></SignedInfo><SignatureValue>VkRnl+PkrhbBrzpe8em864U8NizXv3r/v2k4xvcN/E7lRqKLvHzCfEF1vpv1fVIFJZ2NJM2F3p7RBgMMUohW0/9y6huo0xLJXzalSvxmqPNLq2eMZhNFi7rGwYZlkhf8/NNuk+WJqFQYHBrVzH/fTMgj47SIN2NhkZS7s7e7GUk=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>hosjrEAp2ls88ENP3NGEXbZKkWMnrU3udWh04teCILWrnulTIVG1IHIW7/WJ8Sm3wgrnZVoxFXSt8x8aHlIJm+UBXWPMRnQ7+OuxY9sOXOO5vJ01K+MU9n05HzfSn1LYRUgvSQsGrYginr6CCxWfsqq91D1yr6xtXhgwvgyHZJc=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>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</X509Certificate></X509Data></KeyInfo></Signature></DTE>
         ');
 
+        $dom->loadXML( $xml );
 
+
+
+
+        foreach( $dom->getElementsByTagName( 'TED' ) as $item ) {
+            $arrXml[] = $dom->saveXML( $item );
+        }
+        return( $arrXml );
+        return false;
+
+
+        dd($xml);
         $timbre = $xml->SetDTE->DTE->Documento->TED;
         $timbre->DD->RE[0];
         // return response()->json(

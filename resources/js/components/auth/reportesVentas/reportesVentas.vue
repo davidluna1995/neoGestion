@@ -188,13 +188,16 @@
                                 <template v-slot:cell(nombre)="data">{{ data.item.nombre }}</template>
                                 <template v-slot:cell(descripcion)="data">{{ data.item.proDesc }}</template>
                                 <template v-slot:cell(categoria)="data">{{ data.item.catDesc }}</template>
+                                <template v-slot:cell(unidad)="data">{{ data.item.unidad }}</template>
                                 <template
                                   v-slot:cell(precio)="data"
                                 >{{ formatPrice(data.item.precio) }}</template>
                                 <template v-slot:cell(cantidad)="data">{{ data.item.cantidadDetalle }}</template>
                                 <template v-slot:cell(descuento)="data">{{ data.item.descuento }}</template>
+                                <template v-slot:cell(_descuento)="data">{{ data.item.porcentaje_descuento }}</template>
                                 <template v-slot:cell(impuesto_adicional)="data">{{ data.item.impuesto_adicional }}</template>
                                 <template v-slot:cell(tipo_impuesto_adicional)="data">{{ data.item.tipo_impuesto_adicional }}</template>
+                                <template v-slot:cell(afecto)="data">{{ data.item.afecto_iva }}</template>
                               </b-table>
                             </div>
 
@@ -384,13 +387,13 @@
 
 
                             <section v-if="totales.dte == '33'">
-                                <div id="pdfFactura">
+                                <div  id="printVenta">
 
                                 <div class="factura">
                                     <center style="font-size: 2rem; border:3px solid red;color:red;font-family:sans-serif;">
                                     <b class="upper"><pre style="color:red">R.U.T {{ factura.emisor.rut }}</pre></b>
                                     <b><pre style="color:red">FACTURA ELECTRONICA</pre></b>
-                                    <b><pre style="color:red">Nº XXXX</pre></b>
+                                    <b><pre style="color:red">Nº {{ totales.folio }}</pre></b>
                                     </center>
                                     <br />
                                     <center style="font-size: 2rem;font-family:sans-serif;">
@@ -583,12 +586,13 @@
 
                                 <!-- AQUI SE GENERA EL TIMBRE ELECTRONICO -------------------------------------------------------->
                                 <div style="text-align: center"><br>
+
                                     <!-- insert your custom barcode setting your data in the GET parameter "data" -->
                                     <img
                                     width="90%"
                                     height="120%"
                                     alt="Barcode Generator TEC-IT"
-                                    :src="'https://barcode.tec-it.com/barcode.ashx?data='+/*ted*/+'&code=PDF417&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&codepage=Default&qunit=Mm&quiet=0'"
+                                    :src="'https://barcode.tec-it.com/barcode.ashx?data='+totales.ted+'&code=PDF417&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&codepage=Default&qunit=Mm&quiet=0'"
                                     />
                                 </div>
                                 <div style="font-size: 1.2rem; font-family: sans-serif">
