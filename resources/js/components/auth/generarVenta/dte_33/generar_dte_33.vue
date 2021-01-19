@@ -1277,8 +1277,8 @@
                                 <div style="text-align: center"><br>
                                     <!-- insert your custom barcode setting your data in the GET parameter "data" -->
                                     <img
-                                    width="90%"
-                                    height="120%"
+                                    width="100%"
+                                    height="100%"
                                     alt="Barcode Generator TEC-IT"
                                     :src="'https://barcode.tec-it.com/barcode.ashx?data='+fac_venta.ted+'&code=PDF417&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&codepage=Default&qunit=Mm&quiet=0'"
                                     />

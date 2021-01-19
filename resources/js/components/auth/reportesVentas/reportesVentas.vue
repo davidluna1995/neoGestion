@@ -628,7 +628,7 @@
 
                                     <!-- insert your custom barcode setting your data in the GET parameter "data" -->
                                     <img
-                                    width="90%"
+                                    width="100%"
                                     height="100%"
                                     alt="Barcode Generator TEC-IT"
                                     :src="'https://barcode.tec-it.com/barcode.ashx?data='+totales.ted+'&code=PDF417&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&codepage=Default&qunit=Mm&quiet=0'"

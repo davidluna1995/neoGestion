@@ -1039,7 +1039,7 @@
       class="ticket"
       id="printVenta"
       style="
-        font-size: 12px;
+        font-size: 14px;
         font-family: 'Times New Roman';
       "
     >
@@ -1172,8 +1172,8 @@
                                 <div style="text-align: center"><br>
                                     <!-- insert your custom barcode setting your data in the GET parameter "data" -->
                                     <img
-                                    width="90%"
-                                    height="120%"
+                                    width="100%"
+                                    height="100%"
                                     alt="Barcode Generator TEC-IT"
                                     :src="'https://barcode.tec-it.com/barcode.ashx?data=<TED VERSION=1.0><RUT>18805652-0</RUT><RAZONSOCIAL>NEOFOX INFORMATICA LIMITADA</RAZONSOCIAL><esto es una prueba solo para alargar el xml que en realidad no es nada asi que no mames wey sorry por esto no señor jesuuuuuuu></TED><TED VERSION=1.0><RUT>18805652-0</RUT><RAZONSOCIAL>NEOFOX INFORMATICA LIMITADA</RAZONSOCIAL><esto es una prueba solo para alargar el xml que en realidad no es nada asi que no mames wey sorry por esto no señor jesuuuuuuu></TED><TED VERSION=1.0><RUT>18805652-0</RUT><RAZONSOCIAL>NEOFOX INFORMATICA LIMITADA</RAZONSOCIAL><esto es una prueba solo para alargar el xml que en realidad no es nada asi que no mames wey sorry por esto no señor jesuuuuuuu></TED><TED VERSION=1.0><RUT>18805652-0</RUT><RAZONSOCIAL>NEOFOX INFORMATICA LIMITADA</RAZONSOCIAL><esto es una prueba solo para alargar el xml que en realidad no es nada asi que no mames wey sorry por esto no señor jesuuuuuuu></TED>&code=PDF417&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&codepage=Default&qunit=Mm&quiet=0'"
                                     />
@@ -1375,7 +1375,8 @@
                                             printable: 'printVenta',
                                             type:'html', })"
 
-                                  >imprimir ticket</b-button>
+                                  >
+                                  imprimir ticket</b-button>
                                   <!-- @click="hideModal()" -->
                               </div>
                             </div>
