@@ -235,6 +235,7 @@ export default {
                         this.listarConf = res.data.configuraciones;
                         this.ticketPrint = res.data.venta;
                         this.ticketPrintDetalle = res.data.venta_detalle
+                        this.totales = res.data.venta;
                         this.$refs[""+ref+""].show();
                         this.load_comprobante = false;
                     }

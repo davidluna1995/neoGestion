@@ -28,7 +28,7 @@ class VentasController extends Controller
 {
     protected function registro_venta(Request $datos)
     {
-        // dd($datos->all());
+        //  dd($datos->all());
        $vuelto=0;
        $verify_caja_activa = RegistroCajaVendedor::where([
                                 'activo' => 'S',
@@ -119,6 +119,8 @@ class VentasController extends Controller
                 $venta->forma_pago_id = $datos->forma_pago_id;
             }
 
+
+
         }
 
         if($datos->sii_forma_pago == 'CREDITO'){
@@ -162,10 +164,14 @@ class VentasController extends Controller
             $cliente=Cliente::find($datos->cliente_id);
 
             if ($ingresarDetalle == true) {
-                DB::commit(); /*descomentar aqui despues*/
+
+                 DB::commit(); /*descomentar aqui despues*/
                 $ticketDetalle = $this->ticketDetalle($venta->id);
                 $ticket = $this->ticket($venta->id);
+
+
                 if ($ticketDetalle['estado'] == 'success' && $ticket['estado'] == 'success') {
+
                     $datos_finales = ['estado'=>'success',
                             'mensaje'=>'Venta realizada con exito, actualizando nuevo stock.',
                             'ticketDetalle'=>$ticketDetalle['ticketDetalle'],
@@ -176,6 +182,17 @@ class VentasController extends Controller
                     // DB::rollBack();
                     return $datos_finales;
                     //return $this->ambiente($datos_finales);
+                }else{
+                    //si entro aqui es porque posiblemente la categoria
+                    //del poducto no este disponible, igual se hace venta
+                    return [
+                        'estado'=>'success',
+                            'mensaje'=>'Venta realizada con exito, actualizando nuevo stock.',
+                            'ticketDetalle'=>$ticketDetalle['ticketDetalle'],
+                            'ticket'=>$ticket['ticket'],
+                            'cliente'=>$cliente->nombres.' '.$cliente->apellidos.' - '.$cliente->rut,
+                            'vuelto'=>$vuelto
+                    ];
                 }
             } else {
                 if ($ingresarDetalle == false) {
@@ -703,8 +720,8 @@ class VentasController extends Controller
             ])
             ->join('ventas', 'ventas.id', 'detalle_venta.venta_id')
             ->join('producto', 'producto.id', 'detalle_venta.producto_id')
-            ->join('categoria', 'categoria.id', 'producto.categoria_id')
-            ->join('users', 'users.id', 'ventas.user_id')
+            ->leftJoin('categoria', 'categoria.id', 'producto.categoria_id')
+            ->leftJoin('users', 'users.id', 'ventas.user_id')
             ->where('venta_id', $idVenta)
             ->get();
 
@@ -745,6 +762,8 @@ class VentasController extends Controller
 
             $venta_db = DB::select("SELECT ventas.id,
                                     venta_total,
+                                    totales_iva,
+                                    tipo_venta_id as dte,
                                     to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
                                     vuelto,
                                     concat(c.nombres,' ',c.apellidos) cliente,

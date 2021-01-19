@@ -144,7 +144,7 @@ export default {
             //datos para la factura
             ted:'',
             traer_ul_venta:false,
-            local_storage_venta:(localStorage.getItem('venta_id')) ? localStorage.getItem('venta_id') :'',
+            // local_storage_venta:(localStorage.getItem('venta_id')) ? localStorage.getItem('venta_id') :'',
 
 
             listarConf:{
@@ -253,7 +253,7 @@ export default {
             btn_cerrar_periodo:false,
             get_datos_periodo:[],
 
-            local_storage_venta:(localStorage.getItem('venta_id')) ? localStorage.getItem('venta_id') :'',
+            local_storage_venta:(localStorage.getItem('fac_venta_id')) ? localStorage.getItem('fac_venta_id') :'',
             redon_medio_pago:'DEBITO', //para obtener monto real
             dte_precio:'iva_incluido',
 
@@ -986,11 +986,14 @@ export default {
                 if(res.data.estado == 'success'){
                     this.limpiarCarro();
                     //guardamos la ID de la venta en local Storage, por cada venta se ira actualizando
-                     localStorage.setItem('venta_id', res.data.venta.id);
-                     this.local_storage_venta = localStorage.getItem('venta_id');
+                     localStorage.setItem('fac_venta_id', res.data.venta.id);
+                     this.local_storage_venta = localStorage.getItem('fac_venta_id');
                     alert("Factura electronica emitida");
                     this.$refs['modal_factura'].hide();
                     document.getElementById('btn_ultima_venta').click()
+                    document.getElementById('rut').value = '';
+                    this.ver_cliente = false;
+                    this.mostrar_cliente = [];
 
                     // this.url('index');
 
@@ -1049,7 +1052,7 @@ export default {
 
                 if (response.data.estado == 'success') {
                     //limpiamos cada vez que se genera una venta el ID venta
-                    localStorage.removeItem('venta_id');
+                    localStorage.removeItem('fac_venta_id');
                     this.producto_id = '';
                     this.errores3 = [];
                     // this.limpiarCarro();
