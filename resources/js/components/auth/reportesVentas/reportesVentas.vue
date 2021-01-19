@@ -264,7 +264,7 @@
                                 class="ticket"
                                 id="printVenta"
                                 style="
-                                    font-size: 12px;
+                                    font-size: 15px;
                                     font-family: 'Times New Roman';
                                 "
                                 >
@@ -424,7 +424,7 @@
                                 <div  id="printVenta">
 
                                 <div >
-                                    <center style="font-size: 2rem; border:3px solid #A93226;color:#A93226;font-family:sans-serif;width:90%">
+                                    <center style="font-size: 2rem; border:3px solid #A93226;color:#A93226;font-family:sans-serif;width:100%">
                                     <b class="upper"><pre style="color:#A93226">R.U.T {{ factura.emisor.rut }}</pre></b>
                                     <b><pre style="color:#A93226">FACTURA ELECTRONICA</pre></b>
                                     <b><pre style="color:#A93226">Nº {{ totales.folio }}</pre></b>
@@ -468,7 +468,7 @@
                                     <b class="upper">GIRO&nbsp;: </b> {{ factura.Cliente.Giro }} <br />
                                     </div>
 
-                                    <table style="width:90%;">
+                                    <table style="width:100%;">
                                         <tr>
                                         <td
                                             style="
