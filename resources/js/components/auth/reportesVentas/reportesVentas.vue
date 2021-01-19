@@ -424,17 +424,17 @@
                                 <div  id="printVenta">
 
                                 <div >
-                                    <center style="font-size: 2rem; border:3px solid #A93226;color:#A93226;font-family:sans-serif;">
+                                    <center style="font-size: 2rem; border:3px solid #A93226;color:#A93226;font-family:sans-serif;width:90%">
                                     <b class="upper"><pre style="color:#A93226">R.U.T {{ factura.emisor.rut }}</pre></b>
                                     <b><pre style="color:#A93226">FACTURA ELECTRONICA</pre></b>
                                     <b><pre style="color:#A93226">Nº {{ totales.folio }}</pre></b>
                                     </center>
                                     <br />
-                                    <center style="font-size: 2rem;font-family:sans-serif;">
+                                    <center style="font-size: 2rem;font-family:sans-serif; width:90%">
                                     <pre> S.I.I LOS ANGELES</pre>
                                     </center>
                                     <!-- <br /> -->
-                                    <center style="font-size: 2rem;font-family:sans-serif;">
+                                    <center style="font-size: 2rem;font-family:sans-serif; width:90%">
                                     <pre> {{ factura.emisor.empresa }}</pre>
                                     </center>
 
@@ -452,7 +452,8 @@
                                         word-wrap: break-word;
                                     "
                                     >
-                                    <label class="upper"><b>DIRECCION: </b> {{factura.emisor.direccion}}</label><br>
+                                    <div style="width:90%">
+                                        <label class="upper"><b>DIRECCION: </b> {{factura.emisor.direccion}}</label><br>
                                     <label class="upper"><b>GIRO: </b>{{ factura.emisor.giro }}</label> <br>
 
 
@@ -465,6 +466,7 @@
                                     <b class="upper">CIUDAD(A)&nbsp;: </b> {{ factura.Cliente.Ciudad }} <br />
 
                                     <b class="upper">GIRO&nbsp;: </b> {{ factura.Cliente.Giro }} <br />
+                                    </div>
 
                                     <table style="width:90%;">
                                         <tr>
@@ -649,17 +651,17 @@
                             </section>
                             <div class="row justify-content-center bordeFooter">
                               <div class="col-4">
-                                <b-button
-                                  class="my-2"
-                                  block
-                                  pill
-                                  variant="info"
-                                  onclick="printJS({
-                                            printable: 'printVenta',
-                                             style: 'center b pre{text-transform: uppercase; color:black}
-                                            type:'html', })"
-
-                                  >imprimir ticket</b-button>
+                               <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    onclick="printJS({
+                                printable: 'printVenta',
+                                type:'html',
+                                style:'*{color:black}'
+                                })"
+                                    >
+                                    Imprimir DTE
+                                    </button>
                                   <!-- @click="hideModal()" -->
                               </div>
                             </div>
