@@ -423,7 +423,7 @@
                             <section v-if="totales.dte == '33'">
                                 <div  id="printVenta">
 
-                                <div class="factura">
+                                <div >
                                     <center style="font-size: 2rem; border:3px solid #A93226;color:#A93226;font-family:sans-serif;">
                                     <b class="upper"><pre style="color:#A93226">R.U.T {{ factura.emisor.rut }}</pre></b>
                                     <b><pre style="color:#A93226">FACTURA ELECTRONICA</pre></b>
@@ -656,6 +656,7 @@
                                   variant="info"
                                   onclick="printJS({
                                             printable: 'printVenta',
+                                             style: 'center b pre{text-transform: uppercase; color:black}
                                             type:'html', })"
 
                                   >imprimir ticket</b-button>
