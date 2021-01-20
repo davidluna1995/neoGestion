@@ -25,3 +25,10 @@
     }
 }
 
+#centro_bordes{
+    font-size: 2rem; border:3px solid red;color:red;font-family:sans-serif;
+    width:100%;
+}
+#texto_color{
+    color:red;
+}

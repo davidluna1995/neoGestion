@@ -1050,10 +1050,11 @@
                                 <div id="pdfFactura">
                                 <!-- AQUI EL DISEÑO DE LA FACTURA ELECTRONICA -->
                                 <div class="factura">
-                                    <center style="font-size: 2rem; border:3px solid red;color:red;font-family:sans-serif;">
-                                    <b class="upper"><pre style="color:red">R.U.T {{ emisor.rut }}</pre></b>
-                                    <b><pre style="color:red">FACTURA ELECTRONICA</pre></b>
-                                    <b><pre style="color:red">Nº {{fac_venta.folio}}</pre></b>
+                                    <!-- <center id="centro">soy centro</center> -->
+                                    <center id="centro_bordes">
+                                    <b class="upper"><pre id="texto_color" >R.U.T {{ emisor.rut }}</pre></b>
+                                    <b><pre id="texto_color">FACTURA ELECTRONICA</pre></b>
+                                    <b><pre id="texto_color">Nº {{fac_venta.folio}}</pre></b>
                                     </center>
                                     <br />
                                     <center style="font-size: 2rem;font-family:sans-serif;">
@@ -1154,11 +1155,12 @@
                                             border-bottom: 1px solid black;
                                             border-top: 1px solid black;
                                             "
-                                            colspan="4"
+                                            colspan="3"
                                         >
                                             <div style="text-align: right">TOTAL NETO&nbsp;:</div>
                                         </td>
                                         <td
+                                        colspan="2"
                                             class="fintabla"
                                             style="
                                             border-bottom: 1px solid black;
@@ -1179,11 +1181,12 @@
                                             border-bottom: 1px solid black;
                                             border-top: 1px solid black;
                                             "
-                                            colspan="4"
+                                            colspan="3"
                                         >
                                             <div style="text-align: right">TOTAL EXENTO&nbsp;:</div>
                                         </td>
                                         <td
+                                        colspan="2"
                                             class="fintabla"
                                             style="
                                             border-bottom: 1px solid black;
@@ -1202,11 +1205,12 @@
                                             border-bottom: 1px solid black;
                                             border-top: 1px solid black;
                                             "
-                                            colspan="4"
+                                            colspan="3"
                                         >
                                             <div style="text-align: right">IMP. ESPECIFICO&nbsp;:</div>
                                         </td>
                                         <td
+                                        colspan="2"
                                             class="fintabla"
                                             style="
                                             border-bottom: 1px solid black;
@@ -1225,11 +1229,12 @@
                                             border-bottom: 1px solid black;
                                             border-top: 1px solid black;
                                             "
-                                            colspan="4"
+                                            colspan="3"
                                         >
                                             <div style="text-align: right">I.V.A 19%&nbsp;:</div>
                                         </td>
                                         <td
+                                            colspan="2"
                                             class="fintabla"
                                             style="
                                             border-bottom: 1px solid black;
@@ -1249,11 +1254,12 @@
                                             border-bottom: 1px solid black;
                                             border-top: 1px solid black;
                                             "
-                                            colspan="4"
+                                            colspan="3"
                                         >
                                             <div style="text-align: right">MONTO BRUTO&nbsp;:</div>
                                         </td>
                                         <td
+                                        colspan="2"
                                             class="fintabla"
                                             style="
                                             border-bottom: 1px solid black;
@@ -1308,7 +1314,7 @@
                                     onclick="printJS({
                                 printable: 'pdfFactura',
                                 type:'html',
-                                style: 'b{text-transform: uppercase;},pre{text-transform: uppercase;font-family:sans-serif;width: 100%;white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;}'
+                                style:'#texto_color{color:black;}#centro_bordes{font-size: 2rem; border:3px solid black;color:black;font-family:sans-serif;}#centro{color:black};b{text-transform: uppercase;color:black;},pre{text-transform: uppercase;font-family:sans-serif;width: 100%;white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;color:black;}'
                                 })"
                                     >
                                     Imprimir DTE
@@ -1791,5 +1797,16 @@
 }
 .upper{
     text-transform: uppercase;
+}
+
+#centro{
+    color:red;
+}
+
+#centro_bordes{
+    font-size: 2rem; border:3px solid red;color:red;font-family:sans-serif;width:100%;
+}
+#texto_color{
+    color:red;
 }
 </style>

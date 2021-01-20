@@ -766,7 +766,10 @@ class VentasController extends Controller
                                     tipo_venta_id as dte,
                                     to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
                                     vuelto,
-                                    concat(c.nombres,' ',c.apellidos) cliente,
+                                    case
+                                    when tipo_cliente = 'CLIENTE' THEN concat(c.nombres,' ',c.apellidos)
+                                    when tipo_cliente = 'EMPRESA' THEN razon_social
+                                    end as cliente,
                                     tipo_venta_id
                                     from ventas
                                     inner join cliente c on c.id = ventas.cliente_id
@@ -821,11 +824,6 @@ class VentasController extends Controller
                                     where ventas.id = $venta_id");
 
 
-
-
-
-
-
             if(count($venta_db) > 0){
                 $venta_detalle = DB::select("SELECT
                                             dv.id,
@@ -877,7 +875,7 @@ class VentasController extends Controller
                 $new['emisor']['dirreccion'] = strtoupper($emisor[0]['dirreccion']);
 
                 $new['Cliente']['Ciudad'] = strtoupper($reseptor['ciudad']);
-                $new['Cliente']['RazonSocial'] = ($reseptor['tipo_cliente'] =='PERSONA')? strtoupper($reseptor['nombres'].' '.$reseptor['apellidos']): $reseptor['razon_social'];
+                $new['Cliente']['RazonSocial'] = strtoupper(($reseptor['tipo_cliente'] =='PERSONA')? strtoupper($reseptor['nombres'].' '.$reseptor['apellidos']): $reseptor['razon_social']);
                 $new['Cliente']['Comuna'] = strtoupper($reseptor['comuna']);
                 $new['Cliente']['Contacto'] = strtoupper($reseptor['contacto']);
                 $new['Cliente']['Direccion'] = strtoupper($reseptor['direccion']);

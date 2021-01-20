@@ -167,8 +167,6 @@ class EjemploDteController extends Controller
 
         //llave unica para cada cliente y sistema que tengamos
         $Llave = $r->llave;
-
-
         //Leeo el contenido del archivo CAF
         // $XMLCAF = file_get_contents("CAFprueba.xml");
 
@@ -214,7 +212,7 @@ class EjemploDteController extends Controller
     public function ingresar_caf(Request $r){
 
         //llave unica para cada cliente y sistema que tengamos
-        $Llave = $r->llave;
+        $Llave = 'eTUDwTw$eBj5tChr7$9zf$uZkRqq';
 
 
         //Leeo el contenido del archivo CAF
@@ -222,16 +220,14 @@ class EjemploDteController extends Controller
 
         //codifico el contenido del archivo CAF
         $XMLCAF = base64_encode($r->xml);
+
         //Reemplasamos los caracteres recervados que no pasan por URL
         $XMLCAF = $this->caracteres_reservados_url($XMLCAF);
-
-
         //Lo mismo de las 3 lineas de arriba pero en una sola
         //$XMLCAF = caracteres_reservados_url(base64_encode(file_get_contents("CAFprueba.xml")));
 
         //conformo la URL de la API con la llave y el contenido del CAF codificado base64
         $URL = 'http://webapineofox.millarstic.cl/api/Caf?Llave='.$Llave.'&TxtCAF='.$XMLCAF.'';
-
 
 
         $curl = curl_init();

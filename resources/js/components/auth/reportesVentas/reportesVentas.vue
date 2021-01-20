@@ -345,12 +345,12 @@
                                     >
                                         <td>
                                         {{ t.nombre }} ($
-                                        {{ formatPrice(t.precio) }} C/U)
+                                        {{ fac_formatPrice(t.precio) }} C/U)
                                         </td>
                                         <td>{{ t.cantidad }}</td>
                                         <td class="text-right">
                                         {{
-                                            formatPrice(
+                                            fac_formatPrice(
                                             t.precio * t.cantidad
                                             )
                                         }}
@@ -362,13 +362,13 @@
                                     <tr>
                                         <td>
                                         <b>Total:</b>
-                                        $ {{ formatPrice(ticketPrint.venta_total) }}
+                                        $ {{ fac_formatPrice(ticketPrint.venta_total) }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
                                         <b>IVA:</b>
-                                        $ {{ formatPrice(ticketPrint.totales_iva) }}
+                                        $ {{ fac_formatPrice(ticketPrint.totales_iva) }}
                                         </td>
                                     </tr>
                                     <tr>
@@ -376,7 +376,7 @@
                                         <div>
                                             <label>
                                             <b>Vuelto:</b>
-                                            $ {{ formatPrice(ticketPrint.vuelto) }} <label v-if="ticketPrint.vuelto < 0" for=""> Deuda de cliente</label>
+                                            $ {{ fac_formatPrice(ticketPrint.vuelto) }} <label v-if="ticketPrint.vuelto < 0" for=""> Deuda de cliente</label>
                                             </label>
                                         </div>
                                         </td>
@@ -424,17 +424,17 @@
                                 <div  id="printVenta">
 
                                 <div >
-                                    <center style="font-size: 2rem; border:3px solid #A93226;color:#A93226;font-family:sans-serif;width:100%">
-                                    <b class="upper"><pre style="color:#A93226">R.U.T {{ factura.emisor.rut }}</pre></b>
-                                    <b><pre style="color:#A93226">FACTURA ELECTRONICA</pre></b>
-                                    <b><pre style="color:#A93226">Nº {{ totales.folio }}</pre></b>
+                                    <center id="centro_bordes">
+                                    <b class="upper"><pre id="texto_color">R.U.T {{ factura.emisor.rut }}</pre></b>
+                                    <b><pre id="texto_color">FACTURA ELECTRONICA</pre></b>
+                                    <b><pre id="texto_color">Nº {{ totales.folio }}</pre></b>
                                     </center>
                                     <br />
-                                    <center style="font-size: 2rem;font-family:sans-serif; width:90%">
+                                    <center style="font-size: 2rem;font-family:sans-serif;">
                                     <pre> S.I.I LOS ANGELES</pre>
                                     </center>
                                     <!-- <br /> -->
-                                    <center style="font-size: 2rem;font-family:sans-serif; width:90%">
+                                    <center style="font-size: 2rem;font-family:sans-serif;">
                                     <pre> {{ factura.emisor.empresa }}</pre>
                                     </center>
 
@@ -514,11 +514,11 @@
 
                                         <tr v-for="f in factura.Productos " :key="f.id">
                                             <td>{{ f.NombreProducto  }}</td>
-                                            <td>{{ formatPrice(f.PrecioNeto) }}</td>
+                                            <td>{{ fac_formatPrice(f.PrecioNeto) }}</td>
                                             <td>{{ f.Cantidad }}</td>
                                             <td>{{ f.UnidadMedida }}</td>
                                             <!-- <td>{{ formatPrice(c.PrecioNeto * c.Cantidad) }}</td> -->
-                                            <td>{{ formatPrice(Number((f.PrecioNeto * f.Cantidad) - f.DescuentoNeto) ) }}</td>
+                                            <td>{{ fac_formatPrice(Number((f.PrecioNeto * f.Cantidad) - f.DescuentoNeto) ) }}</td>
                                         </tr>
 
                                         <tr>
@@ -540,7 +540,31 @@
                                             border-top: 1px solid black;
                                             "
                                         >
-                                        $ {{ formatPrice(totales.totales_neto) }}
+                                        $ {{ fac_formatPrice(totales.totales_neto) }}
+                                        <!-- $ {{formatPrice(pre_factura.venta_total)}} -->
+                                        </td>
+
+                                        </tr>
+                                         <tr>
+                                        <td
+                                            class="fintabla"
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                            colspan="3"
+                                        >
+                                            <div style="text-align: right">TOTAL EXENTO&nbsp;:</div>
+                                        </td>
+                                        <td
+                                            colspan="2"
+                                            class="fintabla"
+                                            style="
+                                            border-bottom: 1px solid black;
+                                            border-top: 1px solid black;
+                                            "
+                                        >
+                                        $ {{ fac_formatPrice(totales.totales_exento) }}
                                         <!-- $ {{formatPrice(pre_factura.venta_total)}} -->
                                         </td>
 
@@ -564,7 +588,7 @@
                                             border-top: 1px solid black;
                                             "
                                         >
-                                        $ {{ formatPrice(totales.totales_impuesto_especifico) }}
+                                        $ {{ fac_formatPrice(totales.totales_impuesto_especifico) }}
                                         <!-- $ {{formatPrice(pre_factura.venta_total)}} -->
                                         </td>
                                         </tr>
@@ -581,6 +605,7 @@
                                             <div style="text-align: right">I.V.A 19%&nbsp;:</div>
                                         </td>
                                         <td
+                                        colspan="2"
                                             class="fintabla"
                                             style="
                                             border-bottom: 1px solid black;
@@ -588,7 +613,7 @@
                                             "
                                         >
                                             <!-- $ {{ formatPrice(((pre_factura.venta_total * 119) / 100) - pre_factura.venta_total  ) }} -->
-                                            $ {{ formatPrice(totales.totales_iva)}}
+                                            $ {{ fac_formatPrice(totales.totales_iva)}}
                                         </td>
                                         </tr>
 
@@ -612,7 +637,7 @@
                                             "
                                         >
                                         <!-- $ {{formatPrice((pre_factura.venta_total * 119) / 100)}} -->
-                                        $ {{ formatPrice(totales.venta_total)}}
+                                        $ {{ fac_formatPrice(totales.venta_total)}}
                                         </td>
                                         </tr>
                                     </table>
@@ -657,7 +682,7 @@
                                     onclick="printJS({
                                 printable: 'printVenta',
                                 type:'html',
-                                style:'*{color:black}'
+                                style:'#centro_bordes{font-size: 2rem; border:3px solid black;color:black;font-family:sans-serif;}#texto_color{color:black;}'
                                 })"
                                     >
                                     Imprimir DTE
