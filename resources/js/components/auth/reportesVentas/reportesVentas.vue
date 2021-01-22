@@ -468,7 +468,7 @@
                                     <b class="upper">GIRO&nbsp;: </b> {{ factura.Cliente.Giro }} <br />
                                     </div>
 
-                                    <table style="width:100%;">
+                                    <table style="width:100%; padding-right:2px;">
                                         <tr>
                                         <td
                                             style="
