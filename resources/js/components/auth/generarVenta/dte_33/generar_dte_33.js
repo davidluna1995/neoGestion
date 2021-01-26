@@ -259,7 +259,8 @@ export default {
 
             post_factura:{},
             fac_venta:{},
-            fac_cliente:{}
+            fac_cliente:{},
+            texto_monto_bruto:'',
 
         }
 
@@ -1102,6 +1103,7 @@ export default {
                     this.post_factura = res.data.factura;
                     this.fac_cliente = res.data.factura.Cliente;
                     this.ticketPrintDetalle = res.data.venta_detalle;
+                    this.texto_monto_bruto = res.data.texto_monto_bruto;
 
                     this.traer_ul_venta = false;
                     this.$refs[""+component+""].show();

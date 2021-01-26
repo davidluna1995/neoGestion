@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button v-if="true" @click="generar_un_xml">Genera un xml factura</button>
+    <button v-if="false" @click="generar_un_xml">Genera un xml factura</button>
 
     <button
     v-if="false"
@@ -12,7 +12,7 @@
       Ver xml como una factura real
     </button>
 
-    <div v-if="true" class="card">
+    <div v-if="false" class="card">
       aqui se veria la img
       <img width="700" height="400" :src="ted" alt="">
     </div>

@@ -21,6 +21,7 @@ import facturacion_electronica from './components/auth/generarVenta/dte_33/gener
 
 import ClientesComponent from './components/auth/clientes/clientes.vue';
 import Caf from './components/auth/configuraciones/caf/caf.vue';
+import GeneraNotaCredito from './components/auth/nota_credito/generar_nota_credito.vue'
 
 const routes = [
   {
@@ -151,6 +152,11 @@ const routes = [
         path: '/caf',
         component: Caf
       },
+      {
+        name: 'generar_nota_credito',
+        path: 'generar_nota_credito',
+        component: GeneraNotaCredito
+      }
       // {
       //   path: '/404',
       //   // component: NotFoundAuth,

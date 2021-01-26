@@ -8,6 +8,7 @@ use App\Ventas;
 use App\Producto;
 use Carbon\Carbon;
 use App\DetalleVenta;
+use App\emisor_receptor_venta;
 use App\Pagocredito;
 use App\PeriodoCaja;
 use App\RegistroCajaVendedor;
@@ -767,8 +768,8 @@ class VentasController extends Controller
                                     to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
                                     vuelto,
                                     case
-                                    when tipo_cliente = 'CLIENTE' THEN concat(c.nombres,' ',c.apellidos)
-                                    when tipo_cliente = 'EMPRESA' THEN razon_social
+                                        when tipo_cliente = 'CLIENTE' THEN concat(c.nombres,' ',c.apellidos)
+                                        when tipo_cliente = 'EMPRESA' THEN razon_social
                                     end as cliente,
                                     tipo_venta_id
                                     from ventas
@@ -781,16 +782,21 @@ class VentasController extends Controller
                                             p.id producto_id,
                                             p.nombre,
                                             dv.cantidad,
-                                            dv.precio
+                                            dv.precio,
+                                            dv.afecto_iva,
+                                            dv.porcentaje_descuento
                                         from detalle_venta dv
                                         inner join producto p on p.id = dv.producto_id
                                         where venta_id = $venta_id");
+
+                    // dd(['estado'=>'success','data'=>strtoupper($this->number_words(''.$venta_db[0]->venta_total.'','pesos','y','centavos'))]);
 
                     return [
                         'estado' => 'success',
                         'configuraciones' => $conf[0],
                         'venta' => $venta_db[0],
-                        'venta_detalle' => $venta_detalle
+                        'venta_detalle' => $venta_detalle,
+                        'texto_monto_bruto' => strtoupper($this->number_words(''.$venta_db[0]->venta_total.'','pesos','y','centavos'))
                     ];
             }
             return ['estado'=>'failed'];
@@ -818,6 +824,7 @@ class VentasController extends Controller
                                     cliente_id,
                                     regexp_replace(dx.ted, '\s', '', 'g') ted,
                                     dx.folio
+
                                     from ventas
                                     inner join cliente c on c.id = ventas.cliente_id
                                     left join documento_xml dx on dx.venta_id = ventas.id
@@ -835,7 +842,9 @@ class VentasController extends Controller
                                             dv.descuento,
                                             tipo_impuesto_adicional,
                                             impuesto_adicional,
-                                            unidad
+                                            unidad,
+                                            dv.afecto_iva,
+                                            dv.porcentaje_descuento
 
                                         from detalle_venta dv
                                         inner join producto p on p.id = dv.producto_id
@@ -843,8 +852,12 @@ class VentasController extends Controller
 
 
 
+
+
                 $new = [];
-                $reseptor = Cliente::find($venta_db[0]->cliente_id);
+                // $reseptor = Cliente::find($venta_db[0]->cliente_id);
+                $reseptor = emisor_receptor_venta::where(['venta_id'=> $venta_id])->first();
+
                 $emisor = Configuraciones::all();
 
                 $emisor['emisor'] = $emisor[0];
@@ -874,24 +887,25 @@ class VentasController extends Controller
                 $new['emisor']['rut'] = strtoupper($emisor[0]['rut']);
                 $new['emisor']['dirreccion'] = strtoupper($emisor[0]['dirreccion']);
 
-                $new['Cliente']['Ciudad'] = strtoupper($reseptor['ciudad']);
-                $new['Cliente']['RazonSocial'] = strtoupper(($reseptor['tipo_cliente'] =='PERSONA')? strtoupper($reseptor['nombres'].' '.$reseptor['apellidos']): $reseptor['razon_social']);
-                $new['Cliente']['Comuna'] = strtoupper($reseptor['comuna']);
-                $new['Cliente']['Contacto'] = strtoupper($reseptor['contacto']);
-                $new['Cliente']['Direccion'] = strtoupper($reseptor['direccion']);
-                $new['Cliente']['Email'] = strtoupper($reseptor['email']);
-                $new['Cliente']['Giro'] = strtoupper($reseptor['giro']);
-                $new['Cliente']['Rut'] = strtoupper($reseptor['rut']);
+                $new['Cliente']['Ciudad'] = strtoupper($reseptor->res_ciudad);
+                $new['Cliente']['RazonSocial'] = strtoupper($reseptor->res_razonsocial);
+                $new['Cliente']['Comuna'] = strtoupper($reseptor->res_comuna);
+                $new['Cliente']['Contacto'] = strtoupper($reseptor->res_contacto);
+                $new['Cliente']['Direccion'] = strtoupper($reseptor->res_direccion);
+                $new['Cliente']['Email'] = strtoupper($reseptor->res_email);
+                $new['Cliente']['Giro'] = strtoupper($reseptor->res_giro);
+                $new['Cliente']['Rut'] = strtoupper($reseptor->res_rut);
 
                 $i=0;
                 foreach ($venta_detalle as $c) {
                     $new['Productos'][$i]['id'] = $c->id;
                     $new['Productos'][$i]['NombreProducto'] = strtoupper($c->nombre);
                     $new['Productos'][$i]['DescripcionAdicional'] = strtoupper('...');
-                    $new['Productos'][$i]['Afecto'] = true;
+                    $new['Productos'][$i]['Afecto'] = $c->afecto_iva;
                     $new['Productos'][$i]['Cantidad'] = $c->cantidad;
                     $new['Productos'][$i]['PrecioNeto'] = $c->precio;
                     $new['Productos'][$i]['DescuentoNeto'] = $c->descuento;
+                    $new['Productos'][$i]['descuento'] = $c->porcentaje_descuento;//para nota credito enviar 0%
                     $new['Productos'][$i]['TipoImpAdicional'] =$c->tipo_impuesto_adicional;
                     $new['Productos'][$i]['MontoImpAdicional'] = $c->impuesto_adicional;
                     $new['Productos'][$i]['UnidadMedida'] = $c->unidad;
@@ -899,13 +913,14 @@ class VentasController extends Controller
 
                     $i++;
                 }
-
+                    // dd($venta_db[0]->venta_total);
                     return [
                         'estado' => 'success',
                         'configuraciones' => $emisor,
                         'venta' => $venta_db[0],
                         'venta_detalle' => $venta_detalle,
-                        'factura' => $new
+                        'factura' => $new,
+                        'texto_monto_bruto' => strtoupper($this->number_words(''.$venta_db[0]->venta_total.'','pesos','y','centavos'))
                     ];
             }
             return ['estado'=>'failed'];
@@ -915,6 +930,201 @@ class VentasController extends Controller
         //si la venta es un vaucher---------------
 
     }
+
+    public function comprobante_ref($venta_id){
+
+        $venta = Ventas::find($venta_id);
+
+        //si la venta es un vaucher---------------
+        if($venta->tipo_venta_id == 1){
+            $conf = Configuraciones::all();
+
+            $venta_db = DB::select("SELECT ventas.id,
+                                    venta_total,
+                                    totales_iva,
+                                    tipo_venta_id as dte,
+                                    to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
+                                    vuelto,
+                                    case
+                                    when tipo_cliente = 'CLIENTE' THEN concat(c.nombres,' ',c.apellidos)
+                                    when tipo_cliente = 'EMPRESA' THEN razon_social
+                                    end as cliente,
+                                    tipo_venta_id
+                                    from ventas
+                                    inner join cliente c on c.id = ventas.cliente_id
+                                    where ventas.id = $venta_id");
+
+            if(count($venta_db) > 0){
+                $venta_detalle = DB::select("SELECT
+                                            dv.id,
+                                            p.id producto_id,
+                                            p.nombre,
+                                            dv.cantidad,
+                                            dv.precio,
+                                            dv.afecto_iva,
+                                            dv.porcentaje_descuento
+                                        from detalle_venta dv
+                                        inner join producto p on p.id = dv.producto_id
+                                        where venta_id = $venta_id");
+
+                    return [
+                        'estado' => 'success',
+                        'configuraciones' => $conf[0],
+                        'venta' => $venta_db[0],
+                        'venta_detalle' => $venta_detalle,
+                        'texto_monto_bruto' => strtoupper($this->number_words(''+$venta_db[0]['venta_total']+'','pesos','y','centavos'))
+
+                    ];
+            }
+            return ['estado'=>'failed'];
+
+
+        }
+        //si la venta es un vaucher---------------
+
+         //si la venta es una factura---------------
+         if($venta->tipo_venta_id == 33){
+            // $conf = Configuraciones::all();
+
+            $venta_db = DB::select("SELECT ventas.id,
+                                    venta_total,
+                                    to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
+                                    vuelto,
+                                    concat(c.nombres,' ',c.apellidos) cliente,
+                                    tipo_venta_id,
+                                    tipo_venta_id as dte,
+                                    totales_impuesto_especifico,
+                                    totales_iva,
+                                    totales_neto,
+                                    totales_exento,
+                                    forma_pago_id,
+                                    cliente_id,
+                                    regexp_replace(dx.ted, '\s', '', 'g') ted,
+                                    dx.folio
+
+                                    from ventas
+                                    inner join cliente c on c.id = ventas.cliente_id
+                                    left join documento_xml dx on dx.venta_id = ventas.id
+                                    where ventas.id = $venta_id");
+
+
+            if(count($venta_db) > 0){
+                $venta_detalle = DB::select("SELECT
+                                            dv.id,
+                                            p.id producto_id,
+                                            p.sku,
+                                            upper(p.nombre) nombre,
+                                            upper(p.descripcion) descripcion,
+                                            dv.cantidad,
+                                            dv.precio,
+                                            dv.descuento,
+                                            tipo_impuesto_adicional,
+                                            impuesto_adicional,
+                                            unidad,
+                                            dv.afecto_iva,
+                                            dv.porcentaje_descuento
+
+                                        from detalle_venta dv
+                                        inner join producto p on p.id = dv.producto_id
+                                        where venta_id = $venta_id");
+
+
+
+
+
+                $new = [];
+                // $reseptor = Cliente::find($venta_db[0]->cliente_id);
+                $reseptor = emisor_receptor_venta::where(['venta_id'=> $venta_id])->first();
+                $emisor = Configuraciones::all();
+
+                $emisor['emisor'] = $emisor[0];
+
+                $new['Llave'] = 'test key';
+                $new['Fecha'] = $venta_db[0]->fecha;
+
+                if($venta_db[0]->forma_pago_id =='3'){
+                    $sii_forma_pago='CREDITO';
+                }else{
+                    $sii_forma_pago='CONTADO';
+                }
+
+                if($sii_forma_pago == 'CONTADO'){
+                    $new['FormaPago'] = 0;
+
+                }
+                if($sii_forma_pago == 'CREDITO'){
+                    $new['FormaPago'] = 1;
+
+                }
+                $new['FormaPago_str'] = $sii_forma_pago;
+
+                $new['emisor'] = $emisor['emisor'];
+                $new['emisor']['empresa'] = strtoupper($emisor[0]['empresa']);
+                $new['emisor']['giro'] = strtoupper($emisor[0]['giro']);
+                $new['emisor']['rut'] = strtoupper($emisor[0]['rut']);
+                $new['emisor']['dirreccion'] = strtoupper($emisor[0]['dirreccion']);
+
+                $new['Cliente']['Ciudad'] = strtoupper($reseptor->res_ciudad);
+                $new['Cliente']['RazonSocial'] = strtoupper($reseptor->res_razonsocial);
+                $new['Cliente']['Comuna'] = strtoupper($reseptor->res_comuna);
+                $new['Cliente']['Contacto'] = strtoupper($reseptor->res_contacto);
+                $new['Cliente']['Direccion'] = strtoupper($reseptor->res_direccion);
+                $new['Cliente']['Email'] = strtoupper($reseptor->res_email);
+                $new['Cliente']['Giro'] = strtoupper($reseptor->res_giro);
+                $new['Cliente']['Rut'] = strtoupper($reseptor->res_rut);
+
+                $i=0;
+                foreach ($venta_detalle as $c) {
+                    $new['Productos'][$i]['id'] = $c->id;
+                    $new['Productos'][$i]['NombreProducto'] = strtoupper($c->nombre);
+                    $new['Productos'][$i]['sku'] = strtoupper($c->sku);//solo para efectos visuales, no enviar a erik
+                    $new['Productos'][$i]['DescripcionAdicional'] = strtoupper($c->descripcion);
+                    $new['Productos'][$i]['Afecto'] = $c->afecto_iva;
+                    $new['Productos'][$i]['Cantidad'] = $c->cantidad;
+                    $new['Productos'][$i]['PrecioNeto'] = $c->precio;
+                    $new['Productos'][$i]['DescuentoNeto'] = $c->descuento;
+                    $new['Productos'][$i]['descuento'] = $c->porcentaje_descuento;//para nota credito enviar 0%
+                    $new['Productos'][$i]['TipoImpAdicional'] =$c->tipo_impuesto_adicional;
+                    $new['Productos'][$i]['MontoImpAdicional'] = $c->impuesto_adicional;
+                    $new['Productos'][$i]['UnidadMedida'] = $c->unidad;
+                    $new['Productos'][$i]['SubTotal'] =$c->precio;
+
+                    $i++;
+                }
+                    // dd($venta_db[0]->venta_total);
+                    return [
+                        'estado' => 'success',
+                        'configuraciones' => $emisor,
+                        'venta' => $venta_db[0],
+                        'venta_detalle' => $venta_detalle,
+                        'factura' => $new,
+                        'texto_monto_bruto' => strtoupper($this->number_words(''.$venta_db[0]->venta_total.'','pesos','y','centavos'))
+                    ];
+            }
+            return ['estado'=>'failed'];
+
+
+        }
+        //si la venta es un vaucher---------------
+
+    }
+
+    public function number_words($valor,$desc_moneda, $sep, $desc_decimal) {
+        $arr = explode(".", $valor);
+        $entero = $arr[0];
+        if (isset($arr[1])) {
+            $decimos = strlen($arr[1]) == 1 ? $arr[1] . '0' : $arr[1];
+        }
+
+        $fmt = new \NumberFormatter('es', \NumberFormatter::SPELLOUT);
+        if (is_array($arr)) {
+            $num_word = ($arr[0]>=1000000) ? "{$fmt->format($entero)} de $desc_moneda" : "{$fmt->format($entero)} $desc_moneda";
+            if (isset($decimos) && $decimos > 0) {
+                $num_word .= " $sep  {$fmt->format($decimos)} $desc_decimal";
+            }
+        }
+        return $num_word;
+   }
 
     protected function periodico_ventas_grafico($anio){
         $meses = [1,2,3,4,5,6,7,8,9,10,11,12];

@@ -151,7 +151,8 @@ export default {
             totales:{},
             total: 0,
             impuesto_especifico:'0',
-            suma_solo_ivas:0
+            suma_solo_ivas:0,
+            texto_monto_bruto:''
             //fin datos pa visualizar factura
         }
     },
@@ -240,12 +241,14 @@ export default {
                         this.ticketPrint = res.data.venta;
                         this.ticketPrintDetalle = res.data.venta_detalle
                         this.totales = res.data.venta;
+                        // this.texto_monto_bruto = res.data.texto_monto_bruto;
                         this.$refs[""+ref+""].show();
                         this.load_comprobante = false;
                     }
                     if(res.data.venta.tipo_venta_id == 33){
                         this.factura = res.data.factura;
                         this.totales = res.data.venta;
+                        this.texto_monto_bruto = res.data.texto_monto_bruto;
                         this.$refs[""+ref+""].show();
                         this.load_comprobante = false;
                     }

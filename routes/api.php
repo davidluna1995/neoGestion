@@ -115,6 +115,7 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     //comprobante
 
     Route::get('comprobante/{venta_id}','VentasController@comprobante');
+    Route::get('comprobante_ref/{venta_id}','VentasController@comprobante_ref');
 
 
     //FACTURA ELECTRONICA
@@ -124,6 +125,8 @@ Route::group(['middleware' => 'auth.jwt'], function () {
     Route::get('fecha_hora_actual','DteController@fecha_hora_actual');
 
     Route::get('consulta_folios','DteController@consulta_folios');
+
+    Route::post('venta_por_referencia_nc','DteController@venta_por_referencia_nc');
 
 
     Route::post('ingresar_caf','EjemploDteController@ingresar_caf');

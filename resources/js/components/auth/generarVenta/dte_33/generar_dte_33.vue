@@ -1271,6 +1271,14 @@
                                         <label v-if="dte_precio=='iva_incluido'"> $ {{ formatPrice(fac_venta.venta_total ) }}</label>
                                         </td>
                                         </tr>
+                                        <tr>
+                                            <td colspan="3">
+                                                {{ texto_monto_bruto }}
+                                            </td>
+                                            <td colspan="2">
+                                                <label id="rojo">ORIGINAL</label>
+                                            </td>
+                                        </tr>
                                     </table>
 
                                     <!-- <div style="text-align:right">
@@ -1807,6 +1815,9 @@
     font-size: 2rem; border:3px solid red;color:red;font-family:sans-serif;width:100%;
 }
 #texto_color{
+    color:red;
+}
+#rojo{
     color:red;
 }
 </style>

@@ -640,6 +640,15 @@
                                         $ {{ fac_formatPrice(totales.venta_total)}}
                                         </td>
                                         </tr>
+
+                                         <tr>
+                                            <td colspan="3">
+                                                {{ texto_monto_bruto }}
+                                            </td>
+                                            <td colspan="2">
+                                                <label id="rojo">ORIGINAL</label>
+                                            </td>
+                                        </tr>
                                     </table>
 
                                     <!-- <div style="text-align:right">

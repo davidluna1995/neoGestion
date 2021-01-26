@@ -330,6 +330,14 @@
                       <div class="col-12 col-md-9 col-lg-9 mb-4">
                         <input class="form-control" id="rut" @blur="formatear_rut" type="text">
                       </div>
+
+                       <div class="col-12 col-md-3 col-lg-3 text-left">
+                        <b>GIRO GENERAL:</b>
+                      </div>
+
+                      <div class="col-12 col-md-9 col-lg-9 mb-4">
+                        <input class="form-control" v-model="giro" type="text">
+                      </div>
                     </div>
 
                     <div class="row justify-content-center bordeFooter">

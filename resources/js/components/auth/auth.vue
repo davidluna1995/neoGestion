@@ -73,12 +73,17 @@
             <b-dropdown-item @click="url('mis_ventas')">
               <i class="fas fa-user"></i> Mis ventas
             </b-dropdown-item>
-            <b-dropdown-item @click="url('configuraciones')">
-              <i class="fas fa-cog"></i> Configuracion
+             <b-dropdown-item v-if="usuario.rol==admin"  @click="url('generar_nota_credito')">
+              <i class="fas fa-clipboard"></i> Generar nota credito
             </b-dropdown-item>
             <b-dropdown-item v-if="usuario.rol==admin" @click="url('caf')">
               <i class="fas fa-file-code"></i> CAF (Código de asignación de folios)
             </b-dropdown-item>
+            <hr>
+            <b-dropdown-item @click="url('configuraciones')">
+              <i class="fas fa-cog"></i> Configuracion
+            </b-dropdown-item>
+
 
 
             <b-dropdown-item @click="logout()">

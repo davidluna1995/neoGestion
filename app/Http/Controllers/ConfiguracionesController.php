@@ -136,9 +136,10 @@ class ConfiguracionesController extends Controller
                     $update->empresa = $datos->empresa;
                     $update->direccion = $datos->direccion;
                     $update->rut = $datos->rut;
+                    $update->giro = $datos->giro;
 
 
-                    $update->rut = $datos->rut;
+                    // $update->rut = $datos->rut;
 
                     if ($datos->logo != 'undefined') {
                         $guardarArchivo = $this->guardarArchivo($datos->logo, 'ArchivosConfiguracion/');
@@ -160,6 +161,7 @@ class ConfiguracionesController extends Controller
                     $conf->empresa = $datos->empresa;
                     $conf->direccion = $datos->direccion;
                     $conf->rut = $datos->rut;
+                    $conf->giro = $datos->giro;
                     if ($datos->logo != 'undefined') {
                         $guardarArchivo = $this->guardarArchivo($datos->logo, 'ArchivosConfiguracion/');
                         if ($guardarArchivo['estado'] == "success") {

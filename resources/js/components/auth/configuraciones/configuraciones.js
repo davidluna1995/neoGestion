@@ -47,6 +47,7 @@ export default {
             logo: '',
             empresa: '',
             direccion: '',
+            giro:'',
             listarConf: [],
             logoNull: false,
 
@@ -213,6 +214,7 @@ export default {
             formData.append('empresa', this.empresa);
             formData.append('direccion', this.direccion);
             formData.append('rut',  document.getElementById('rut').value);
+            formData.append('giro', this.giro);
 
             this.axios.post('api/registro_configuraciones', formData, {
                 headers: {
@@ -254,6 +256,7 @@ export default {
                         this.direccion = this.listarConf.direccion;
                         document.getElementById("rut").value = this.listarConf.rut;
                         console.log(document.getElementById("rut").value);
+                        this.giro = this.listarConf.giro;
 
                     }
                 }
