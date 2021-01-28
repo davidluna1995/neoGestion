@@ -757,6 +757,8 @@ class VentasController extends Controller
 
         $venta = Ventas::find($venta_id);
 
+
+
         //si la venta es un vaucher---------------
         if($venta->tipo_venta_id == 1){
             $conf = Configuraciones::all();
@@ -768,19 +770,36 @@ class VentasController extends Controller
                                     to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
                                     vuelto,
                                     case
-                                        when tipo_cliente = 'CLIENTE' THEN concat(c.nombres,' ',c.apellidos)
-                                        when tipo_cliente = 'EMPRESA' THEN razon_social
+                                        when tipo_cliente = 'CLIENTE' THEN upper(concat(c.nombres,' ',c.apellidos))
+                                        when tipo_cliente = 'EMPRESA' THEN upper(razon_social)
                                     end as cliente,
-                                    tipo_venta_id
+                                    tipo_venta_id,
+                                    forma_pago_id
                                     from ventas
                                     inner join cliente c on c.id = ventas.cliente_id
                                     where ventas.id = $venta_id");
 
             if(count($venta_db) > 0){
+
+                if($venta_db[0]->forma_pago_id =='3'){
+                    $sii_forma_pago='CREDITO';
+                }else{
+                    $sii_forma_pago='CONTADO';
+                }
+
+                if($sii_forma_pago == 'CONTADO'){
+                    // $new['FormaPago'] = 0;
+
+                }
+                if($sii_forma_pago == 'CREDITO'){
+                    // $new['FormaPago'] = 1;
+
+                }
                 $venta_detalle = DB::select("SELECT
                                             dv.id,
                                             p.id producto_id,
-                                            p.nombre,
+                                            upper(p.nombre) nombre,
+                                            upper(p.descripcion) descripcion,
                                             dv.cantidad,
                                             dv.precio,
                                             dv.afecto_iva,
@@ -794,6 +813,7 @@ class VentasController extends Controller
                     return [
                         'estado' => 'success',
                         'configuraciones' => $conf[0],
+                        'forma_pago' => $sii_forma_pago,
                         'venta' => $venta_db[0],
                         'venta_detalle' => $venta_detalle,
                         'texto_monto_bruto' => strtoupper($this->number_words(''.$venta_db[0]->venta_total.'','pesos','y','centavos'))

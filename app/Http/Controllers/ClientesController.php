@@ -111,6 +111,8 @@ class ClientesController extends Controller
                                 when tipo_cliente = 'PERSONA' then concat(nombres,' ',apellidos)
                                 when tipo_cliente = 'EMPRESA' then razon_social
                             end as cliente,
+                            nombres,
+                            apellidos,
                             contacto,
                             email,
                             direccion,
@@ -221,11 +223,19 @@ class ClientesController extends Controller
             if ($c->activo=='N') {
                 return ['estado'=>'failed', 'mensaje'=>'No se pudo actualizar la información'];
             }
-            $c->nombres = ucwords($r->nombres);
-            $c->apellidos = ucwords($r->apellidos);
+            if($r->tipo_cliente=='EMPRESA'){
+                $c->razon_social = ucwords($r->razon_social);
+            }else{
+                $c->nombres = ucwords($r->nombres);
+                $c->apellidos = ucwords($r->apellidos);
+            }
+
             $c->contacto = ($r->contacto=='null')?null:$r->contacto;
             $c->email = ($r->email=='null')?null:$r->email;
             $c->direccion = ($r->direccion=='null')?null:$r->direccion;
+            $c->comuna = ($r->comuna=='null')?null:$r->comuna;
+            $c->ciudad = ($r->ciudad=='null')?null:$r->ciudad;
+            $c->giro = ($r->giro=='null')?null:$r->giro;
             if ($c->save()) {
                 return ['estado'=>'success', 'mensaje'=>'Información del cliente actualizada'];
             }else{

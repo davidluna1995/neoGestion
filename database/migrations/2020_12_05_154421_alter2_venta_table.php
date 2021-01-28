@@ -14,7 +14,7 @@ class Alter2VentaTable extends Migration
     public function up()
     {
         Schema::table('ventas', function (Blueprint $table) {
-            $table->integer('tipo_venta_id')->nullable();
+            $table->integer('tipo_venta_id')->nullable();//33, 39
         });
     }
 

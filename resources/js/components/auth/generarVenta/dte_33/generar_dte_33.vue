@@ -477,6 +477,7 @@
 
             <button
               v-if="dte_precio=='neto'"
+              :disabled="btn_emitir"
               type="button"
               class="btn btn-success"
               @click="emitir_dte33(
@@ -498,6 +499,7 @@
 
             <button
               v-if="dte_precio=='iva_incluido'"
+              :disabled="btn_emitir"
               type="button"
               class="btn btn-success"
               @click="emitir_dte33(
@@ -782,246 +784,246 @@
                 <div class="card" style="background:#E5E8E8">
                     <div class="card-body">
                             <h5>Datos de la venta</h5>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <b-button
-                                    :disabled="visualizar_compra"
-                                    pill
-                                    block
-                                    size="sm"
-                                    id="show-btn"
-                                    class="my-2"
-                                    variant="info"
-                                    @click="visualizar_factura(mostrar_cliente)"
-                                    ><i class="far fa-eye"></i> Previsualizar y generar factura</b-button>
-<!--
-                            <button @click="dte_34">
-                                DTE 34 exento (test)</button> -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <b-button
+                                            :disabled="visualizar_compra"
+                                            pill
+                                            block
+                                            size="sm"
+                                            id="show-btn"
+                                            class="my-2"
+                                            variant="info"
+                                            @click="visualizar_factura(mostrar_cliente)"
+                                            ><i class="far fa-eye"></i> Previsualizar y generar factura</b-button>
+        <!--
+                                    <button @click="dte_34">
+                                        DTE 34 exento (test)</button> -->
 
-                                <hr>
-                        </div>
-                    </div>
+                                        <hr>
+                                </div>
+                            </div>
 
                   <!-- detalle venta -->
-<!-- esta parte es solo para precio NETO -->
-<div v-if="dte_precio == 'neto'">
-                  <label>
-                    <b>Detalle de Venta</b>
-                  </label>
-                  <div class="row">
-                    <div class="col-8">
-                      <label>Total neto (afecto)</label>
-                    </div>
-                    <div class="col-4">
-                      <label>$ {{ formatPrice(suma_solo_ivas) }}</label>
-                    </div>
+                            <!-- esta parte es solo para precio NETO -->
+                            <div v-if="dte_precio == 'neto'">
+                                            <label>
+                                                <b>Detalle de Venta</b>
+                                            </label>
+                                            <div class="row">
+                                                <div class="col-8">
+                                                <label>Total neto (afecto)</label>
+                                                </div>
+                                                <div class="col-4">
+                                                <label>$ {{ formatPrice(suma_solo_ivas) }}</label>
+                                                </div>
 
-                    <div class="col-8">
-                      <label>Exento</label>
-                    </div>
-                    <div class="col-4">
-                      <label>$ {{ formatPrice(suma_solo_exento) }}</label>
-                    </div>
+                                                <div class="col-8">
+                                                <label>Exento</label>
+                                                </div>
+                                                <div class="col-4">
+                                                <label>$ {{ formatPrice(suma_solo_exento) }}</label>
+                                                </div>
 
 
 
-                    <div class="col-8">
-                      <label>Impuesto especifico</label>
-                    </div>
-                    <div class="col-4">
-                      <label>$ {{ formatPrice(impuesto_especifico) }}</label>
-                    </div>
-                    <div class="col-8">
-                        <label for="">(I.V.A 19%)</label>
-                    </div>
-                    <div class="col-4">
-                        <label>$ {{ formatPrice(((suma_solo_ivas * 119)/100) - suma_solo_ivas )}}</label>
+                                                <div class="col-8">
+                                                <label>Impuesto especifico</label>
+                                                </div>
+                                                <div class="col-4">
+                                                <label>$ {{ formatPrice(impuesto_especifico) }}</label>
+                                                </div>
+                                                <div class="col-8">
+                                                    <label for="">(I.V.A 19%)</label>
+                                                </div>
+                                                <div class="col-4">
+                                                    <label>$ {{ formatPrice(((suma_solo_ivas * 119)/100) - suma_solo_ivas )}}</label>
 
-                    </div>
-                    <div class="col-8">
-                      <label>Total a Pagar</label>
-                    </div>
-                    <div class="col-4">
-
+                                                </div>
+                                                <div class="col-8">
+                                                <label>Total a Pagar</label>
+                                                </div>
+                                                <div class="col-4">
+
 
-                      <label><b>$ {{ formatPrice( redondeo(redon_medio_pago,total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))  )}}</b></label>
-
-                    </div>
-
-                    <div class="col-8">
-                        <hr>
-                      <label>Cliente Paga</label>
-                    </div>
-                    <div class="col-4">
-
-
-                      <div >
-                          <hr>
-                        <label>$ {{ formatPrice(Number(montoEfectivo) + Number(montoDebito) ) }}</label>
-                      </div>
-
-                    </div>
-
-
-                    <div class="col-8" v-if="sii_forma_pago == 'CREDITO'">
-                       <label for="">Deuda (credito)</label>
-
-                    </div>
-
-                     <div class="col-4">
+                                                <label><b>$ {{ formatPrice( redondeo(redon_medio_pago,total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))  )}}</b></label>
+
+                                                </div>
+
+                                                <div class="col-8">
+                                                    <hr>
+                                                <label>Cliente Paga</label>
+                                                </div>
+                                                <div class="col-4">
+
+
+                                                <div >
+                                                    <hr>
+                                                    <label>$ {{ formatPrice(Number(montoEfectivo) + Number(montoDebito) ) }}</label>
+                                                </div>
+
+                                                </div>
+
+
+                                                <div class="col-8" v-if="sii_forma_pago == 'CREDITO'">
+                                                <label for="">Deuda (credito)</label>
+
+                                                </div>
+
+                                                <div class="col-4">
 
-                      <div v-if="sii_forma_pago == 'CREDITO'">
+                                                <div v-if="sii_forma_pago == 'CREDITO'">
 
-                        <label>$ {{
+                                                    <label>$ {{
 
-                             formatPrice((Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) )) )
+                                                        formatPrice((Math.round((total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))   -  ( Number(montoEfectivo) + Number(montoDebito)) )) )
 
-                             }}
-                        </label>
-                      </div>
+                                                        }}
+                                                    </label>
+                                                </div>
 
-                    </div>
+                                                </div>
 
 
 
-                  </div>
-                    <div class="row">
-                        <div class="col-8" v-if="sii_forma_pago == 'CONTADO'">
-                        <label>Vuelto</label>
-                        </div>
-                        <div class="col-4">
+                                            </div>
+                                                <div class="row">
+                                                    <div class="col-8" v-if="sii_forma_pago == 'CONTADO'">
+                                                    <label>Vuelto</label>
+                                                    </div>
+                                                    <div class="col-4">
 
-                        <div v-if="sii_forma_pago == 'CONTADO'">
+                                                    <div v-if="sii_forma_pago == 'CONTADO'">
 
-                            <label>$ {{
-                                (Number(montoEfectivo) + Number(montoDebito))?
-                                /*formatPrice( ((Number(montoEfectivo) + Number(montoDebito)) - Math.trunc(((total * 119)/100) + Number(impuesto_especifico)  ) ))*/
-                                formatPrice((Math.round(Number(montoEfectivo) + Number(montoDebito) -  /*TOTAL A PAGAR->*/redondeo(redon_medio_pago,total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))  ) ))
-                                :0
-                                }}
-                            </label>
-                        </div>
+                                                        <label>$ {{
+                                                            (Number(montoEfectivo) + Number(montoDebito))?
+                                                            /*formatPrice( ((Number(montoEfectivo) + Number(montoDebito)) - Math.trunc(((total * 119)/100) + Number(impuesto_especifico)  ) ))*/
+                                                            formatPrice((Math.round(Number(montoEfectivo) + Number(montoDebito) -  /*TOTAL A PAGAR->*/redondeo(redon_medio_pago,total + impuesto_especifico + (((suma_solo_ivas * 119)/100) - suma_solo_ivas ))  ) ))
+                                                            :0
+                                                            }}
+                                                        </label>
+                                                    </div>
 
 
-                        </div>
-                    </div>
-                  <!-- detalle venta -->
-</div>
-<!-- FIN esta parte es solo para precio NETO -->
+                                                    </div>
+                                                </div>
+                                            <!-- detalle venta -->
+                            </div>
+                            <!-- FIN esta parte es solo para precio NETO -->
 
-<!-- ESTA PARTE ES SOLO PARA PRECIO + IVA -->
-<div v-if="dte_precio == 'iva_incluido'">
-    <label> <b>Detalle de Venta</b> </label>
-        <div class="row">
+                            <!-- ESTA PARTE ES SOLO PARA PRECIO + IVA -->
+                            <div v-if="dte_precio == 'iva_incluido'">
+                                <label> <b>Detalle de Venta</b> </label>
+                                    <div class="row">
 
 
-            <div class="col-8">
-                <label>Monto neto (afecto)</label>
-            </div>
-             <div class="col-4">
-                 $ {{ formatPrice(Math.round(suma_solo_ivas) / 1.19 ) }}
-             </div>
+                                        <div class="col-8">
+                                            <label>Monto neto (afecto)</label>
+                                        </div>
+                                        <div class="col-4">
+                                            $ {{ formatPrice(Math.round(suma_solo_ivas) / 1.19 ) }}
+                                        </div>
 
-             <div class="col-8">
-                <label>Exento</label>
-            </div>
-             <div class="col-4">
-                 $ {{ formatPrice(Math.round(suma_solo_exento) /*/ 1.19*/ ) }}
-             </div>
+                                        <div class="col-8">
+                                            <label>Exento</label>
+                                        </div>
+                                        <div class="col-4">
+                                            $ {{ formatPrice(Math.round(suma_solo_exento) /*/ 1.19*/ ) }}
+                                        </div>
 
-             <div class="col-8">
-                      <label>Impuesto especifico</label>
-                    </div>
-                    <div class="col-4">
-                      <label>$ {{ formatPrice(impuesto_especifico) }}</label>
-             </div>
+                                        <div class="col-8">
+                                                <label>Impuesto especifico</label>
+                                                </div>
+                                                <div class="col-4">
+                                                <label>$ {{ formatPrice(impuesto_especifico) }}</label>
+                                        </div>
 
-             <div class="col-8">
-                <label>(I.V.A 19%)</label>
-            </div>
-             <div class="col-4">
-                 $ {{ formatPrice(Math.round(suma_solo_ivas) - Math.round(suma_solo_ivas)/1.19 ) }}
-             </div>
+                                        <div class="col-8">
+                                            <label>(I.V.A 19%)</label>
+                                        </div>
+                                        <div class="col-4">
+                                            $ {{ formatPrice(Math.round(suma_solo_ivas) - Math.round(suma_solo_ivas)/1.19 ) }}
+                                        </div>
 
-            <!-- TOTAL A PAGAR -->
-            <div class="col-8">
-                <label>Total a pagar</label>
-            </div>
-             <div class="col-4"><b>
-                 $ {{ formatPrice(redondeo(redon_medio_pago,total + Number(impuesto_especifico) ) ) }}
-             </b></div>
-        </div>
+                                        <!-- TOTAL A PAGAR -->
+                                        <div class="col-8">
+                                            <label>Total a pagar</label>
+                                        </div>
+                                        <div class="col-4"><b>
+                                            $ {{ formatPrice(redondeo(redon_medio_pago,total + Number(impuesto_especifico) ) ) }}
+                                        </b></div>
+                                    </div>
 
 
-        <div class="row">
-            <div class="col-8">
-                <hr>
-                <label>Cliente Paga</label>
-            </div>
-            <div class="col-4">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <hr>
+                                            <label>Cliente Paga</label>
+                                        </div>
+                                        <div class="col-4">
 
 
-                <div >
-                    <hr>
-                    <label>$ {{ formatPrice(Number(montoEfectivo) + Number(montoDebito) ) }}</label>
-                </div>
+                                            <div >
+                                                <hr>
+                                                <label>$ {{ formatPrice(Number(montoEfectivo) + Number(montoDebito) ) }}</label>
+                                            </div>
 
-            </div>
+                                        </div>
 
 
-            <div class="col-8" v-if="sii_forma_pago == 'CREDITO'">
-                <label for="">Deuda (credito)</label>
+                                        <div class="col-8" v-if="sii_forma_pago == 'CREDITO'">
+                                            <label for="">Deuda (credito)</label>
 
-            </div>
+                                        </div>
 
-            <div class="col-4">
+                                        <div class="col-4">
 
-                <div v-if="sii_forma_pago == 'CREDITO'">
+                                            <div v-if="sii_forma_pago == 'CREDITO'">
 
-                    <label>$ {{
+                                                <label>$ {{
 
 
-                        formatPrice(Math.round( (total + Number(impuesto_especifico)) - ( Number(montoEfectivo) + Number(montoDebito))))
+                                                    formatPrice(Math.round( (total + Number(impuesto_especifico)) - ( Number(montoEfectivo) + Number(montoDebito))))
 
-                        }}
-                    </label>
-                </div>
+                                                    }}
+                                                </label>
+                                            </div>
 
 
 
 
 
-             </div>
+                                        </div>
 
 
-         </div>
+                                    </div>
 
-         <div class="row">
-                 <div class="col-8" v-if="sii_forma_pago == 'CONTADO'">
-                        <label>Vuelto</label>
-              </div>
-              <div class="col-4">
+                                    <div class="row">
+                                            <div class="col-8" v-if="sii_forma_pago == 'CONTADO'">
+                                                    <label>Vuelto</label>
+                                        </div>
+                                        <div class="col-4">
 
-                        <div v-if="sii_forma_pago == 'CONTADO'">
+                                                    <div v-if="sii_forma_pago == 'CONTADO'">
 
 
-                            <label>$ {{
-                                (Number(montoEfectivo) + Number(montoDebito))?
-                                /*formatPrice( ((Number(montoEfectivo) + Number(montoDebito)) - Math.trunc(((total * 119)/100) + Number(impuesto_especifico)  ) ))*/
-                                formatPrice(( (Math.round(Number(montoEfectivo) + Number(montoDebito)) -  /*TOTAL A PAGAR->*/(redondeo(redon_medio_pago, total + Number(impuesto_especifico) )))  ) )
-                                :0
-                                }}
-                            </label>
-                        </div>
+                                                        <label>$ {{
+                                                            (Number(montoEfectivo) + Number(montoDebito))?
+                                                            /*formatPrice( ((Number(montoEfectivo) + Number(montoDebito)) - Math.trunc(((total * 119)/100) + Number(impuesto_especifico)  ) ))*/
+                                                            formatPrice(( (Math.round(Number(montoEfectivo) + Number(montoDebito)) -  /*TOTAL A PAGAR->*/(redondeo(redon_medio_pago, total + Number(impuesto_especifico) )))  ) )
+                                                            :0
+                                                            }}
+                                                        </label>
+                                                    </div>
 
-                </div>
+                                            </div>
 
 
-            </div>
+                                        </div>
 
-</div>
+                            </div>
 
-<!-- FIN ESTA PARTE ES SOLO PARA PRECIO + IVA -->
+                            <!-- FIN ESTA PARTE ES SOLO PARA PRECIO + IVA -->
 
 
                   <!-- Comprobante -->

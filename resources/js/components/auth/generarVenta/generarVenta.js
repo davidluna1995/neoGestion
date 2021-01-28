@@ -113,7 +113,7 @@ export default {
             // ALERTS INGRESO VENTA
             errores3: [],
             correcto3: '',
-            dismissSecs3: 10,
+            dismissSecs3: 7,
             dismissCountDown3: 0,
 
             fechaLocal: '',
@@ -172,7 +172,8 @@ export default {
             sii_forma_pago:'',
             redon_medio_pago:'DEBITO', //para obtener monto real
 
-            dte_precio:'iva_incluido'
+            dte_precio:'iva_incluido',
+            forma_pago:'',
 
 
         }
@@ -576,7 +577,7 @@ export default {
                     this.sii_forma_pago = '';
                     this.detalle_credito = '';
                     this.showAlert3();
-                    this.showModal();
+                    // this.showModal();
                     this.ticketPrintDetalle = response.data.ticketDetalle;
                     this.cliente = response.data.cliente;
                     this.ticketPrint = response.data.ticket;
@@ -586,6 +587,7 @@ export default {
                     //guardamos la ID de la venta en local Storage, por cada venta se ira actualizando
                     localStorage.setItem('venta_id', this.ticketPrint[0].idVenta);
                     this.local_storage_venta = localStorage.getItem('venta_id');
+                    document.getElementById('btn_ultima_venta').click();
 
                 }
 
@@ -834,6 +836,8 @@ export default {
 
         //ultima venta del comprobante :1
         abrir_ultima_venta(component, venta_id){
+
+
             this.traer_ul_venta = true;
             this.axios.get('api/comprobante/'+venta_id).then((res)=>{
                 if(res.data.estado == 'success'){
@@ -842,6 +846,8 @@ export default {
                     this.ticketPrintDetalle = res.data.venta_detalle;
                     this.traer_ul_venta = false;
                     this.$refs[""+component+""].show();
+                    this.forma_pago = res.data.forma_pago
+                    // console.log(this.ticketPrint)
                 }else{
                     this.traer_ul_venta = false;
                 }

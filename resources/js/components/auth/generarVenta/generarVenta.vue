@@ -1020,7 +1020,7 @@
                           >Confirmar Compra</b-button
                         >
                         <!-- @click="showModal();" -->
-                        <button :disabled="traer_ul_venta" @click="abrir_ultima_venta('comprobante',local_storage_venta)" v-if="local_storage_venta !=''" class="btn btn-link">Traer mi ultima venta (ID: {{local_storage_venta}})</button>
+                        <button id="btn_ultima_venta" :disabled="traer_ul_venta" @click="abrir_ultima_venta('comprobante',local_storage_venta)" v-if="local_storage_venta !=''" class="btn btn-link">Traer mi ultima venta (ID: {{local_storage_venta}})</button>
 
                         <b-modal
                             no-close-on-esc
@@ -1036,179 +1036,185 @@
                                 <!-- TRAER ULTIMA VENTA!!!! -->
                                 <!-- VAUCHER PARA MOSTRAR -->
                                 <div
-      class="ticket"
-      id="printVenta"
-      style="
-        font-size: 15px;
-        font-family: 'Times New Roman';
-      "
-    >
-      <center>
-        <img
-          :src="listarConf.logo"
-
-          width="177px"
-          height="86px"
-        />
-      </center>
-      <center>
-        <p>
-          <!-- TICKET DE VENTA -->
-          BOLETA ELECTRONICA NUMERO {{ticketPrint.id}}
-          <br />
-          {{ listarConf.empresa }}
-          <br>
-          {{ listarConf.rut }}
-          <br>
-          {{listarConf.giro}}
-
-          <br />
-          {{ listarConf.direccion }}
-        </p>
-      </center>
-      <table align="center">
-        <thead>
-          <!--Fecha Emisión-->
-          <tr>
-            <th colspan="4">
-              Fecha: {{ ticketPrint.fecha }}
-            </th>
-          </tr>
-          <tr>
-            <th colspan="4">
-              Comprobante de Venta Nº {{ ticketPrint.id }}
-            </th>
-          </tr>
-
-          <tr
-            style="
-              border-top: 1px solid black;
-              border-collapse: collapse;
-            "
-          >
-            <th
-              style="
-                border-top: 1px solid black;
-                border-collapse: collapse;
-              "
-            >
-              PRODUCTO
-            </th>
-            <th
-              style="
-                border-top: 1px solid black;
-                border-collapse: collapse;
-              "
-            >
-              CANT
-            </th>
-            <th
-              style="
-                border-top: 1px solid black;
-                border-collapse: collapse;
-              "
-            >
-              PRECIO
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <!--Producto-->
-          <tr
-            v-for="t in ticketPrintDetalle"
-            :key="t.id"
-          >
-            <td>
-              {{ t.nombre }} ($
-              {{ formatPrice(t.precio) }} C/U)
-            </td>
-            <td>{{ t.cantidad }}</td>
-            <td class="text-right">
-              {{
-                formatPrice(
-                  t.precio * t.cantidad
-                )
-              }}
-            </td>
-          </tr>
-          <!--Producto-->
-          <br />
-          <!--Totales-->
-          <tr>
-            <td>
-              <b>Total:</b>
-              $ {{ formatPrice(ticketPrint.venta_total) }}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <b>IVA:</b>
-              $ {{ formatPrice(ticketPrint.totales_iva) }}
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div>
-                <label>
-                  <b>Vuelto:</b>
-                  $ {{ formatPrice(ticketPrint.vuelto) }} <label v-if="ticketPrint.vuelto < 0" for=""> Deuda de cliente</label>
-                </label>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <br />
-      <center>
-        <p class="centrado">
-          <b>Cliente: </b>{{ ticketPrint.cliente }}
-        </p>
-        <p class="centrado">
-          ¡GRACIAS POR SU COMPRA!
-        </p>
-        <p>NEO-GESTION</p>
-        <p>.................</p>
-         <!-- AQUI SE GENERA EL TIMBRE ELECTRONICO -------------------------------------------------------->
-                                <div style="text-align: center"><br>
-                                    <!-- insert your custom barcode setting your data in the GET parameter "data" -->
-                                    <img
-                                    width="100%"
-                                    height="100%"
-                                    alt="Barcode Generator TEC-IT"
-                                    :src="'https://barcode.tec-it.com/barcode.ashx?data=<TED VERSION=1.0><RUT>18805652-0</RUT><RAZONSOCIAL>NEOFOX INFORMATICA LIMITADA</RAZONSOCIAL><esto es una prueba solo para alargar el xml que en realidad no es nada asi que no mames wey sorry por esto no señor jesuuuuuuu></TED><TED VERSION=1.0><RUT>18805652-0</RUT><RAZONSOCIAL>NEOFOX INFORMATICA LIMITADA</RAZONSOCIAL><esto es una prueba solo para alargar el xml que en realidad no es nada asi que no mames wey sorry por esto no señor jesuuuuuuu></TED><TED VERSION=1.0><RUT>18805652-0</RUT><RAZONSOCIAL>NEOFOX INFORMATICA LIMITADA</RAZONSOCIAL><esto es una prueba solo para alargar el xml que en realidad no es nada asi que no mames wey sorry por esto no señor jesuuuuuuu></TED><TED VERSION=1.0><RUT>18805652-0</RUT><RAZONSOCIAL>NEOFOX INFORMATICA LIMITADA</RAZONSOCIAL><esto es una prueba solo para alargar el xml que en realidad no es nada asi que no mames wey sorry por esto no señor jesuuuuuuu></TED>&code=PDF417&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&codepage=Default&qunit=Mm&quiet=0'"
-                                    />
-                                </div>
-                                <div style="font-size: 1.2rem; font-family: sans-serif">
-                                    <!-- back-linking to www.tec-it.com is required -->
-
-                                    <!-- logos are optional -->
+                                    class="ticket"
+                                    id="printVenta"
+                                    style="
+                                        font-size: 18px;
+                                        font-family: 'Times New Roman';
+                                    "
+                                    >
                                     <center>
-                                        Timbre electronico SII <br>
-                                        Verifique en www.sii.cl
+                                        <img
+                                        :src="listarConf.logo"
+
+                                        width="177px"
+                                        height="86px"
+                                        />
                                     </center>
+                                    <center>
+                                        <p>
 
-                                </div>
-      </center>
+                                        BOLETA ELECTRONICA NUMERO {{ticketPrint.id}}
+                                        <br />
+                                        {{ listarConf.empresa }}
+                                        <br>
+                                        {{ listarConf.rut }}
+                                        <br>
+                                        {{listarConf.giro}}
+
+                                        <br />
+                                        {{ listarConf.direccion }}
+                                        </p>
+                                    </center>
+                                        <table align="center">
+                                            <thead>
+                                            <!--Fecha Emisión-->
+                                            <tr>
+                                                <th colspan="4">
+                                                FECHA: {{ ticketPrint.fecha }}
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="4">
+                                                COMPROBANTE DE VENTA Nº {{ ticketPrint.id }}
+                                                </th>
+                                            </tr>
+
+                                            <tr>
+                                                <th colspan="4">
+                                                    MEDIO DE PAGO: {{forma_pago}}
+                                                </th>
+                                            </tr>
+
+                                            <tr
+                                                style="
+                                                border-top: 1px solid black;
+                                                border-collapse: collapse;
+                                                "
+                                            >
+                                                <th
+                                                style="
+                                                    border-top: 1px solid black;
+                                                    border-collapse: collapse;
+                                                "
+                                                >
+                                                PRODUCTO
+                                                </th>
+                                                <th
+                                                style="
+                                                    border-top: 1px solid black;
+                                                    border-collapse: collapse;
+                                                "
+                                                >
+                                                CANT
+                                                </th>
+                                                <th
+                                                style="
+                                                    border-top: 1px solid black;
+                                                    border-collapse: collapse;
+                                                "
+                                                >
+                                                PRECIO
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <!--Producto-->
+                                            <tr
+                                                v-for="t in ticketPrintDetalle"
+                                                :key="t.id"
+                                            >
+                                                <td>
+                                                {{ t.nombre }} ($
+                                                {{ formatPrice(t.precio) }} C/U)
+                                                </td>
+                                                <td>{{ t.cantidad }}</td>
+                                                <td class="text-right">
+                                                {{
+                                                    formatPrice(
+                                                    t.precio * t.cantidad
+                                                    )
+                                                }}
+                                                </td>
+                                            </tr>
+                                            <!--Producto-->
+                                            <br />
+                                            <!--Totales-->
+                                            <tr>
+                                                <td>
+                                                <b>Total:</b>
+                                                $ {{ formatPrice(ticketPrint.venta_total) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                <b>IVA:</b>
+                                                $ {{ formatPrice(ticketPrint.totales_iva) }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                <div>
+                                                    <label>
+                                                    <b>Vuelto:</b>
+                                                    $ {{ formatPrice(ticketPrint.vuelto) }} <label v-if="ticketPrint.vuelto < 0" for=""> Deuda de cliente</label>
+                                                    </label>
+                                                </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <br />
+                                        <center>
+                                            <p class="centrado">
+                                            <b>CLIENTE: </b>{{ ticketPrint.cliente }}
+                                            </p>
+                                            <p class="centrado">
+                                            ¡GRACIAS POR SU COMPRA!
+                                            </p>
+                                            <p>NEO-GESTION</p>
+                                            <p>.................</p>
+                                            <!-- AQUI SE GENERA EL TIMBRE ELECTRONICO -------------------------------------------------------->
+                                                                    <div style="text-align: center"><br>
+                                                                        <!-- insert your custom barcode setting your data in the GET parameter "data" -->
+                                                                        <img
+                                                                        width="100%"
+                                                                        height="100%"
+                                                                        alt="Barcode Generator TEC-IT"
+                                                                        :src="'https://barcode.tec-it.com/barcode.ashx?data=<TED VERSION=1.0><RUT>18805652-0</RUT><RAZONSOCIAL>NEOFOX INFORMATICA LIMITADA</RAZONSOCIAL><esto es una prueba solo para alargar el xml que en realidad no es nada asi que no mames wey sorry por esto no señor jesuuuuuuu></TED><TED VERSION=1.0><RUT>18805652-0</RUT><RAZONSOCIAL>NEOFOX INFORMATICA LIMITADA</RAZONSOCIAL><esto es una prueba solo para alargar el xml que en realidad no es nada asi que no mames wey sorry por esto no señor jesuuuuuuu></TED><TED VERSION=1.0><RUT>18805652-0</RUT><RAZONSOCIAL>NEOFOX INFORMATICA LIMITADA</RAZONSOCIAL><esto es una prueba solo para alargar el xml que en realidad no es nada asi que no mames wey sorry por esto no señor jesuuuuuuu></TED><TED VERSION=1.0><RUT>18805652-0</RUT><RAZONSOCIAL>NEOFOX INFORMATICA LIMITADA</RAZONSOCIAL><esto es una prueba solo para alargar el xml que en realidad no es nada asi que no mames wey sorry por esto no señor jesuuuuuuu></TED>&code=PDF417&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&codepage=Default&qunit=Mm&quiet=0'"
+                                                                        />
+                                                                    </div>
+                                                                    <div style="font-size: 1.2rem; font-family: sans-serif">
+                                                                        <!-- back-linking to www.tec-it.com is required -->
+
+                                                                        <!-- logos are optional -->
+                                                                        <center>
+                                                                            Timbre electronico SII <br>
+                                                                            Verifique en www.sii.cl
+                                                                        </center>
+
+                                                                    </div>
+                                        </center>
 
 
-    </div>
-    <!-- MODAL VENTAS  -->
+                                        </div>
+                                        <!-- MODAL VENTAS  -->
 
-  <div class="row justify-content-center bordeFooter">
-    <div class="col-4">
-      <b-button
-        class="my-2"
-        block
-        pill
-        variant="info"
-        onclick="printJS({
-                  printable: 'printVenta',
-                  type:'html', })"
+                                    <div class="row justify-content-center bordeFooter">
+                                        <div class="col-4">
+                                        <b-button
+                                            class="my-2"
+                                            block
+                                            pill
+                                            variant="info"
+                                            onclick="printJS({
+                                                    printable: 'printVenta',
+                                                    type:'html', })"
 
-        >imprimir ticket</b-button>
-        <!-- @click="hideModal()" -->
-    </div>
-  </div>
+                                            >imprimir ticket</b-button>
+                                            <!-- @click="hideModal()" -->
+                                        </div>
+                                    </div>
                                 <!-- <comprobantes
                                     :listarConf="listarConf"
                                     :ticketPrint="ticketPrint"
@@ -1221,166 +1227,7 @@
                       <!-- MODAL VENTAS  -->
                       <template>
                         <div>
-                          <b-modal
-                            no-close-on-esc
-                            no-close-on-backdrop
-                            class="modal-header-ventas"
-                            id="modal-md"
-                            size="md"
-                            :ref="'ventasModal'"
-                            hide-footer
-                            centered
-                          >
-                            <section>
-                              <div
-                                class="ticket"
-                                id="printVenta"
-                                style="
-                                  font-size: 12px;
-                                  font-family: 'Times New Roman';
-                                "
-                              >
-                                <center>
-                                  <img
-                                    :src="listarConf.logo"
-                                    v-show="logoNull"
-                                    width="177px"
-                                    height="86px"
-                                  />
-                                </center>
-                                <center>
-                                  <p>
-                                    <!-- TICKET DE VENTA -->
-                                    BOLETA ELECTRONICA NUMERO 898
-                                    <br />
-                                    {{ listarConf.empresa }}
-                                    <br />
-                                    {{ listarConf.direccion }}
-                                  </p>
-                                </center>
-                                <table align="center">
-                                  <thead>
-                                    <!--Fecha Emisión-->
-                                    <tr v-for="t in ticketPrint" :key="t.id">
-                                      <th colspan="4">
-                                        Fecha: {{ t.fechaVenta }}
-                                      </th>
-                                    </tr>
-                                    <tr v-for="t in ticketPrint" :key="t.id">
-                                      <th colspan="4">
-                                        Comprobante de Venta Nº {{ t.idVenta }}
-                                      </th>
-                                    </tr>
 
-                                    <tr
-                                      style="
-                                        border-top: 1px solid black;
-                                        border-collapse: collapse;
-                                      "
-                                    >
-                                      <th
-                                        style="
-                                          border-top: 1px solid black;
-                                          border-collapse: collapse;
-                                        "
-                                      >
-                                        PRODUCTO
-                                      </th>
-                                      <th
-                                        style="
-                                          border-top: 1px solid black;
-                                          border-collapse: collapse;
-                                        "
-                                      >
-                                        CANT
-                                      </th>
-                                      <th
-                                        style="
-                                          border-top: 1px solid black;
-                                          border-collapse: collapse;
-                                        "
-                                      >
-                                        PRECIO
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <!--Producto-->
-                                    <tr
-                                      v-for="t in ticketPrintDetalle"
-                                      :key="t.id"
-                                    >
-                                      <td>
-                                        {{ t.nombre }} ($
-                                        {{ formatPrice(t.precio) }} C/U)
-                                      </td>
-                                      <td>{{ t.cantidadDetalle }}</td>
-                                      <td class="text-right">
-                                        {{
-                                          formatPrice(
-                                            t.precio * t.cantidadDetalle
-                                          )
-                                        }}
-                                      </td>
-                                    </tr>
-                                    <!--Producto-->
-                                    <br />
-                                    <!--Totales-->
-                                    <tr v-for="t in ticketPrint" :key="t.id">
-                                      <td>
-                                        <b>Total:</b>
-                                        $ {{ formatPrice(t.totalVenta) }}
-                                      </td>
-                                    </tr>
-                                    <tr v-for="t in ticketPrint" :key="t.id">
-                                      <td>
-                                        <b>Iva:</b>
-                                        $ {{ formatPrice(t.totales_iva) }}
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        <div>
-                                          <label>
-                                            <b>Vuelto:</b>
-                                            $ {{ formatPrice(get_vuelto) }} <label v-if="get_vuelto < 0" for=""> Deuda de cliente</label>
-                                          </label>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                                <br />
-                                <center>
-                                  <p class="centrado">
-                                    <b>Cliente: </b>{{ cliente }}
-                                  </p>
-                                  <p class="centrado">
-                                    ¡GRACIAS POR SU COMPRA!
-                                  </p>
-                                  <p>NEO-GESTION</p>
-                                  <p>.................</p>
-                                </center>
-                              </div>
-                              <!-- MODAL VENTAS  -->
-                            </section>
-                            <div class="row justify-content-center bordeFooter">
-                              <div class="col-4">
-                                <b-button
-                                  class="my-2"
-                                  block
-                                  pill
-                                  variant="info"
-                                  onclick="printJS({
-                                            printable: 'printVenta',
-                                            type:'html', })"
-
-                                  >
-                                  imprimir ticket</b-button>
-                                  <!-- @click="hideModal()" -->
-                              </div>
-                            </div>
-                          </b-modal>
                         </div>
                       </template>
                     </div>

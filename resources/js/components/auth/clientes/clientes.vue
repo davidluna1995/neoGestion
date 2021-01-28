@@ -181,22 +181,28 @@
                                     a_contacto=data.item.contacto;
                                     a_email=data.item.email;
                                     a_direccion=data.item.direccion;
-                                    a_razon_social=data.item.direccion;
+                                    a_razon_social=data.item.cliente;
                                     a_comuna=data.item.comuna;
                                     a_ciudad=data.item.ciudad;
-                                    a_giro=data.item.gito;
+                                    a_giro=data.item.giro;
                                     btn_actualizar=false;
                         " v-b-modal="'modal'+data.item.id">Opciones</b-button>
 
-                        <b-modal hide-footer="" :id="'modal'+data.item.id" :title="'Opciones para '+data.item.nombres+' '+data.item.apellidos">
+                        <b-modal hide-footer="" :id="'modal'+data.item.id" :title="'Opciones para '+data.item.cliente">
                             <fieldset class="scheduler-border">
                                 <legend class="scheduler-border">Actualizar información</legend>
                                 <div class="control-group">
-                                    <label class="control-label input-label">Nombres:</label>
-                                    <b-input v-model="a_nombres" placeholder="Nombre.."></b-input>
-                                    <br>
-                                    <label class="control-label input-label">Apellidos:</label>
-                                    <b-input v-model="a_apellidos" placeholder="Apellidos.."></b-input>
+                                    <div v-if="data.item.tipo_cliente=='PERSONA'">
+                                        <label class="control-label input-label">Nombres:</label>
+                                        <b-input v-model="a_nombres" placeholder="Nombre.."></b-input>
+                                        <br>
+                                        <label class="control-label input-label">Apellidos:</label>
+                                        <b-input v-model="a_apellidos" placeholder="Apellidos.."></b-input>
+                                    </div>
+                                    <div v-if="data.item.tipo_cliente=='EMPRESA'">
+                                        <label class="control-label input-label">Razón social:</label>
+                                        <b-input v-model="a_razon_social" placeholder="Razón social.."></b-input>
+                                    </div>
                                     <br>
                                     <label class="control-label input-label">Contacto:</label>
                                     <b-input v-model="a_contacto" placeholder="Contacto.."></b-input>
@@ -207,8 +213,17 @@
                                     <label class="control-label input-label">Dirección:</label>
                                     <b-input v-model="a_direccion" placeholder="Dirección.."></b-input>
                                     <br>
+                                    <label class="control-label input-label">Comuna:</label>
+                                    <b-input v-model="a_comuna" placeholder="Comuna.."></b-input>
+                                    <br>
+                                    <label class="control-label input-label">Ciudad:</label>
+                                    <b-input v-model="a_ciudad" placeholder="Ciudad.."></b-input>
+                                    <br>
+                                    <label class="control-label input-label">Giro:</label>
+                                    <b-input v-model="a_giro" placeholder="Giro.."></b-input>
+                                    <br>
                                     <b-button :disabled="btn_actualizar"
-                                              @click="actualizar"
+                                              @click="actualizar(data.item.tipo_cliente)"
                                               variant="success">Actualizar
                                               <b-spinner v-if="btn_actualizar" small label="Small Spinner"></b-spinner></b-button>
                                     <b-button :disabled="btn_inhabilitar"  @click="inhabilitar(data.item.id)" variant="danger">Inhabilitar
@@ -368,9 +383,9 @@ export default {
             }
 
         },
-        actualizar(){
+        actualizar(tipo_cliente){
             this.btn_actualizar = true;
-            if(this.validar_campos_act() == false){
+            if(this.validar_campos_act(tipo_cliente) == false){
                 alert('el nombre y apellidos son obligatorios');
                 this.btn_actualizar=false;
                 return false;
@@ -383,6 +398,11 @@ export default {
                 data.append('contacto', this.a_contacto);
                 data.append('email', this.a_email);
                 data.append('direccion', this.a_direccion);
+                data.append('razon_social', this.a_razon_social);
+                data.append('tipo_cliente', tipo_cliente);
+                data.append('comuna', this.a_comuna);
+                data.append('ciudad', this.a_ciudad);
+                data.append('giro', this.a_giro);
 
                 this.axios.post('api/actualizar_cliente', data).then((res)=>{
                      if(res.data.estado=='success'){
@@ -544,12 +564,20 @@ export default {
 
 
         },
-        validar_campos_act(){
+        validar_campos_act(tipo_cliente){
             var t = this;
-            if(t.a_nombres.trim()==''|| t.a_apellidos.trim()==''){
-                return false;
+            if(tipo_cliente=='PERSONA'){
+                if(t.a_nombres.trim()==''|| t.a_apellidos.trim()==''){
+                    return false;
+                }else{
+                    return true;
+                }
             }else{
-                return true;
+                if(t.a_razon_social.trim()==''){
+                    return false;
+                }else{
+                    return true;
+                }
             }
         },
     }

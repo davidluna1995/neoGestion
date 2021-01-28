@@ -634,19 +634,19 @@
 
              <!-- MODAL PRE NOTA DE CREDITO -->
          <b-modal ref="modal_factura" no-close-on-esc
-                            no-close-on-backdrop hide-footer title="Facturación electronica (DTE 33)">
+                            no-close-on-backdrop hide-footer title="Nota de crédito (DTE 60)">
 
             <div class="modal-bodyxx">
                 <!-- <pre>{{ pre_nc }}</pre> -->
                 <!-- si es que el documento a previsualizar es una factura electronica 33 -->
                 <div v-if="pre_nc.tipo_venta_id == '33'">
-                     <div >
+                     <div id="nota_credito">
                         <!-- AQUI EL DISEÑO DE LA FACTURA ELECTRONICA -->
                         <div class="factura">
-                            <center style="font-size: 2rem; border:3px solid red;color:red;font-family:sans-serif;">
-                            <b class="upper"><pre style="color:red">R.U.T {{ pre_nc.documento.configuraciones.emisor.rut }}</pre></b>
-                            <b><pre style="color:red">NOTA DE CREDITO <br>ELECTRONICA</pre></b>
-                            <b><pre style="color:red">Nº XXXX</pre></b>
+                            <center id="centro_bordes">
+                            <b class="upper"><pre id="texto_color">R.U.T {{ pre_nc.documento.configuraciones.emisor.rut }}</pre></b>
+                            <b><pre id="texto_color">NOTA DE CREDITO <br>ELECTRONICA</pre></b>
+                            <b><pre id="texto_color">Nº XXXX</pre></b>
                             </center>
                             <br />
                             <center style="font-size: 2rem;font-family:sans-serif;">
@@ -919,6 +919,21 @@
                 </div>
                 <!-- FIN si es que el documento a previsualizar es una factura electronica 33 -->
             </div>
+            <div class="modal-footer">
+
+                                    <!-- <button @click="printDiv('pdfFactura')"></button> -->
+                                    <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    onclick="printJS({
+                                printable: 'nota_credito',
+                                type:'html',
+                                style:'#texto_color{color:black;}#centro_bordes{font-size: 2rem; border:3px solid black;color:black;font-family:sans-serif;}#centro{color:black};b{text-transform: uppercase;color:black;},pre{text-transform: uppercase;font-family:sans-serif;width: 100%;white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-wrap: break-word;color:black;}'
+                                })"
+                                    >
+                                    Imprimir DTE
+                                    </button>
+            </div>
          </b-modal>
         </div>
 
@@ -928,3 +943,23 @@
 </template>
 <script src="../nota_credito/generar_nota_credito.js" >
 </script>
+
+<style>
+.upper{
+    text-transform: uppercase;
+}
+
+#centro{
+    color:red;
+}
+
+#centro_bordes{
+    font-size: 2rem; border:3px solid red;color:red;font-family:sans-serif;width:100%;
+}
+#texto_color{
+    color:red;
+}
+#rojo{
+    color:red;
+}
+</style>

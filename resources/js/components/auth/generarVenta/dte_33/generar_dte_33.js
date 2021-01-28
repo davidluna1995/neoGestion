@@ -169,6 +169,7 @@ export default {
             mostrar_cliente:[],
             ver_cliente:false,
             btn_buscar_rut:false,
+            btn_emitir:false,
 
             // imp_ad:'0',
             tipos_imp_adicionales:json_tipos_imp_ad,
@@ -956,7 +957,7 @@ export default {
         emitir_dte33(factura, neto, exento, imp_especifico, iva, bruto, vuelto, deuda, credito ){
             // console.log(factura, neto, imp_especifico, iva, bruto, vuelto, credito);
 
-
+            this.btn_emitir= true;
             const data = {
                 factura: factura,
                 totales:{
@@ -995,9 +996,12 @@ export default {
                     document.getElementById('rut').value = '';
                     this.ver_cliente = false;
                     this.mostrar_cliente = [];
+                    this.btn_emitir= false;
 
                     // this.url('index');
 
+                }else{
+                    this.btn_emitir= false;
                 }
             });
         },

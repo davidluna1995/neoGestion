@@ -12,6 +12,9 @@ export default {
             usuario: this.$auth.user(),
             admin:1,
             // CABEZERA DE LA TABLA
+            item_producto:{},
+            perPage: 20,
+            currentPage: 1,
             productosFieldsAdm: [
                 { key: 'index', label: 'SKU', variant: 'dark', class: 'text-center' },
                 { key: 'imagen', label: 'Imagen', class: 'text-center' },
@@ -126,12 +129,13 @@ export default {
             this.$refs['ventasModal' + id].hide();
         },
         // MODAL EDITAR
-        showModalEditarProducto(id) {
+        showModalEditarProducto(item) {
             this.limpiar_inputs();
-            this.$refs['editarModalProducto' + id].show();
+            this.item_producto = item;
+            this.$refs['editarModalProducto'].show();
         },
-        hideModalEditarProducto(id) {
-            this.$refs['editarModalProducto' + id].hide();
+        hideModalEditarProducto() {
+            this.$refs['editarModalProducto'].hide();
         },
         // SUCCESS EDITAR CONTADOR
         countDownChanged2(dismissCountDown2) {
@@ -182,7 +186,7 @@ export default {
                     this.correcto2 = response.data.mensaje;
                     this.showAlert2();
                     this.traer_productos();
-                    this.hideModalEditarProducto(id);
+                    this.hideModalEditarProducto();
                     this.skuUpd = '';
                     this.nombreUpd = '';
                     this.descripcionUpd = '';
@@ -350,5 +354,10 @@ export default {
         this.traer_productos();
         this.traer_categorias();
     },
+    computed: {
+        rows() {
+          return this.listarProductos.length
+        }
+    }
 
 }
