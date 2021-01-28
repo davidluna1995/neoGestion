@@ -25,6 +25,7 @@ class ProductoController extends Controller
                 // 'cantidad' => 'required',
                 'precio_1' => 'required',
                 'precio_2' => 'required',
+                'precio_2' => 'required'
             ],
             [
                 'categoria_id.required' => 'La categoria a ingresar es necesaria',
@@ -81,10 +82,11 @@ class ProductoController extends Controller
 
             $producto->precio_1 = $datos->precio_1;
             $producto->precio_2 = $datos->precio_2;
+            $producto->precio_3 = $datos->precio_3;
             $producto->stock = $datos->stock;
             $producto->activo = 'S';
-            $producto->iva_incluido = $ivaincluido;
-            $producto->iva_incluido_2 = $ivaincluido;
+            $producto->iva_incluido = /*$ivaincluido*/ null;
+            $producto->iva_incluido_2 = /*$ivaincluido*/ null;
 
             if ($producto->save()) {
                 return ['estado'=>'success', 'mensaje'=>'Producto guardado con exito.'];
@@ -105,6 +107,7 @@ class ProductoController extends Controller
                                     'producto.cantidad',
                                     'producto.precio_1',
                                     'producto.precio_2',
+                                    'producto.precio_3',
                                     'producto.iva_incluido',
                                     'producto.iva_incluido_2',
                                     'categoria.descripcion as catdesc',
@@ -227,6 +230,17 @@ class ProductoController extends Controller
             ]
           );
           break;
+          case 'precio_3':
+            $validator = Validator::make(
+                $request->all(),
+                [
+                'input' => 'required',
+              ],
+                [
+                'input.required' => 'Debe ingresar precio 3.',
+              ]
+            );
+            break;
 
         default:
         return null;
@@ -350,7 +364,19 @@ class ProductoController extends Controller
                         return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
                     }
 
-              break;
+                break;
+
+                case 'precio_3':
+
+                    $modificar->precio_3 = $request->input;
+
+                    if ($modificar->save()) {
+                        return ['estado'=>'success', 'mensaje'=>'Precio 3 actualizado.'];
+                    } else {
+                        return ['estado'=>'failed', 'mensaje'=>'A ocurrido un error al igreso de datos.'];
+                    }
+
+                break;
 
                 default:
                   return null;
@@ -420,6 +446,7 @@ class ProductoController extends Controller
                                     producto.cantidad,
                                     producto.precio_1,
                                     producto.precio_2,
+                                    producto.precio_3,
                                     producto.created_at as creado,
                                     producto.iva_incluido,
                                     producto.iva_incluido_2,

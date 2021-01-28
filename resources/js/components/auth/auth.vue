@@ -56,7 +56,18 @@
           </b-nav-item-dropdown>
 
           <b-nav-item >
-            <button type="button" @click="cambiar_tipo_precio(usuario.tipo_precio)" class="btn btn-secondary btn-sm">Usando precio {{ usuario.tipo_precio }}  de venta</button>
+            <!-- <button type="button" @click="cambiar_tipo_precio(usuario.tipo_precio)" class="btn btn-secondary btn-sm">Usando precio {{ usuario.tipo_precio }}  de venta</button> -->
+            <b-badge pill>
+                <div v-if="usuario.tipo_precio==1">
+                    Usando precio vendedor en terreno
+                </div>
+                <div v-if="usuario.tipo_precio==2">
+                    Usando precio local establecido
+                </div>
+                <div v-if="usuario.tipo_precio==3">
+                    Usando precio delivery
+                </div>
+            </b-badge>
           </b-nav-item>
         </b-navbar-nav>
 

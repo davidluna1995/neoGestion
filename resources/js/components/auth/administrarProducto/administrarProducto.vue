@@ -190,14 +190,19 @@
                   <b-card>
                     <b-row class="mb-2">
                       <b-col sm="12" lg="3">
-                        <b>Precio 1:</b>
+                        <b>Precio 1 V.T:</b>
                         <span class="green">$</span>
-                        {{ formatPrice(data.item.precio_1) }}  {{(data.item.iva_incluido)?'(IVA incluido)':''}}
+                        {{ formatPrice(data.item.precio_1) }}
                       </b-col>
                       <b-col sm="12" lg="3">
-                        <b>Precio 2:</b>
+                        <b>Precio 2 L.E:</b>
                         <span class="green">$</span>
                         {{ formatPrice(data.item.precio_2) }}
+                      </b-col>
+                      <b-col sm="12" lg="3">
+                        <b>Precio 3 Delivery:</b>
+                        <span class="green">$</span>
+                        {{ formatPrice(data.item.precio_3) }}
                       </b-col>
                       <b-col sm="12" lg="3">
                         <b>Fecha Creacion:</b>
@@ -404,6 +409,30 @@
                                   block
                                   variant="light"
                                   @click="actualizar_dato(item_producto.id,'precio_2',precio_2)"
+                                >
+                                  <i class="fas fa-edit text-success"></i>
+                                </b-button>
+                              </div>
+
+
+                              <div class="col-8 mb-4">
+                                <div class="row">
+                                  <div class="col-2">
+                                    <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-success"></i>
+                                  </div>
+                                  <div class="col-10">
+                                    <b-form-input
+                                      v-model="precio_3"
+                                      :placeholder="formatPrice(item_producto.precio_3)"
+                                    ></b-form-input>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-3">
+                                <b-button
+                                  block
+                                  variant="light"
+                                  @click="actualizar_dato(item_producto.id,'precio_3',precio_3)"
                                 >
                                   <i class="fas fa-edit text-success"></i>
                                 </b-button>

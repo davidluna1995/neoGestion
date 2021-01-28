@@ -123,7 +123,7 @@
               </div>
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
-              <b-form-group id="compra" label="Ingrese precio 1 (Unidad / Kg):">
+              <b-form-group id="compra" label="Precio 1 - Vendedor en terreno (Unidad / Kg):">
                 <div class="row">
                   <div class="col-1">
                     <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-primary"></i>
@@ -131,14 +131,14 @@
                   <div class="col-11">
                     <b-form-input v-model="precio_1" type="number" placeholder="Precio 1"></b-form-input>
                     <br>
-                    <label for=""> <input class="orm-check-input" v-model="iva_incluido_1" type="checkbox"> ¿IVA incluido?</label>
+                    <!-- <label for=""> <input class="orm-check-input" v-model="iva_incluido_1" type="checkbox"> ¿IVA incluido?</label> -->
                   </div>
                 </div>
               </b-form-group>
             </div>
 
             <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
-              <b-form-group id="venta" label="Ingrese precio 2 (Unidad / Kg):">
+              <b-form-group id="venta" label="Precio 2 - Local establecido (Unidad / Kg):">
                 <div class="row">
                   <div class="col-1">
                     <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-success"></i>
@@ -146,7 +146,22 @@
                   <div class="col-11">
                     <b-form-input v-model="precio_2" type="number" placeholder="Precio 2"></b-form-input>
 
-                    <label for=""> <input class="orm-check-input" v-model="iva_incluido_2" type="checkbox"> ¿IVA incluido?</label>
+                    <!-- <label for=""> <input class="orm-check-input" v-model="iva_incluido_2" type="checkbox"> ¿IVA incluido?</label> -->
+                  </div>
+                </div>
+              </b-form-group>
+            </div>
+
+            <div class="col-12 col-md-12 col-lg-6 col-xl-6 mb-4">
+              <b-form-group id="venta" label="Precio 3 - Delivery (Unidad / Kg):">
+                <div class="row">
+                  <div class="col-1">
+                    <i class="fas fa-dollar-sign mr-1 mt-1 fa-2x text-success"></i>
+                  </div>
+                  <div class="col-11">
+                    <b-form-input v-model="precio_3" type="number" placeholder="Precio 3"></b-form-input>
+
+                    <!-- <label for=""> <input class="orm-check-input" v-model="iva_incluido_3" type="checkbox"> ¿IVA incluido?</label> -->
                   </div>
                 </div>
               </b-form-group>

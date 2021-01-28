@@ -50,6 +50,7 @@ export default {
             cantidadUpd: '',
             precio_1: '',
             precio_2: '',
+            precio_3: '',
 
             // REGISTRO DE VENTA
             producto_id: '',
@@ -194,6 +195,7 @@ export default {
                     this.cantidadUpd = '';
                     this.precio_1 = '';
                     this.precio_2 = '';
+                    this.precio_3 = '';
                     this.errores2 = [];
                 }
                 if (response.data.estado == 'failed_v') {
@@ -218,6 +220,7 @@ export default {
             this.cantidadUpd= '';
             this.precio_1= '';
             this.precio_2= '';
+            this.precio_3= '';
 
             // REGISTRO DE VENTA
             this.producto_id= '';

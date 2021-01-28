@@ -17,6 +17,7 @@ export default {
       cantidad: 0,
       precio_1: '',
       precio_2: '',
+      precio_3: '',
       listarCategorias: [],
 
       // ALERTS INGRESO PRODUCTO
@@ -98,8 +99,9 @@ export default {
         'precio_1': this.precio_1,
         'precio_2': this.precio_2,
         'stock': this.selected,
-        'iva_incluido_1': this.iva_incluido_1,
-        'iva_incluido_2': this.iva_incluido_2
+        // 'iva_incluido_1': this.iva_incluido_1,
+        // 'iva_incluido_2': this.iva_incluido_2,
+        'precio_3': this.precio_3
 
       }
       this.axios.post('api/registro_producto', data).then((response) => {
@@ -113,6 +115,7 @@ export default {
           this.cantidad = '';
           this.precio_1 = '';
           this.precio_2 = '';
+          this.precio_3 = '';
           this.errores = [];
 
           this.guardar_load = false;

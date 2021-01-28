@@ -394,6 +394,10 @@ class VentasController extends Controller
             $tipo_precio = 'precio_2';
         }
 
+        if($precio == 3){
+            $tipo_precio = 'precio_3';
+        }
+
         // $listar = Producto::select([
         //                             'producto.id',
         //                             'producto.sku',
