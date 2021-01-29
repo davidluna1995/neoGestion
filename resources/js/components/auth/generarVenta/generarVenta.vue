@@ -1039,7 +1039,7 @@
                                     class="ticket"
                                     id="printVenta"
                                     style="
-                                        font-size: 2rem;
+                                        font-size: 12px;
                                         font-family:'sans-serif';
                                     "
                                     >
