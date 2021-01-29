@@ -1039,8 +1039,8 @@
                                     class="ticket"
                                     id="printVenta"
                                     style="
-                                        font-size: 18px;
-                                        font-family: 'Times New Roman';
+                                        font-size: 2rem;
+                                        font-family:'sans-serif';
                                     "
                                     >
                                     <center>
