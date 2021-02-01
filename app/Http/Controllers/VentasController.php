@@ -771,7 +771,7 @@ class VentasController extends Controller
                                     venta_total,
                                     totales_iva,
                                     tipo_venta_id as dte,
-                                    to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
+                                    to_char(ventas.created_at, 'dd/mm/yyyy hh24:MI') fecha,
                                     vuelto,
                                     case
                                         when tipo_cliente = 'PERSONA' THEN upper(concat(c.nombres,' ',c.apellidos))
@@ -835,7 +835,7 @@ class VentasController extends Controller
 
             $venta_db = DB::select("SELECT ventas.id,
                                     venta_total,
-                                    to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
+                                    to_char(ventas.created_at, 'dd/mm/yyyy hh24:MI') fecha,
                                     vuelto,
                                     case
                                         when tipo_cliente = 'PERSONA' THEN upper(concat(c.nombres,' ',c.apellidos))
@@ -970,7 +970,7 @@ class VentasController extends Controller
                                     venta_total,
                                     totales_iva,
                                     tipo_venta_id as dte,
-                                    to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
+                                    to_char(ventas.created_at, 'dd/mm/yyyy hh24:MI') fecha,
                                     vuelto,
                                     case
                                     when tipo_cliente = 'PERSONA' THEN concat(c.nombres,' ',c.apellidos)
@@ -1015,7 +1015,7 @@ class VentasController extends Controller
 
             $venta_db = DB::select("SELECT ventas.id,
                                     venta_total,
-                                    to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
+                                    to_char(ventas.created_at, 'dd/mm/yyyy hh24:MI') fecha,
                                     vuelto,
                                     case
                                         when tipo_cliente = 'PERSONA' THEN concat(c.nombres,' ',c.apellidos)
