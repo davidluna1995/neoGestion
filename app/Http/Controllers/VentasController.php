@@ -774,7 +774,7 @@ class VentasController extends Controller
                                     to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
                                     vuelto,
                                     case
-                                        when tipo_cliente = 'CLIENTE' THEN upper(concat(c.nombres,' ',c.apellidos))
+                                        when tipo_cliente = 'PERSONA' THEN upper(concat(c.nombres,' ',c.apellidos))
                                         when tipo_cliente = 'EMPRESA' THEN upper(razon_social)
                                     end as cliente,
                                     tipo_venta_id,
@@ -837,7 +837,10 @@ class VentasController extends Controller
                                     venta_total,
                                     to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
                                     vuelto,
-                                    concat(c.nombres,' ',c.apellidos) cliente,
+                                    case
+                                        when tipo_cliente = 'PERSONA' THEN upper(concat(c.nombres,' ',c.apellidos))
+                                        when tipo_cliente = 'EMPRESA' THEN upper(razon_social)
+                                    end as cliente,
                                     tipo_venta_id,
                                     tipo_venta_id as dte,
                                     totales_impuesto_especifico,
@@ -970,7 +973,7 @@ class VentasController extends Controller
                                     to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
                                     vuelto,
                                     case
-                                    when tipo_cliente = 'CLIENTE' THEN concat(c.nombres,' ',c.apellidos)
+                                    when tipo_cliente = 'PERSONA' THEN concat(c.nombres,' ',c.apellidos)
                                     when tipo_cliente = 'EMPRESA' THEN razon_social
                                     end as cliente,
                                     tipo_venta_id
@@ -1014,7 +1017,10 @@ class VentasController extends Controller
                                     venta_total,
                                     to_char(ventas.created_at, 'dd/mm/yyy hh24:MI') fecha,
                                     vuelto,
-                                    concat(c.nombres,' ',c.apellidos) cliente,
+                                    case
+                                        when tipo_cliente = 'PERSONA' THEN concat(c.nombres,' ',c.apellidos)
+                                        when tipo_cliente = 'EMPRESA' THEN razon_social
+                                    end as cliente,
                                     tipo_venta_id,
                                     tipo_venta_id as dte,
                                     totales_impuesto_especifico,
